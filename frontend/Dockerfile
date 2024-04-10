@@ -2,14 +2,14 @@
 FROM node:latest
 
 # Setze das Arbeitsverzeichnis innerhalb des Containers
-WORKDIR /usr/src/app/backend
+WORKDIR /usr/src/app
 
 # Kopiere package.json und package-lock.json und installiere Abhängigkeiten
 COPY package*.json ./
 RUN npm install
 
 # Kopiere den Rest der Dateien in das Arbeitsverzeichnis des Containers
-COPY . .
+COPY src .
 
 # Baue die React-App
 RUN npm run build
@@ -18,4 +18,4 @@ RUN npm run build
 EXPOSE 8080
 
 # Starte den Node.js-Server
-CMD ["node", "app.js"]
+CMD ["npm", "start"]
