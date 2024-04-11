@@ -355,10 +355,10 @@ export const selectwithinselectTasks = [
     },
     {
         description:
-            "Aufgabe 8: Listen Sie jeden Kontinent und den Namen des Landes auf, das alphabetisch " +
-            "an erster Stelle steht.",
+            "Aufgabe 8: Listen Sie jeden Kontinent und den Namen des jeweiligen Landes auf, das alphabetisch " +
+            "auf diesem Kontinent an erster Stelle steht.",
         defaultQuery: "",
-        solution: "SELECT continent, MIN(name) FROM world GROUP BY continent;",
+        solution: "SELECT continent, MIN(name) AS name FROM world GROUP BY continent;",
     },
     {
         description:
@@ -372,8 +372,8 @@ export const selectwithinselectTasks = [
     },
     {
         description:
-            "Aufgabe 10: In manchen Ländern leben mehr als dreimal so viele Menschen wie in allen Nachbarländern " +
-            "(auf demselben Kontinent). Geben Sie die Länder und Kontinente an.",
+            "Aufgabe 10: In manchen Ländern leben mehr als dreimal so viele Menschen wie in allen Ländern " +
+            "auf demselben Kontinent. Geben Sie die Länder und Kontinente an.",
         defaultQuery: "",
         solution:
             "SELECT name, continent FROM world AS x WHERE population > ALL " +
