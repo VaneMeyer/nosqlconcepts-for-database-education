@@ -2,29 +2,32 @@ services:
   frontend:
     build:
       context: "./frontend"
+    restart: "unless-stopped"
     depends_on:
       - "backend"
       - "postgres"
     ports:
       - "8080:3000"
+    networks:
+      - proxy_nw
+      - default
 
   backend:
     build:
       context: "./backend"
     env_file: ".env"
+    restart: "unless-stopped"
     depends_on:
       - "postgres"
-    ports:
-      - "8000:8000"
+
 
   postgres:
     image: "postgres:latest"
-    env_file: ".env"
     restart: "unless-stopped"
-    ports:
-      - "5432:5432"
+    env_file:
+      - ".env"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
 
 volumes:
   postgres:
@@ -34,6 +37,7 @@ volumes:
 networks:
   default:
     name: "sqlzoo_nw"
+    driver: bridge
   proxy_nw:
     external: true
     name: "proxy_nw"

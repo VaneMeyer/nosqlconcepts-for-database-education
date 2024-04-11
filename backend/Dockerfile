@@ -2,7 +2,7 @@
 FROM node:latest
 
 # Setze das Arbeitsverzeichnis innerhalb des Containers
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Kopiere package.json und package-lock.json und installiere Abhängigkeiten
 COPY package*.json ./

@@ -60,10 +60,10 @@ const executeQueryWithTimeout = (queryFunction, timeout) => {
 
 // PostgreSQL connections
 const pool = new Pool({
-  host: process.env.PG_HOST,
-  user: process.env.PG_USER,
-  password: process.env.PG_PASSWORD,
-  database: process.env.PG_DATABASE,
+  host: process.env.POSTGRES_HOST,
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
 });
 
 app.get("/", (req, res) => {
