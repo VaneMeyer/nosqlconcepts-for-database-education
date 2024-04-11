@@ -63,6 +63,5 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
-  },
-  "proxy": "http://backend:8000"
+  }
 }
