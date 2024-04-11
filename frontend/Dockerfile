@@ -2,7 +2,7 @@
 FROM node:latest
 
 # Setze das Arbeitsverzeichnis innerhalb des Containers
-WORKDIR /usr/src/app/backend
+WORKDIR /app
 
 # Kopiere package.json und package-lock.json und installiere Abhängigkeiten
 COPY package*.json ./
@@ -12,10 +12,10 @@ RUN npm install
 COPY . .
 
 # Baue die React-App
-RUN npm run build
+#RUN npm run build
 
 # Öffne den Port, auf dem der Node.js-Server lauscht
-EXPOSE 8080
+EXPOSE 3000
 
 # Starte den Node.js-Server
-CMD ["node", "app.js"]
+CMD ["npm", "start"]
