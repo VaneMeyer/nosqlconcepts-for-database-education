@@ -22,7 +22,7 @@ const Topbar = () => {
           color={colors.grey[900]}
           sx={{ marginRight: "20px", display: "flex", alignItems: "center" }}
         >
-          NoSQLconcepts
+          Programmierung von Datenbanken - SS2024
         </Typography>
         <Box display="flex" alignItems="center">
           <Link to="/">
