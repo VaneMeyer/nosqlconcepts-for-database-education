@@ -20,7 +20,7 @@ const Footer = () => {
                 </div>
                 <div className="logo-container">
                     <p>gefördert durch</p>
-                    <a href="https://stiftung-hochschullehre.de/" traget="_blank">
+                    <a href="https://stiftung-hochschullehre.de/" target="_blank">
                         <img src={StiftungLogo} alt="Logo Stiftung Hochschullehre"/>
                     </a>
                 </div>
