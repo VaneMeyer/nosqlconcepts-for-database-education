@@ -1,5 +1,5 @@
 services:
-  frontend:
+  sqlzoo:
     build:
       context: "./frontend"
     restart: "unless-stopped"
@@ -41,3 +41,4 @@ networks:
   proxy_nw:
     external: true
     name: "proxy_nw"
+

@@ -9,18 +9,18 @@ const Footer = () => {
         <footer>
             <div className="footer-container">
                 <div className="logo-container">
-                    <a href="https://www.uni-frankfurt.de/digitell" target="_blank">
+                    <a href="https://www.uni-frankfurt.de/digitell" target="_blank" rel="noreferrer">
                         <img src={digitellLogo} alt="DigiTeLL Logo 2023"/>
                     </a>
                 </div>
                 <div className="logo-container">
-                    <a href="https://www.uni-frankfurt.de" target="_blank">
+                    <a href="https://www.uni-frankfurt.de" target="_blank" rel="noreferrer">
                         <img src={GULogo} alt="Goethe University Logo"/>
                     </a>
                 </div>
                 <div className="logo-container">
                     <p>gefördert durch</p>
-                    <a href="https://stiftung-hochschullehre.de/" target="_blank">
+                    <a href="https://stiftung-hochschullehre.de/" target="_blank" rel="noreferrer">
                         <img src={StiftungLogo} alt="Logo Stiftung Hochschullehre"/>
                     </a>
                 </div>
