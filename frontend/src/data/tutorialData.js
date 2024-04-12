@@ -372,8 +372,8 @@ export const selectwithinselectTasks = [
     },
     {
         description:
-            "Aufgabe 10: In manchen Ländern leben mehr als dreimal so viele Menschen wie in allen Ländern " +
-            "auf demselben Kontinent. Geben Sie die Länder und Kontinente an.",
+            "Aufgabe 10: In manchen Ländern leben mehr als dreimal so viele Menschen im Vergleich zu jedem anderen " +
+            "Land auf dem gleichen Kontinent. Geben Sie die Länder und Kontinente an.",
         defaultQuery: "",
         solution:
             "SELECT name, continent FROM world AS x WHERE population > ALL " +
@@ -384,7 +384,7 @@ export const sumandcountTasks = [
     {
         description:
             "Aufgabe 1: Zeigen Sie die Gesamtbevölkerungsanzahl der Welt an.",
-        defaultQuery: "SELECT SUM(population) FROM world",
+        defaultQuery: "SELECT COUNT(*) FROM world",
         solution: "SELECT SUM(population) FROM world;",
     },
     {
@@ -394,7 +394,7 @@ export const sumandcountTasks = [
         solution: "SELECT DISTINCT continent FROM world;",
     },
     {
-        description: "Aufgabe 3: Geben Sie das gesamte GDP Afrikas an",
+        description: "Aufgabe 3: Geben Sie das gesamte Bruttoinlangsprodukt (GDP) Afrikas an.",
         defaultQuery: "",
         solution: "SELECT SUM(gdp) FROM world WHERE continent = 'Africa';",
     },
@@ -406,20 +406,20 @@ export const sumandcountTasks = [
     },
     {
         description:
-            "Aufgabe 5: Wie groß ist die Gesamtbevölkerung von ('Estonia', 'Latvia', 'Lithuania')?",
+            "Aufgabe 5: Wie groß ist die Gesamtbevölkerung von Estland, Lettland und Litauen ('Estonia', 'Latvia', 'Lithuania')?",
         defaultQuery: "",
         solution:
             "SELECT SUM(population) FROM world WHERE name IN ('Estonia', 'Latvia', 'Lithuania');",
     },
     {
         description:
-            "Aufgabe 6: Zeigen Sie für jeden Kontinent den Kontinent und die Anzahl der Länder an.",
+            "Aufgabe 6: Zeigen Sie für jeden Kontinent den Namen des Kontinent und die Anzahl der Länder an.",
         defaultQuery: "",
         solution: "SELECT continent, COUNT(name) FROM world GROUP BY continent;",
     },
     {
         description:
-            "Aufgabe 7: Geben Sie für jeden Kontinent den Kontinent und die Anzahl der Länder mit einer " +
+            "Aufgabe 7: Geben Sie für jeden Kontinent den Namen des Kontinent und die Anzahl der Länder mit einer " +
             "Bevölkerung von mindestens 10 Millionen an.",
         defaultQuery: "",
         solution:
