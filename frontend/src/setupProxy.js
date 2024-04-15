@@ -1,4 +1,4 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const proxy = require('http-proxy-middleware');
 const fs = require('fs');
 
 const protocol = JSON.parse(process.env.HTTPS) ? "https:" : "http:";
@@ -8,12 +8,12 @@ const port = process.env.REACT_APP_PROXY_PORT
 module.exports = function(app) {
   app.use(
     '/api',
-    createProxyMiddleware({
+    proxy({
       target: {
         protocol: protocol,
         host: host,
         port: port,
-        pfx: fs.readFileSync('src/root-cert.pem')
+        //pfx: fs.readFileSync('src/root-cert.pem')
       },
       changeOrigin: true,
     })
