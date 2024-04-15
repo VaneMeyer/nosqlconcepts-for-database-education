@@ -90,6 +90,7 @@ const WorldTaskSheet = ({title, tasks}) => {
                     });
             })
             .catch((error) => {
+                console.log(error);
                 const updatedTaskStates = [...taskStates];
                 updatedTaskStates[index] = {
                     ...task,

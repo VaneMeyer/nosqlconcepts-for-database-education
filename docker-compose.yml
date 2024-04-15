@@ -1,13 +1,13 @@
 services:
   sqlzoo:
     build:
-      context: "./frontend"
-    restart: "unless-stopped"
+      context: ./frontend
+    restart: unless-stopped
     depends_on:
-      - "backend"
-      - "postgres"
+      - backend
+      - postgres
     ports:
-      - "8080:3000"
+      - 80:80
     networks:
       - proxy_nw
       - default
@@ -28,6 +28,7 @@ services:
       - ".env"
     volumes:
       - ./db:/docker-entrypoint-initdb.d
+
 
 volumes:
   postgres:

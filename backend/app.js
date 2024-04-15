@@ -96,11 +96,11 @@ app.post("/api/execute-sql", async (req, res) => {
   }
 });
 
-const pgPort = 8000;
-
 
 //start server
-
-app.listen(pgPort, () => {
-  console.log(`App is running on port ${pgPort} for PostgreSQL`);
-});
+app.listen(
+    8000,
+    () => {
+      console.log(`App is running on port ${8000} for PostgreSQL`);
+    }
+);
