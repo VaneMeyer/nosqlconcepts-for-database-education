@@ -6,8 +6,6 @@ services:
     depends_on:
       - backend
       - postgres
-    ports:
-      - 80:80
     networks:
       - proxy_nw
       - default
