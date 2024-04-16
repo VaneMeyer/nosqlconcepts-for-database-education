@@ -12,6 +12,7 @@ CREATE TABLE world (
     PRIMARY KEY (name)
 );
 
+
 --CREATE INDEX world_continent_idx ON world(continent);
 
 --GRANT ALL ON world TO andrew;

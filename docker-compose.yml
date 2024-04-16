@@ -9,6 +9,8 @@ services:
     networks:
       - proxy_nw
       - default
+    ports:
+      - 80:80
 
   backend:
     build:
@@ -27,10 +29,6 @@ services:
     volumes:
       - ./db:/docker-entrypoint-initdb.d
 
-
-volumes:
-  postgres:
-    driver: local
 
 
 networks:
