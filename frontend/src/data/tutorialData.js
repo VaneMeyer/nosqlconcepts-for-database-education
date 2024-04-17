@@ -25,17 +25,17 @@ export const topics = [
 export const basicsTasks = [
     {
         description:
-            "Aufgabe 1: Das Beispiel verwendet eine WHERE-Klausel, um die Bevölkerung von „Frankreich“ anzuzeigen. " +
-            "Beachten Sie, dass Zeichenfolgen in einfachen Anführungszeichen stehen sollten. Ändern Sie das folgende " +
-            "SQL Statement, um die Bevölkerung Deutschlands ('Germany') anzuzeigen",
+            "Aufgabe 1: Das Beispiel verwendet eine WHERE-Klausel, um die Bevölkerung von Frankreich ('France') " +
+            "anzuzeigen. Beachte, dass Zeichenfolgen in einfachen Anführungszeichen stehen sollten. Ändere das " +
+            "folgende SQL Statement, um stattdessen die Bevölkerung Deutschlands ('Germany') anzuzeigen",
         defaultQuery: "SELECT population FROM world WHERE name = 'France'",
         solution: "SELECT population FROM world WHERE name = 'Germany'",
     },
     {
         description:
-            "Aufgabe 2: Überprüfung einer Liste: Das Wort IN ermöglicht es uns zu überprüfen, ob ein Element in einer " +
+            "Aufgabe 2: Überprüfung einer Liste: Das Wort IN ermöglicht es zu überprüfen, ob ein Element in einer " +
             "Liste vorhanden ist. Das folgende Beispiel zeigt den Namen und die Bevölkerung für die Länder Brasilien, " +
-            "Russland, Indien und China. Zeigen Sie den Namen und die Bevölkerung für Schweden, Norwegen und " +
+            "Russland, Indien und China. Zeige den Namen und die Bevölkerung für Schweden, Norwegen und " +
             "Dänemark ('Sweden', 'Norway' und 'Denmark') an.",
         defaultQuery:
             "SELECT name, population FROM world WHERE name IN ('Brazil', 'Russia', 'India', 'China');",
@@ -44,10 +44,10 @@ export const basicsTasks = [
     },
     {
         description:
-            "Aufgabe 3: Welche Länder sind weder zu klein noch zu groß? Mittels BETWEEN lässt sich Bereichsprüfung " +
-            "durchführen (der angegebene Bereich schließt die Grenzwerte mit ein). Das folgende Beispiel zeigt " +
-            "Länder mit einer Fläche von 250.000-300.000 km². Passen Sie es an, um das Land und die Fläche für " +
-            "Länder mit einer Fläche zwischen 200.000 und 250.000 km² zu zeigen.",
+            "Aufgabe 3: Welche Länder sind weder zu klein noch zu groß? Mittels BETWEEN lässt sich eine " +
+            "Bereichsprüfung durchführen (der angegebene Bereich schließt die Grenzwerte mit ein). Das folgende " +
+            "Beispiel zeigt Länder mit einer Fläche von 250.000-300.000 km². Passe es an, um das Land und die " +
+            "Fläche für Länder mit einer Fläche von 200.000-250.000 km² zu zeigen.",
         defaultQuery:
             "SELECT name, area FROM world WHERE area BETWEEN 250000 AND 300000",
         solution:
@@ -57,60 +57,63 @@ export const basicsTasks = [
 export const namesTasks = [
     {
         description:
-            "Aufgabe 1: Du kannst WHERE name LIKE 'B%' verwenden, um die Länder zu finden, die mit 'B' beginnen. " +
-            "Das % ist ein Platzhalter, der zu beliebigen Zeichen passen kann. Finde das Land, das mit Y beginnt.",
+            "Aufgabe 1: Die Bedingung name LIKE 'B%' kann in der WHERE-Klausel verwendet werden, um die Länder " +
+            "zu finden, deren Name mit 'B' beginnt. Das %-Zeichen ist ein Platzhalter, der zu beliebigen Zeichen " +
+            "passt. Finde die Namen aller Länder, die mit 'Y' beginnen.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE 'F%'",
         solution: "SELECT name FROM world WHERE name LIKE 'Y%';",
     },
     {
-        description: "Aufgabe 2: Finde die Länder, die mit Y enden.",
+        description: "Aufgabe 2: Finde die Namen aller Länder, die mit 'y' enden.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE 'T%'",
-        solution: "SELECT name FROM world WHERE name LIKE '%Y';",
+        solution: "SELECT name FROM world WHERE name LIKE '%y';",
     },
     {
         description:
-            "Aufgabe 3: Luxemburg hat ein x - ebenso wie ein anderes Land. Liste beide auf. Finde die Länder, die " +
+            "Aufgabe 3: Luxemburg enthält ein x - ebenso wie ein anderes Land. Finde die Namen aller Länder, die " +
             "den Buchstaben x enthalten.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE 'T%'",
         solution: "SELECT name FROM world WHERE name LIKE '%x%';",
     },
     {
         description:
-            "Aufgabe 4: Iceland, Switzerland enden mit 'land' - aber gibt es noch andere? Finde die Länder, die " +
-            "mit 'land' enden.",
+            "Aufgabe 4: Island ('Iceland') und die Schweiz ('Switzerland') enden beide mit 'land' - aber gibt es " +
+            "noch andere Länder? Finde die Namen aller Länder, die mit 'land' enden.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE 'T%'",
         solution: "SELECT name FROM world WHERE name LIKE '%land';",
     },
     {
         description:
-            "Aufgabe 5: Columbia beginnt mit einem C und endet mit ia - es gibt zwei weitere Länder wie dieses. " +
-            "Finde die Länder, die mit C beginnen und mit ia enden.",
+            "Aufgabe 5: Kolumbien ('Columbia') beginnt mit einem 'C' und endet mit 'ia' - es gibt zwei weitere " +
+            "Länder, deren Name diesem Muster entspricht. Finde diese Länder.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE 'T%'",
         solution: "SELECT name FROM world WHERE name LIKE 'C%ia';",
     },
     {
         description:
-            "Aufgabe 6: Greece hat ein doppeltes e - wer hat ein doppeltes o? Finde das Land, das oo im Namen hat.",
+            "Aufgabe 6: Griechenland ('Greece') enthält ein doopeltes 'e' im Namen - welche Länder haben ein " +
+            "doppeltes 'o' im Namen? Finde diese Länder.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE '%ee%'",
         solution: "SELECT name FROM world WHERE name LIKE '%oo%';",
     },
     {
         description:
-            "Aufgabe 7: Die Bahamas haben drei a - wer noch? Finde die Länder, die drei oder mehr a im Namen haben.",
+            "Aufgabe 7: Bahamas enthält drei 'a'. Finde die Länder, deren Name drei oder mehr 'a' im Namen haben.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE 'T%'",
         solution: "SELECT name FROM world WHERE name LIKE '%a%a%a%';",
     },
     {
         description:
-            "Aufgabe 8: India und Angola haben ein 'n' als zweites Zeichen. Du kannst den Unterstrich als " +
-            "Platzhalter für ein einzelnes Zeichen verwenden.",
+            "Aufgabe 8: Indien ('India') und Angola haben beide ein 'n' als zweites Zeichen. Der Unterstrich ('_') " +
+            "wird als Platzhalter für ein einzelnes Zeichen verwenden. Gib die Namen aller Länder aus, deren zweiter " +
+            "Buchstabe ein 't' ist.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE '_n%' ORDER BY name",
         solution: "SELECT name FROM world WHERE name LIKE '_t%' ORDER BY name;",
     },
     {
         description:
-            "Aufgabe 9: Lesotho und Moldowa haben beide zwei 'o'-Zeichen, die von zwei anderen Zeichen getrennt " +
-            "sind. Finde die Länder, die zwei 'o'-Zeichen haben, die von zwei anderen Zeichen getrennt sind.",
+            "Aufgabe 9: Lesotho und Moldawien ('Moldowa') haben beide zwei 'o'-Zeichen, die von genau zwei anderen " +
+            "Buchstaben getrennt sind. Finde die Namen aller Länder mit diesem Muster.",
         defaultQuery: "SELECT name FROM world WHERE name LIKE '_n%'",
         solution: "SELECT name FROM world WHERE name LIKE '%o__o%';",
     },
@@ -132,24 +135,24 @@ export const namesTasks = [
     },
     {
         description:
-            "Aufgabe 12:  Die Hauptstadt von Mexiko ist Mexiko City. Zeige alle Länder, in denen die Hauptstadt " +
-            "den Namen des Landes zusammen mit dem Wort 'City' enthält. Finde das Land, in dem die " +
-            "Hauptstadt (capital) den Namen des Landes zusammen mit 'City' enthält.",
+            "Aufgabe 12:  Die Hauptstadt von Mexiko ('Mexico') ist Mexiko City ('Mexico City'). Zeige die Namen " +
+            "aller Länder, in denen der Name der Hauptstadt aus dem Namen des Landes plus dem Wort 'City' besteht.",
         defaultQuery:
             "SELECT name, concat(name, 'town') FROM world WHERE name LIKE '%ina%'",
         solution: "SELECT name FROM world WHERE capital = CONCAT(name, ' City');",
     },
     {
         description:
-            "Aufgabe 13:  Finde die Hauptstadt und den Namen, bei denen die Hauptstadt den Namen des Landes enthält.",
+            "Aufgabe 13:  Finde die Hauptstädte und die Namen der Länder, bei denen die Hauptstadt den Namen des " +
+            "Landes enthält.",
         defaultQuery: "",
         solution:
             "SELECT capital, name FROM world WHERE capital LIKE CONCAT('%', name, '%');",
     },
     {
         description:
-            "Aufgabe 14:  Finde die Hauptstadt und den Namen, bei denen die Hauptstadt eine Erweiterung des " +
-            "Landesnamens ist. Du solltest Mexico City einschließen, da es länger ist als Mexico. Du solltest " +
+            "Aufgabe 14:  Finde die Hauptstädte und die Namen der Länder, bei denen die Hauptstadt eine Erweiterung " +
+            "des Landesnamens ist. Du solltest Mexico City einschließen, da es länger ist als Mexico. Du solltest " +
             "Luxemburg nicht einschließen, da die Hauptstadt denselben Namen wie das Land hat.",
         defaultQuery: "",
         solution:
@@ -158,8 +161,9 @@ export const namesTasks = [
     {
         description:
             "Aufgabe 15:  Die Hauptstadt von Monaco ist Monaco-Ville: Dies ist der Name Monaco und die " +
-            "Erweiterung ist -Ville. Zeige den Namen und die Erweiterung, bei denen die Hauptstadt eine richtige " +
-            "(nicht leere) Erweiterung des Landesnamens ist. Du kannst die SQL-Funktion REPLACE verwenden.",
+            "Erweiterung ist '-Ville'. Zeige den Namen und die Erweiterung, bei denen die Hauptstadt eine richtige " +
+            "(nicht leere) Erweiterung des Landesnamens ist. Die SQL-Funktionen LENGTH, REPLACE oder SUBSTRING " +
+            "könnten dafür nützlich sein.",
         defaultQuery: "",
         solution:
             "SELECT name, SUBSTRING(capital, LENGTH(name) + 1, LENGTH(capital)) as ext FROM world " +
@@ -170,20 +174,20 @@ export const namesTasks = [
 export const selectfromworldTasks = [
     {
         description:
-            "Aufgabe 1: Beobachten Sie das Ergebnis der Ausführung dieses SQL-Befehls, um den Namen, den Kontinent " +
+            "Aufgabe 1: Beobachte das Ergebnis der Ausführung dieses SQL-Befehls, um den Namen, den Kontinent " +
             "und die Bevölkerung aller Länder anzuzeigen.",
         defaultQuery: "SELECT name, continent, population FROM world",
         solution: "SELECT name, continent, population FROM world",
     },
     {
         description:
-            "Aufgabe 2: Zeigen Sie den Namen der Länder an, die eine Bevölkerung von mindestens 200 Millionen haben.",
+            "Aufgabe 2: Zeige den Namen der Länder an, die eine Bevölkerung von mindestens 200 Millionen haben.",
         defaultQuery: "SELECT name FROM world WHERE population = 64105700",
         solution: "SELECT name FROM world WHERE population >= 200000000;",
     },
     {
         description:
-            "Aufgabe 3: Geben Sie den Namen und das Pro-Kopf-BIP (per capita GDP) der Länder mit einer Bevölkerung " +
+            "Aufgabe 3: Gib den Namen und das Pro-Kopf-BIP (per capita GDP) der Länder mit einer Bevölkerung " +
             "von mindestens 200 Millionen an.",
         defaultQuery: "",
         solution:
@@ -192,7 +196,7 @@ export const selectfromworldTasks = [
     {
         description:
             "Aufgabe 4: Zeigt den Namen und die Bevölkerungszahl in Millionen für die Länder des Kontinents " +
-            "„South America“ an. Teilen Sie die Bevölkerung durch 1000000, um die Bevölkerung in Millionen " +
+            "„South America“ an. Teile die Bevölkerung durch 1000000, um die Bevölkerung in Millionen " +
             "zu erhalten.",
         defaultQuery: "",
         solution:
@@ -200,7 +204,7 @@ export const selectfromworldTasks = [
     },
     {
         description:
-            "Aufgabe 5: Zeigen Sie den Namen und die Bevölkerungsanzahl für Frankreich, Deutschland und Italien " +
+            "Aufgabe 5: Zeige den Namen und die Bevölkerungsanzahl für Frankreich, Deutschland und Italien " +
             "(France, Germany, Italy) an.",
         defaultQuery: "",
         solution:
@@ -208,15 +212,15 @@ export const selectfromworldTasks = [
     },
     {
         description:
-            "Aufgabe 6: Zeigt die Länder an, deren Namen das Wort „United“ enthalten.",
+            "Aufgabe 6: Zeige die Namen der Länder an, die das Wort „United“ enthalten.",
         defaultQuery: "",
         solution: "SELECT name FROM world WHERE name LIKE 'United%';",
     },
     {
         description:
             "Aufgabe 7: Zwei Möglichkeiten, groß zu sein: Ein Land ist groß, wenn es eine Fläche von mehr als " +
-            "3 Millionen Quadratkilometern hat oder eine Bevölkerung von mehr als 250 Millionen hat. Zeigen Sie " +
-            "die Länder an, die flächenmäßig oder bevölkerungsmäßig groß sind. Gebe Name, Bevölkerungsanzahl und " +
+            "3 Millionen Quadratkilometern hat oder eine Bevölkerung von mehr als 250 Millionen hat. Zeige " +
+            "die Länder an, die flächenmäßig oder bevölkerungsmäßig groß sind. Gib Name, Bevölkerungsanzahl und " +
             "Fläche (area) aus.",
         defaultQuery: "",
         solution:
@@ -224,7 +228,7 @@ export const selectfromworldTasks = [
     },
     {
         description:
-            "Aufgabe 8: Exklusives ODER (XOR not existing in PostgreSQL). Zeigen Sie die Länder an, die " +
+            "Aufgabe 8: Exklusives ODER: Zeige die Länder an, die " +
             "flächenmäßig groß (mehr als 3 Millionen) oder bevölkerungsreich (mehr als 250 Millionen) sind, aber " +
             "nicht beides. Gebe Name, Bevölkerungsanzahl und Gebiet (area) aus.",
         defaultQuery: "",
@@ -234,18 +238,18 @@ export const selectfromworldTasks = [
     },
     {
         description:
-            "Aufgabe 9: Zeigen Sie den Namen und die Bevölkerung in Millionen sowie das GDP in Milliarden für die " +
-            "Länder des Kontinents „South America“ an. Verwenden Sie die ROUND-Funktion, um die Werte mit " +
-            "zwei Dezimalstellen anzuzeigen.",
+            "Aufgabe 9: Zeige den Namen und die Bevölkerung in Millionen sowie das GDP in Milliarden für die " +
+            "Länder des Kontinents „South America“ an. Verwende die ROUND-Funktion, um die Werte mit " +
+            "zwei Dezimalstellen anzuzeigen. Nenne die Spalten im Ergebnis entsprechend der erwarteten Ausgabe um.",
         defaultQuery: "",
         solution:
-            "SELECT name, ROUND(population / 1000000, 2), ROUND(gdp / 1000000000, 2) FROM world " +
-            "WHERE continent = 'South America';",
+            "SELECT name, ROUND(population / 1000000, 2) AS pop_mil, ROUND(gdp / 1000000000, 2) AS gdp_bil " +
+            "FROM world WHERE continent = 'South America';",
     },
     {
         description:
-            "Aufgabe 10: Zeigen Sie den Namen und das GDP der Länder mit einem GDP von mindestens einer Billion an. " +
-            "Runden Sie diesen Wert auf die nächste 1000.",
+            "Aufgabe 10: Zeige den Namen und das GDP der Länder mit einem GDP von mindestens einer Billion an. " +
+            "Runde diesen Wert auf die nächste 1000. Achte auf die Spaltennamen im erwarteten Ergebnis.",
         defaultQuery: "",
         solution:
             "SELECT name, ROUND(gdp / population, -3) as per_capita_gdp FROM world WHERE gdp >= 1000000000000;",
@@ -253,8 +257,8 @@ export const selectfromworldTasks = [
     {
         description:
             "Aufgabe 11: Griechenland (Greece) hat die Hauptstadt Athen (Athens). Jede der Zeichenfolgen " +
-            "„Greece“ und „Athens“ besteht aus 6 Zeichen. Zeigen Sie den Namen und die Hauptstadt an, wenn " +
-            "der Name und die Hauptstadt die gleiche Anzahl an Zeichen haben. Mit der LENGTH-Funktion können Sie " +
+            "'Greece' und 'Athens' besteht aus 6 Zeichen. Zeige den Namen und die Hauptstadt an, wenn " +
+            "der Name und die Hauptstadt die gleiche Anzahl an Zeichen haben. Mit der LENGTH-Funktion kann man " +
             "die Anzahl der Zeichen in einer Zeichenfolge ermitteln",
         defaultQuery: "",
         solution:
@@ -263,20 +267,19 @@ export const selectfromworldTasks = [
     {
         description:
             "Aufgabe 12: Die Hauptstadt Schwedens ist Stockholm. Beide Wörter beginnen mit dem Buchstaben „S“. " +
-            "Zeigen Sie den Namen und die Hauptstadt an, wobei die Anfangsbuchstaben jedes Eintrags übereinstimmen. " +
-            "Schließen Sie keine Länder ein, in denen Name und Hauptstadt dasselbe Wort sind. Mit der Funktion " +
-            "LEFT können Sie das erste Zeichen isolieren. Sie können <> als NOT EQUALS-Operator verwenden.",
+            "Zeige den Namen und die Hauptstadt an, wobei die Anfangsbuchstaben jedes Eintrags übereinstimmen. " +
+            "Schließe keine Länder ein, in denen Name und Hauptstadt gleich sind. Mit der Funktion " +
+            "LEFT kann man das erste Zeichen isolieren. Verwende <> als NOT EQUALS-Operator für die Ungleichheit.",
         defaultQuery: "",
         solution:
             "SELECT name, capital FROM world WHERE LEFT(name, 1) = LEFT(capital, 1) AND name <> capital;",
     },
     {
         description:
-            "Aufgabe 13: Equatorial Guinea und Dominican Republic haben alle Vokale (a e i o u) im Namen. " +
-            "Sie zählen nicht, weil ihr Name mehr als ein Wort enthält. Finden Sie das Land, dessen Name alle " +
-            "Vokale und keine Leerzeichen enthält. Sie können die Phrase name NOT LIKE '%a%' verwenden, um Zeichen " +
-            "aus Ihren Ergebnissen auszuschließen. In der angezeigten Beispielabfrage werden Länder wie die " +
-            "Bahamas und Belarus nicht berücksichtigt, da sie mindestens ein „a“ enthalten.",
+            "Aufgabe 13: Äquatorialguinea ('Equatorial Guinea') und die Dominikanische Republik ('Dominican Republic')" +
+            " haben alle Vokale (a e i o u) im Namen. Finde die Länder, deren Namen alle Vokale, aber keine " +
+            "Leerzeichen enthält (die beiden Beispiele zählen nicht, weil ihr Name mehr als ein Wort enthält.). " +
+            "Die Phrase name NOT LIKE '...' kann verwendet werden, um Tupel aus den Ergebnissen auszuschließen.",
         defaultQuery:
             "SELECT name FROM world WHERE name LIKE 'B%' AND name NOT LIKE '%a%'",
         solution:
@@ -287,7 +290,7 @@ export const selectfromworldTasks = [
 export const selectwithinselectTasks = [
     {
         description:
-            "Aufgabe 1: Listen Sie jeden Ländernamen auf, dessen Bevölkerung größer ist als die von „Russia“.",
+            "Aufgabe 1: Liste den Namen jedes Landes auf, dessen Bevölkerung größer ist als die von Russland ('Russia').",
         defaultQuery:
             "SELECT name FROM world WHERE population > (SELECT population FROM world WHERE name='Romania')",
         solution:
@@ -295,7 +298,7 @@ export const selectwithinselectTasks = [
     },
     {
         description:
-            "Aufgabe 2: Zeigen Sie die Länder in Europa an, deren Bruttoinlandsprodukt (engl. gross domestic " +
+            "Aufgabe 2: Zeige die Länder in Europa an, deren Bruttoinlandsprodukt (engl. gross domestic " +
             "product, gdp) pro Kopf größer ist als „United Kingdom“.",
         defaultQuery: "",
         solution:
@@ -304,7 +307,7 @@ export const selectwithinselectTasks = [
     },
     {
         description:
-            "Aufgabe 3: Listen Sie den Namen und den Kontinent der Länder auf, die auf dem gleichen Kontinent wie " +
+            "Aufgabe 3: Liste den Namen und den Kontinent der Länder auf, die auf dem gleichen Kontinent wie " +
             "Argentinien ('Argentina') oder Australien ('Australia') liegen. Sortierung nach Ländernamen.",
         defaultQuery: "",
         solution:
@@ -314,7 +317,7 @@ export const selectwithinselectTasks = [
     {
         description:
             "Aufgabe 4: Welches Land hat mehr Einwohner als Kanada ('Canada'), aber weniger als Polen ('Poland')? " +
-            "Zeigen Sie den Namen und die Bevölkerungsanzahl an.",
+            "Zeige den Namen und die Bevölkerungsanzahl an.",
         defaultQuery: "",
         solution:
             "SELECT name, population FROM world WHERE population > " +
@@ -325,7 +328,7 @@ export const selectwithinselectTasks = [
         description:
             "Aufgabe 5: Deutschland (ca. 80 Millionen Einwohner) ist das bevölkerungsreichste Land Europas. " +
             "In Österreich (8,5 Millionen Einwohner) leben bspw. nur 11 % der Bevölkerung Deutschlands. " +
-            "Zeigen Sie den Namen und die Bevölkerung jedes Landes in Europa ('Europe') an sowie die Bevölkerung " +
+            "Zeige den Namen und die Bevölkerung jedes Landes in Europa ('Europe') an sowie die Bevölkerung " +
             "als Prozentsatz (gerundet ohne Nachkommastellen und mit angefügtem '%' Zeichen) " +
             "der Bevölkerung Deutschlands an.",
         defaultQuery: "",
@@ -336,14 +339,14 @@ export const selectwithinselectTasks = [
     {
         description:
             "Aufgabe 6: Welche Länder haben ein höheres GDP als jedes andere Land in Europa? " +
-            "[Geben Sie nur den Namen an.] (Einige Länder haben möglicherweise NULL-Werte für GDP.)",
+            "(Einige Länder haben möglicherweise NULL-Werte für GDP.)",
         defaultQuery: "",
         solution:
             "SELECT name FROM world WHERE gdp > ALL(SELECT gdp FROM world WHERE (continent = 'Europe') AND (gdp > 0));",
     },
     {
         description:
-            "Aufgabe 7: Finden Sie das flächenmäßig größte Land auf jedem Kontinent und zeigen Sie den Kontinent, " +
+            "Aufgabe 7: Finde das flächenmäßig größte Land auf jedem Kontinent und zeige den Kontinent, " +
             "den Namen und die Fläche an: Das Beispiel wird als korrelierte oder synchronisierte Unterabfrage " +
             "bezeichnet. (Achtung: NULL-Werte könnten wieder das Ergebnis der Anfrage beeinflussen)",
         defaultQuery:
@@ -355,15 +358,15 @@ export const selectwithinselectTasks = [
     },
     {
         description:
-            "Aufgabe 8: Listen Sie jeden Kontinent und den Namen des jeweiligen Landes auf, das alphabetisch " +
-            "auf diesem Kontinent an erster Stelle steht.",
+            "Aufgabe 8: Liste jeden Kontinent und den Namen des jeweiligen Landes auf, das alphabetisch " +
+            "auf diesem Kontinent an erster Stelle steht. Beachte die Spaltennamen des Ergebnisses.",
         defaultQuery: "",
         solution: "SELECT continent, MIN(name) AS name FROM world GROUP BY continent;",
     },
     {
         description:
-            "Aufgabe 9: Suchen Sie die Kontinente, auf denen alle Länder eine Bevölkerung von <= 25000000 haben. " +
-            "Suchen Sie dann die Namen der Länder, die diesen Kontinenten zugeordnet sind. Geben Sie Name, " +
+            "Aufgabe 9: Suche die Kontinente, auf denen alle Länder eine Bevölkerung von <= 25000000 haben. " +
+            "Suche dann die Namen der Länder, die diesen Kontinenten zugeordnet sind. Gib Name, " +
             "Kontinent und Bevölkerung aus.",
         defaultQuery: "",
         solution:
@@ -373,7 +376,7 @@ export const selectwithinselectTasks = [
     {
         description:
             "Aufgabe 10: In manchen Ländern leben mehr als dreimal so viele Menschen im Vergleich zu jedem anderen " +
-            "Land auf dem gleichen Kontinent. Geben Sie die Länder und Kontinente an.",
+            "Land auf dem gleichen Kontinent. Gib die Länder und Kontinente an.",
         defaultQuery: "",
         solution:
             "SELECT name, continent FROM world AS x WHERE population > ALL " +
@@ -383,18 +386,18 @@ export const selectwithinselectTasks = [
 export const sumandcountTasks = [
     {
         description:
-            "Aufgabe 1: Zeigen Sie die Gesamtbevölkerungsanzahl der Welt an.",
+            "Aufgabe 1: Zeige die Gesamtbevölkerungsanzahl der Welt an.",
         defaultQuery: "SELECT COUNT(*) FROM world",
         solution: "SELECT SUM(population) FROM world;",
     },
     {
         description:
-            "Aufgabe 2: Listen Sie alle Kontinente auf – jeweils nur einmal.",
+            "Aufgabe 2: Liste alle Kontinente auf – jeweils nur einmal.",
         defaultQuery: "",
         solution: "SELECT DISTINCT continent FROM world;",
     },
     {
-        description: "Aufgabe 3: Geben Sie das gesamte Bruttoinlangsprodukt (GDP) Afrikas an.",
+        description: "Aufgabe 3: Gib das gesamte Bruttoinlandsprodukt (GDP) Afrikas an.",
         defaultQuery: "",
         solution: "SELECT SUM(gdp) FROM world WHERE continent = 'Africa';",
     },
@@ -413,13 +416,13 @@ export const sumandcountTasks = [
     },
     {
         description:
-            "Aufgabe 6: Zeigen Sie für jeden Kontinent den Namen des Kontinent und die Anzahl der Länder an.",
+            "Aufgabe 6: Zeige für jeden Kontinent den Namen des Kontinent und die Anzahl der Länder an.",
         defaultQuery: "",
         solution: "SELECT continent, COUNT(name) FROM world GROUP BY continent;",
     },
     {
         description:
-            "Aufgabe 7: Geben Sie für jeden Kontinent den Namen des Kontinent und die Anzahl der Länder mit einer " +
+            "Aufgabe 7: Gib für jeden Kontinent den Namen des Kontinent und die Anzahl der Länder mit einer " +
             "Bevölkerung von mindestens 10 Millionen an.",
         defaultQuery: "",
         solution:
@@ -427,7 +430,7 @@ export const sumandcountTasks = [
     },
     {
         description:
-            "Aufgabe 8: Listen Sie die Kontinente auf, die eine Gesamtbevölkerung von mindestens 100 Millionen haben.",
+            "Aufgabe 8: Liste die Kontinente auf, die eine Gesamtbevölkerung von mindestens 100 Millionen haben.",
         defaultQuery: "",
         solution:
             "SELECT continent FROM world GROUP BY continent HAVING SUM(population) >= 100000000;",
@@ -492,7 +495,7 @@ export const selectquizQuestions = [
     {
         id: 2,
         question:
-            "Wählen Sie das Ergebnis aus, das Sie mit diesem Code erhalten würden: ",
+            "Wähle das Ergebnis aus, das man mit diesem Code erhalten würden: ",
         imageUrl: 'SELECT name, population FROM world WHERE name LIKE "Al%"',
         options: [
             {
@@ -596,7 +599,7 @@ export const selectquizQuestions = [
     {
         id: 3,
         question:
-            "Wählen Sie den Code aus, der die Länder anzeigt, die auf A oder L enden",
+            "Wähle den Code aus, der die Länder anzeigt, die auf 'a' oder 'l' enden",
         imageUrl: "",
         options: [
             {
@@ -630,7 +633,7 @@ export const selectquizQuestions = [
     {
         id: 4,
         question:
-            "Wählen Sie das Ergebnis aus, das Sie mit diesem Code erhalten würden: ",
+            "Wähle das Ergebnis aus, das mit diesem Code erhalten würden: ",
         imageUrl:
             "SELECT name,length(name) FROM world WHERE length(name)=5 and region='Europe'",
         options: [
@@ -780,10 +783,11 @@ export const selectquizQuestions = [
     {
         id: 5,
         question:
-            "Wählen Sie das Ergebnis aus, das Sie mit diesem Code erhalten würden: SELECT name, area*2 FROM world WHERE population = 64000 ",
+            "Wähle das Ergebnis aus, das mit diesem Code erhalten würden: " +
+            "SELECT name, area*2 FROM world WHERE population = 64000 ",
         imageUrl: (
             <div>
-                <p>Betrachten Sie dabei die folgende Tabelle:</p>
+                <p>Betrachte dabei die folgende Tabelle:</p>
                 <table
                     style={{borderCollapse: "collapse", border: "1px solid black"}}
                 >
@@ -923,7 +927,8 @@ export const selectquizQuestions = [
     {
         id: 6,
         question:
-            "Wählen Sie den Code aus, der die Länder mit einer Fläche (area) von mehr als 50.000 und einer Bevölkerung von weniger als 1.000.000 anzeigt",
+            "Wähle den Code aus, der die Länder mit einer Fläche (area) von mehr als 50.000 und einer " +
+            "Bevölkerung von weniger als 1.000.000 anzeigt",
         imageUrl: "",
         options: [
             {
@@ -957,7 +962,7 @@ export const selectquizQuestions = [
     {
         id: 7,
         question:
-            "Wählen Sie den Code aus, der die Bevölkerungsdichte von China, Australia, Nigeria und France anzeigt",
+            "Wähle den Code aus, der die Bevölkerungsdichte von China, Australia, Nigeria und France anzeigt",
         imageUrl: "",
         options: [
             {
@@ -994,7 +999,7 @@ export const BBCquizQuestions = [
     {
         id: 1,
         question:
-            "Wählen Sie den Code aus, der die Namen der Länder angibt, die mit U beginnen",
+            "Wähle den Code aus, der die Namen der Länder angibt, die mit 'U' beginnen",
         imageUrl: "",
         options: [
             {
@@ -1028,7 +1033,8 @@ export const BBCquizQuestions = [
     {
         id: 2,
         question:
-            "Wählen Sie den Code aus, der nur die Bevölkerungsanzahl (population) des Vereinigten Königreichs (United Kingdom) anzeigt?",
+            "Wähle den Code aus, der nur die Bevölkerungsanzahl (population) des Vereinigten Königreichs " +
+            "(United Kingdom) anzeigt?",
         imageUrl: "",
         options: [
             {
@@ -1062,7 +1068,8 @@ export const BBCquizQuestions = [
     {
         id: 3,
         question:
-            "Wählen Sie die Antwort aus, die das Problem mit diesem SQL-Code zeigt – das gewünschte Ergebnis sollte der Kontinent Frankreichs (France) sein:",
+            "Wähle die Antwort aus, die das Problem mit diesem SQL-Code zeigt – das gewünschte Ergebnis sollte " +
+            "der Kontinent sein, auf dem das Land Frankreich (France) liegt:",
         imageUrl: "SELECT continent FROM world WHERE 'name' = 'France'",
         options: [
             {
@@ -1096,10 +1103,11 @@ export const BBCquizQuestions = [
     {
         id: 4,
         question:
-            "Wählen Sie das Ergebnis aus, das man mit dem folgenden Code erhalten würde: SELECT name, population / 10  FROM world WHERE population < 10000",
+            "Wähle das Ergebnis aus, das man mit dem folgenden Code erhalten würde: " +
+            "SELECT name, population / 10  FROM world WHERE population < 10000",
         imageUrl: (
             <div>
-                <p>Betrachten Sie dabei die folgende Tabelle:</p>
+                <p>Betrachte dabei die folgende Tabelle:</p>
                 <table
                     style={{borderCollapse: "collapse", border: "1px solid black"}}
                 >
@@ -1278,7 +1286,8 @@ export const BBCquizQuestions = [
     {
         id: 5,
         question:
-            "Wählen Sie den Code aus, der den Namen (name) und die Bevölkerung (population) von Ländern in Europa (Europe) und Asien (Asia) anzeigt",
+            "Wähle den Code aus, der den Namen (name) und die Bevölkerung (population) von Ländern in " +
+            "Europa (Europe) und Asien (Asia) anzeigt",
         imageUrl: "",
         options: [
             {
@@ -1311,7 +1320,7 @@ export const BBCquizQuestions = [
     },
     {
         id: 6,
-        question: "Wählen Sie den Code aus, der zwei Zeilen ergeben würde",
+        question: "Wähle den Code aus, der zwei Zeilen ergeben würde",
         imageUrl: "",
         options: [
             {
@@ -1345,10 +1354,11 @@ export const BBCquizQuestions = [
     {
         id: 7,
         question:
-            "Wählen Sie das Ergebnis aus, das man mit diesem Code erhalten würde: SELECT name FROM world WHERE continent = 'South America' AND population > 40000000",
+            "Wähle das Ergebnis aus, das man mit diesem Code erhalten würde: " +
+            "SELECT name FROM world WHERE continent = 'South America' AND population > 40000000",
         imageUrl: (
             <div>
-                <p>Betrachten Sie dabei die folgende Tabelle:</p>
+                <p>Betrachte dabei die folgende Tabelle:</p>
                 <table
                     style={{borderCollapse: "collapse", border: "1px solid black"}}
                 >
@@ -1535,7 +1545,8 @@ export const nestedselectquizQuestions = [
     {
         id: 1,
         question:
-            "Wählen Sie den Code aus, der den Namen, die Region und die Bevölkerung des kleinsten Landes in jeder Region anzeigt",
+            "Wähle den Code aus, der den Namen, die Region und die Bevölkerung des kleinsten Landes " +
+            "in jeder Region anzeigt",
         imageUrl: "",
         options: [
             {
@@ -1570,7 +1581,8 @@ export const nestedselectquizQuestions = [
     {
         id: 2,
         question:
-            "Wählen Sie den Code aus, der die Länder anzeigt, die zu Regionen mit einer Gesamtbevölkerung von über 50.000 gehören",
+            "Wähle den Code aus, der die Länder anzeigt, die zu Regionen mit einer Gesamtbevölkerung von " +
+            "über 50.000 gehören",
         imageUrl: "",
         options: [
             {
@@ -1604,7 +1616,8 @@ export const nestedselectquizQuestions = [
     {
         id: 3,
         question:
-            "Wählen Sie den Code aus, der die Länder anzeigt, in denen weniger als ein Drittel der Bevölkerung der umliegenden Länder leben",
+            "Wähle den Code aus, der die Länder anzeigt, in denen weniger als ein Drittel der Bevölkerung der " +
+            "umliegenden Länder (in der gleichen Region) leben",
         imageUrl: "",
         options: [
             {
@@ -1641,7 +1654,7 @@ export const nestedselectquizQuestions = [
     {
         id: 4,
         question:
-            "Wählen Sie das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
+            "Wähle das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
         imageUrl:
             "SELECT name FROM bbc WHERE population > (SELECT population FROM bbc WHERE name='United Kingdom') AND region IN (SELECT region FROM bbc WHERE name = 'United Kingdom')",
         options: [
@@ -1786,7 +1799,8 @@ export const nestedselectquizQuestions = [
     {
         id: 5,
         question:
-            "Wählen Sie den Code aus, der die Länder mit einem höheren BIP (GDP) als jedes andere Land in Afrika anzeigt (einige Länder haben möglicherweise NULL-BIP-Werte).",
+            "Wähle den Code aus, der die Länder mit einem höheren BIP (GDP) als jedes andere Land in Afrika anzeigt " +
+            "(einige Länder haben möglicherweise NULL-BIP-Werte).",
         imageUrl: "",
         options: [
             {
@@ -1820,7 +1834,8 @@ export const nestedselectquizQuestions = [
     {
         id: 6,
         question:
-            "Wählen Sie den Code aus, der die Länder anzeigt, deren Bevölkerung kleiner als Russland, aber größer als Dänemark ist",
+            "Wähle den Code aus, der die Länder anzeigt, deren Bevölkerung kleiner als Russland, aber " +
+            "größer als Dänemark ist",
         imageUrl: "",
         options: [
             {
@@ -1871,7 +1886,7 @@ export const nestedselectquizQuestions = [
     {
         id: 7,
         question:
-            "Wählen Sie das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
+            "Wähle das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
         imageUrl: `SELECT name
                    FROM bbc
                    WHERE population > ALL
@@ -2002,7 +2017,7 @@ export const sumandcountquizQuestions = [
     {
         id: 1,
         question:
-            "Wählen Sie den Code aus, der die Summe der Bevölkerung (population) aller Länder in „Europe“ anzeigt.",
+            "Wähle den Code aus, der die Summe der Bevölkerung (population) aller Länder in „Europe“ anzeigt.",
         imageUrl: "",
         options: [
             {
@@ -2043,7 +2058,7 @@ export const sumandcountquizQuestions = [
     {
         id: 2,
         question:
-            "Wählen Sie die Aussage aus, die die Anzahl der Länder mit einer Bevölkerung von weniger als 150.000 angibt",
+            "Wähle die Aussage aus, die die Anzahl der Länder mit einer Bevölkerung von weniger als 150.000 angibt",
         imageUrl: "",
         options: [
             {
@@ -2086,7 +2101,7 @@ export const sumandcountquizQuestions = [
     {
         id: 3,
         question:
-            "Wählen Sie die Liste der wichtigsten SQL-Aggregatfunktionen aus",
+            "Wähle die Liste der wichtigsten SQL-Aggregatfunktionen aus",
         imageUrl: "",
         options: [
             {
@@ -2120,7 +2135,7 @@ export const sumandcountquizQuestions = [
     {
         id: 4,
         question:
-            "Wählen Sie das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
+            "Wähle das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
         imageUrl:
             ` SELECT region, SUM(area)
               FROM bbc
@@ -2207,7 +2222,8 @@ export const sumandcountquizQuestions = [
     {
         id: 5,
         question:
-            "Wählen Sie die Aussage aus, die die durchschnittliche Bevölkerung von „Polen“ (Poland), „Deutschland“ (Germany) und „Dänemark“ (Denmark) angibt.",
+            "Wähle die Aussage aus, die die durchschnittliche Bevölkerung von Polen (Poland), Deutschland (Germany) " +
+            "und Dänemark (Denmark) angibt.",
         imageUrl: "",
         options: [
             {
@@ -2243,7 +2259,7 @@ export const sumandcountquizQuestions = [
     {
         id: 6,
         question:
-            "Wählen Sie die Aussage aus, die die mittlere Bevölkerungsdichte jeder Region angibt",
+            "Wähle die Aussage aus, die die mittlere Bevölkerungsdichte jeder Region angibt",
         imageUrl: "",
         options: [
             {
@@ -2286,7 +2302,8 @@ export const sumandcountquizQuestions = [
     {
         id: 7,
         question:
-            "Wählen Sie die Aussage aus, die den Namen und die Bevölkerungsdichte des Landes mit der größten Bevölkerung angibt",
+            "Wähle die Aussage aus, die den Namen und die Bevölkerungsdichte des Landes mit der " +
+            "größten Bevölkerung angibt",
         imageUrl: ``,
         options: [
             {
@@ -2330,7 +2347,7 @@ export const sumandcountquizQuestions = [
     {
         id: 8,
         question:
-            "Wählen Sie das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
+            "Wähle das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
         imageUrl:
             `  SELECT region, SUM(area)
                FROM bbc
