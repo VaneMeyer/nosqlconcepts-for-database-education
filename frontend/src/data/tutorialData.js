@@ -161,9 +161,9 @@ export const namesTasks = [
     {
         description:
             "Aufgabe 15:  Die Hauptstadt von Monaco ist Monaco-Ville: Dies ist der Name Monaco und die " +
-            "Erweiterung ist '-Ville'. Zeige den Namen und die Erweiterung, bei denen die Hauptstadt eine richtige " +
-            "(nicht leere) Erweiterung des Landesnamens ist. Die SQL-Funktionen LENGTH, REPLACE oder SUBSTRING " +
-            "könnten dafür nützlich sein.",
+            "Erweiterung ist '-Ville'. Zeige den Namen und die Erweiterung (Spaltenname 'ext'), bei denen die " +
+            "Hauptstadt eine richtige (nicht leere) Erweiterung des Landesnamens ist. Die SQL-Funktionen LENGTH, " +
+            "REPLACE oder SUBSTRING könnten dafür nützlich sein.",
         defaultQuery: "",
         solution:
             "SELECT name, SUBSTRING(capital, LENGTH(name) + 1, LENGTH(capital)) as ext FROM world " +
