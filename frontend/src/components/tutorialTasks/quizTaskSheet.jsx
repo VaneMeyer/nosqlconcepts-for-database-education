@@ -100,7 +100,7 @@ const QuizTaskSheet = ({ title, tasks }) => {
           <Button>Zurück zur Themenübersicht</Button>
         </Link>
         <hr />
-        {title === "nestedselectquiz" ? (
+        {title === "nestedselectquiz" && (
           <div>
             <p>Tabelle bbc </p>
             <table
@@ -164,7 +164,8 @@ const QuizTaskSheet = ({ title, tasks }) => {
               </tr>
             </table>
           </div>
-        ) : (
+        ) } 
+        {(title !== "nestedselectquiz" && title !== "joinquiz") && (
           <div>
             {" "}
             <p>Tabelle world </p>
@@ -209,6 +210,147 @@ const QuizTaskSheet = ({ title, tasks }) => {
             </table>
           </div>
         )}
+        {title === "joinquiz" && (<div><p>game </p>
+        <table
+          style={{ borderCollapse: "collapse", border: "1px solid black" }}
+        >
+          <tr>
+            <th style={{ border: "1px solid black" }}>id</th>
+            <th style={{ border: "1px solid black" }}>mdate</th>
+            <th style={{ border: "1px solid black" }}>stadium</th>
+            <th style={{ border: "1px solid black" }}>team1</th>
+            <th style={{ border: "1px solid black" }}>team2</th>
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1001</td>
+            <td style={{ border: "1px solid black" }}>	8 June 2012</td>
+            <td style={{ border: "1px solid black" }}>National Stadium, Warsaw</td>
+            <td style={{ border: "1px solid black" }}>POL</td>
+            <td style={{ border: "1px solid black" }}>GRE</td>
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1002</td>
+            <td style={{ border: "1px solid black" }}>8 June 2012</td>
+            <td style={{ border: "1px solid black" }}>Stadion Miejski (Wroclaw)</td>
+            <td style={{ border: "1px solid black" }}>RUS</td>
+            <td style={{ border: "1px solid black" }}>CZE</td>
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1003</td>
+            <td style={{ border: "1px solid black" }}>12 June 2012</td>
+            <td style={{ border: "1px solid black" }}>Stadion Miejski (Wroclaw)</td>
+            <td style={{ border: "1px solid black" }}>GRE</td>
+            <td style={{ border: "1px solid black" }}>CZE</td>
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1004</td>
+            <td style={{ border: "1px solid black" }}>12 June 2012</td>
+            <td style={{ border: "1px solid black" }}>National Stadium, Warsaw</td>
+            <td style={{ border: "1px solid black" }}>POL</td>
+            <td style={{ border: "1px solid black" }}>RUS</td>
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+          </tr>
+        </table>
+        <p>goal </p>
+        <table
+          style={{ borderCollapse: "collapse", border: "1px solid black" }}
+        >
+          <tr>
+            <th style={{ border: "1px solid black" }}>matchid</th>
+            <th style={{ border: "1px solid black" }}>teamid</th>
+            <th style={{ border: "1px solid black" }}>player</th>
+            <th style={{ border: "1px solid black" }}>gtime</th>
+           
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1001</td>
+            <td style={{ border: "1px solid black" }}>	POL</td>
+            <td style={{ border: "1px solid black" }}>Robert Lewandowski</td>
+            <td style={{ border: "1px solid black" }}>17</td>
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1001</td>
+            <td style={{ border: "1px solid black" }}>GRE</td>
+            <td style={{ border: "1px solid black" }}>Dimitris Salpingidis</td>
+            <td style={{ border: "1px solid black" }}>51</td>
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1002</td>
+            <td style={{ border: "1px solid black" }}>RUS</td>
+            <td style={{ border: "1px solid black" }}>Alan Dzagoev</td>
+            <td style={{ border: "1px solid black" }}>15</td>
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>1002</td>
+            <td style={{ border: "1px solid black" }}>RUS</td>
+            <td style={{ border: "1px solid black" }}>Roman Pavlyuchenko</td>
+            <td style={{ border: "1px solid black" }}>82</td>
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+           
+          </tr>
+        </table>
+        <p>eteam </p>
+        <table
+          style={{ borderCollapse: "collapse", border: "1px solid black" }}
+        >
+          <tr>
+            <th style={{ border: "1px solid black" }}>id</th>
+            <th style={{ border: "1px solid black" }}>teamname</th>
+            <th style={{ border: "1px solid black" }}>coach</th>
+           
+           
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>POL</td>
+            <td style={{ border: "1px solid black" }}>	Poland</td>
+            <td style={{ border: "1px solid black" }}>Franciszek Smuda</td>
+            
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>RUS</td>
+            <td style={{ border: "1px solid black" }}>Russia</td>
+            <td style={{ border: "1px solid black" }}>Dick Advocaat</td>
+            
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>CZE</td>
+            <td style={{ border: "1px solid black" }}>Czech Republic</td>
+            <td style={{ border: "1px solid black" }}>Michal Bilek</td>
+            
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>GRE</td>
+            <td style={{ border: "1px solid black" }}>Greece</td>
+            <td style={{ border: "1px solid black" }}>Fernando Santos</td>
+            
+            
+          </tr>
+          <tr>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+            <td style={{ border: "1px solid black" }}>...</td>
+           
+          </tr>
+        </table>
+        </div>)}
 
         {questions.map((quiz, index) => (
           <Box key={index}>
