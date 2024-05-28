@@ -7,12 +7,12 @@ import Dashboard from "./scenes/dashboard";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 
-
-
 import Tutorial from "./components/tutorial";
 
 import {
   BasicsC,
+  JoinOperationC,
+  MoreJoinOperationsC,
   SelectFromWorldC,
   SelectWithinSelectC,
   SumAndCountC,
@@ -23,6 +23,7 @@ import {
   BBCQuizC,
   NestedSelectQuizC,
   SumAndCountQuizC,
+  JoinQuizC,
 } from "./components/tutorialTasks/selectQuizMain";
 
 function App() {
@@ -64,14 +65,19 @@ function App() {
                 path="/tutorial/sumandcountquiz"
                 element={<SumAndCountQuizC />}
               />
-
+              <Route
+                path="/tutorial/joinoperation"
+                element={<JoinOperationC />}
+              />
+              <Route path="/tutorial/joinquiz" element={<JoinQuizC />} />
+              <Route path="/tutorial/morejoinoperations" element={<MoreJoinOperationsC />} />
               {/*
 
 
 
 <Route path="/tutorial/aggregatefunctions" element={<AggregateFunctionsC />} />
-<Route path="/tutorial/joinoperation" element={<JoinOperationC />} />
-<Route path="/tutorial/joinquiz" element={<JoinQuizC />} />
+
+
 <Route path="/tutorial/oldjoin" element={<OldJoinC />} />
 <Route path="/tutorial/morejoin" element={<MoreJoinC />} />
 <Route path="/tutorial/joinquiz2" element={<JoinQuiz2C />} />
@@ -80,7 +86,6 @@ function App() {
 <Route path="/tutorial/windowfunction" element={<WindowFunctionC />} />
 <Route path="/tutorial/selfjoin" element={<SelfJoinC />} />
 <Route path="/tutorial/selfjoinquiz" element={<SelfJoinQuizC />} /> */}
-            
             </Routes>{" "}
             {/* <Footer/> */}
           </main>
