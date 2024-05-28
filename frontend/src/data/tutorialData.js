@@ -699,24 +699,31 @@ export const joinoperationTasks = [
     FROM game JOIN goal ON matchid = id 
    WHERE (team1 = 'POL' OR team2 = 'POL')`,
     solution:
-      `SELECT goal.matchid, game.mdate, COUNT(goal.matchid)
-      FROM game
-      INNER JOIN goal
-      ON goal.matchid = game.id
-      WHERE game.team1 = 'POL' OR game.team2 = 'POL'
-      GROUP BY goal.matchid;`,
+      `SELECT
+      goal.matchid,
+      game.mdate,
+      COUNT(goal.matchid) AS total_goals
+    FROM game
+    INNER JOIN goal ON goal.matchid = game.id
+    WHERE game.team1 = 'POL' OR game.team2 = 'POL'
+    GROUP BY goal.matchid, game.mdate;
+    `,
   },
   {
     description:
       `12. Für jedes Spiel, in dem 'GER' ein Tor erzielt hat, zeige matchid, Spieldatum und die Anzahl der von 'GER' erzielten Tore.`,
     defaultQuery: ``,
     solution:
-      `SELECT goal.matchid, game.mdate, COUNT(goal.matchid) AS german_goals
-      FROM game
-      INNER JOIN goal
-      ON game.id = goal.matchid
-      WHERE goal.teamid = 'GER'
-      GROUP BY goal.matchid;`,
+      `SELECT
+      goal.matchid,
+      game.mdate,
+      COUNT(goal.matchid) AS german_goals
+    FROM game
+    INNER JOIN goal
+    ON game.id = goal.matchid
+    WHERE goal.teamid = 'GER'
+    GROUP BY goal.matchid, game.mdate;
+    `,
   },
   {
     description:
@@ -780,8 +787,9 @@ export const joinoperationTasks = [
     FROM game
     LEFT JOIN goal
     ON game.id = goal.matchid
-    GROUP BY game.id, game.mdate
-    ORDER BY game.mdate, goal.matchid, game.team1, game.team2`,
+    GROUP BY game.id, game.mdate, game.team1, game.team2
+    ORDER BY game.mdate, game.team1, game.team2;
+    `,
   },
 ];
 export const morejoinoperationsTasks = [
