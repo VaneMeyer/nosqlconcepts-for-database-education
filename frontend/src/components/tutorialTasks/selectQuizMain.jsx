@@ -1,6 +1,6 @@
 import React from "react";
 import QuizTaskSheet from "./quizTaskSheet";
-import { BBCquizQuestions, nestedselectquizQuestions, selectquizQuestions, sumandcountquizQuestions } from "../../data/tutorialData";
+import { BBCquizQuestions, joinquizQuestions, nestedselectquizQuestions, selectquizQuestions, sumandcountquizQuestions } from "../../data/tutorialData";
 
 export const SelectQuizC = () => {
   return (
@@ -39,6 +39,16 @@ export const SumAndCountQuizC = () => {
         SUM and COUNT Quiz
       </h1>
       <QuizTaskSheet title="sumandcountquiz" tasks={sumandcountquizQuestions} />
+    </div>
+  );
+};
+export const JoinQuizC = () => {
+  return (
+    <div>
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
+        Join Quiz
+      </h1>
+      <QuizTaskSheet title="joinquiz" tasks={joinquizQuestions} />
     </div>
   );
 };
