@@ -247,14 +247,15 @@ export const selectwithinselectTasks = [
   },
   {
     description:
-      "Aufgabe 2: Zeigen Sie die Länder in Europa an, deren GDP größer ist als „United Kingdom“.",
+      "Aufgabe 2: Zeigen Sie die Länder in Europa an, deren GDP pro Kopf größer ist als das vom „United Kingdom“.",
     defaultQuery: "",
     solution:
       "SELECT name FROM world WHERE continent = 'Europe' AND (gdp / population) > (SELECT (gdp / population) from world WHERE name = 'United Kingdom');",
   },
   {
     description:
-      "Aufgabe 3: Listen Sie den Namen und den Kontinent der Länder auf, die entweder Argentina oder Australia enthalten. Sortierung nach Ländernamen.",
+      "Aufgabe 3: Listen Sie den Namen und den Kontinent aller Länder auf, deren Kontinent entweder Argentina " +
+        "oder Australia als Land enthält. Sortierung alphabetisch nach Ländernamen.",
     defaultQuery: "",
     solution:
       "SELECT name, continent FROM world WHERE continent IN (SELECT continent FROM world WHERE name = 'Argentina' OR name = 'Australia') ORDER BY name;",
@@ -275,7 +276,7 @@ export const selectwithinselectTasks = [
   },
   {
     description:
-      "Aufgabe 6: Welche Länder haben ein höheres GDP als jedes andere Land in Europa? [Geben Sie nur den Namen an.] (Einige Länder haben möglicherweise NULL-Werte für GDP.)",
+      "Aufgabe 6: Welche Länder haben ein höheres GDP als jedes europäische Land? [Geben Sie nur den Namen an.] (Achtung: Einige Länder haben möglicherweise NULL-Werte für GDP.)",
     defaultQuery: "",
     solution:
       "SELECT name FROM world WHERE gdp > ALL(SELECT gdp FROM world WHERE (continent = 'Europe') AND (gdp > 0));",
@@ -290,7 +291,7 @@ export const selectwithinselectTasks = [
   },
   {
     description:
-      "Aufgabe 8: Listen Sie jeden Kontinent und den Namen des Landes auf, das alphabetisch an erster Stelle steht.",
+      "Aufgabe 8: Listen Sie jeden Kontinent und den Namen des Landes auf, das für diesen Kontinent alphabetisch an erster Stelle steht.",
     defaultQuery: "",
     solution: "SELECT continent, MIN(name) FROM world GROUP BY continent;",
   },
