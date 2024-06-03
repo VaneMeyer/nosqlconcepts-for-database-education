@@ -655,7 +655,8 @@ export const joinoperationTasks = [
   {
     description:
       `8. Die Beispielabfrage zeigt alle Tore, die im Viertelfinale Deutschland-Griechenland erzielt wurden.
-      Zeige stattdessen die Namen aller Spieler, die ein Tor gegen Deutschland erzielt haben.`,
+      Zeige stattdessen die Namen aller Spieler, die über das ganze Turnier hinweg ein Tor gegen Deutschland 
+      erzielt haben.`,
     defaultQuery: `SELECT player, gtime
     FROM game JOIN goal ON matchid = id 
       WHERE (team1='GER' AND team2='GRE')`,
@@ -669,8 +670,8 @@ export const joinoperationTasks = [
   },
   {
     description:
-      `9. Zeige teamname und die Gesamtzahl der erzielten Tore.
-      COUNT und GROUP BY`,
+      `9. Zeige die Namen der Teams und die Gesamtzahl der erzielten Tore für das jeweilige Team. 
+      (Teams ohne Tore werden nicht berücksichtigt)`,
     defaultQuery: `SELECT teamname, player
     FROM eteam JOIN goal ON id=teamid
    ORDER BY teamname`,
@@ -683,7 +684,7 @@ export const joinoperationTasks = [
   },
   {
     description:
-      `10. Zeige das Stadion und die Anzahl der in jedem Stadion erzielten Tore.`,
+      `10. Zeige das Stadion und die Anzahl der im jeweiligen Stadion erzielten Tore.`,
     defaultQuery: ``,
     solution:
       `SELECT game.stadium, COUNT(goal.matchid)
@@ -694,7 +695,8 @@ export const joinoperationTasks = [
   },
   {
     description:
-      `11. Für jedes Spiel, an dem 'POL' beteiligt war, zeige matchid, Datum und die Anzahl der erzielten Tore.`,
+      `11. Für jedes Spiel, an dem Polen (Teamid 'POL') beteiligt war, zeige die matchid, das Datum und die Anzahl
+       der erzielten Tore (soll total_goals im Ergebnis heißen).`,
     defaultQuery: `SELECT matchid,mdate, team1, team2,teamid
     FROM game JOIN goal ON matchid = id 
    WHERE (team1 = 'POL' OR team2 = 'POL')`,
@@ -711,7 +713,9 @@ export const joinoperationTasks = [
   },
   {
     description:
-      `12. Für jedes Spiel, in dem 'GER' ein Tor erzielt hat, zeige matchid, Spieldatum und die Anzahl der von 'GER' erzielten Tore.`,
+      `12. Für jedes Spiel, in dem 'GER' ein Tor erzielt hat, zeige matchid, Spieldatum und die Anzahl der von 
+      'GER' erzielten Tore (soll german_goals im Ergebnis heißen). 
+      (Spiele ohne deutsche Tore werden nicht berücksichtigt)`,
     defaultQuery: ``,
     solution:
       `SELECT
@@ -729,9 +733,12 @@ export const joinoperationTasks = [
     description:
     (
       <>
-        <p>13. Liste jedes Spiel mit den Toren auf, die von jedem Team erzielt wurden. Dies wird "CASE WHEN" verwenden, das in den vorherigen Übungen nicht erklärt wurde.</p>
+        <p>13. Liste jedes Spiel mit den Toren auf, die von jedem Team erzielt wurden. Dies wird "CASE WHEN"
+          verwenden, das in den vorherigen Übungen nicht erklärt wurde.</p>
         <p>
-          Beachte, dass in der angegebenen Abfrage jedes Tor aufgelistet ist. Wenn es ein team1-Tor war, erscheint eine 1 in score1, andernfalls eine 0. Du könntest diese Spalte summieren, um eine Zählung der von team1 erzielten Tore zu erhalten. Sortiere dein Ergebnis nach mdate, matchid, team1 und team2.
+          Beachte, dass in der angegebenen Abfrage jedes Tor aufgelistet ist. Wenn es ein team1-Tor war,
+          erscheint eine 1 in score1, andernfalls eine 0. Du könntest diese Spalte summieren, um eine Zählung
+          der von team1 erzielten Tore zu erhalten. Sortiere dein Ergebnis nach mdate, team1 und team2.
         </p>
         <table style={tableStyle}>
           <thead>
@@ -812,7 +819,8 @@ export const morejoinoperationsTasks = [
     WHERE title = 'Citizen Kane';`,
   },
   {
-    description: `3. Liste alle Star Trek-Filme auf, einschließlich id, title und yr (alle diese Filme enthalten die Wörter "Star Trek" im Titel). Ordne die Ergebnisse nach Jahr (yr).`,
+    description: `3. Liste alle Star Trek-Filme auf, einschließlich id, title und yr 
+    (alle diese Filme enthalten die Wörter "Star Trek" im Titel). Ordne die Ergebnisse nach Jahr (yr).`,
     defaultQuery: ``,
     solution: `SELECT id, title, yr
     FROM movie
@@ -821,7 +829,7 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-      `4. Welche id hat der Schauspieler 'Glenn Close'?`,
+      `4. Welche id hat der Schauspieler Glenn Close?`,
     defaultQuery: "",
     solution: `SELECT id
     FROM actor
@@ -829,7 +837,7 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-      `5. Was ist die id des Films 'Casablanca'`,
+      `5. Was ist die id des Films Casablanca?`,
     defaultQuery: ``,
     solution:
       `SELECT id
@@ -838,9 +846,9 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-      `6. Gebe die Castliste für 'Casablanca' aus.
-
-      Nutze movieid=11768, (oder den Ausgabewert aus vorheriger Frage)`,
+      `6. Gib die Liste der Namen aller Schauspieler*innen vom Film Casablanca aus.
+      Die Ergebnisspalte soll casablanca_cast_list heißen.
+      Nutze movieid=11768 (oder den Ausgabewert aus vorheriger Frage).`,
     defaultQuery: "",
     solution: `SELECT actor.name AS casablanca_cast_list
     FROM movie
@@ -856,7 +864,7 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-     `7. Gebe die Castliste des Films 'Alien' aus`,
+     `7. Gib die Castliste (alien_cast_list) des Films Alien aus.`,
     defaultQuery: "",
     solution:
       `SELECT actor.name AS alien_cast_list
@@ -873,15 +881,13 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-      `8. Liste die Filme auf, in denen 'Harrison Ford' auftaucht`,
+      `8. Liste die Filmtitel auf, in denen Harrison Ford mitspielt.`,
     defaultQuery: ``,
     solution:
       `SELECT movie.title
       FROM movie
       INNER JOIN casting
       ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
       WHERE casting.actorid = (
         SELECT id
         FROM actor
@@ -890,15 +896,15 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-      `9. Liste die Filme auf, in denen 'Harrison Ford' mitgespielt hat - jedoch nicht in der Hauptrolle. [Hinweis: Das Feld "ord" in der Besetzung gibt die Position des Schauspielers an. Wenn ord=1, dann ist dieser Schauspieler in der Hauptrolle.]`,
+      `9. Liste die Filmtitel auf, in denen Harrison Ford mitgespielt hat - jedoch nicht in der Hauptrolle. 
+      [Hinweis: Das Feld "ord" in der Besetzung gibt die Position des Schauspielers an. Wenn ord=1, dann ist 
+      dieser Schauspieler in der Hauptrolle.]`,
     defaultQuery: ``,
     solution:
       `SELECT movie.title
       FROM movie
       INNER JOIN casting
       ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
       WHERE casting.actorid = (
         SELECT id
         FROM actor
@@ -908,23 +914,22 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-      `10. Liste die Filme zusammen mit dem Hauptdarsteller für alle Filme aus dem Jahr 1962 auf.`,
+      `10. Liste die Filmtitel zusammen mit dem Name des/r Hauptdarsteller*in für alle Filme des Jahres 1962 auf.`,
     defaultQuery: ``,
     solution:
-      `SELECT
-      movie.title,
-      (CASE WHEN casting.ord = 1 THEN actor.name END) AS name
+      `SELECT movie.title, actor.name
     FROM movie
     INNER JOIN casting
     ON movie.id = casting.movieid
     INNER JOIN actor
     ON casting.actorid = actor.id
     WHERE movie.yr = 1962
-     AND (CASE WHEN casting.ord = 1 THEN actor.name END) IS NOT NULL;`,
+     AND casting.ord = 1;`,
   },
   {
     description:
-      `11. Welche waren die geschäftigsten Jahre für 'Rock Hudson'? Zeige das Jahr und die Anzahl der Filme, die er in jedem Jahr gemacht hat, in dem er mehr als 2 Filme gedreht hat.`,
+      `11. Welche waren die geschäftigsten Jahre für den Schauspieler Rock Hudson? Zeige das Jahr und die Anzahl 
+      der Filme, die er in dem jeweiligen Jahr gemacht, wenn er mehr als 2 Filme in dem Jahr gedreht hat.`,
     defaultQuery: `SELECT yr,COUNT(title) FROM
     movie JOIN casting ON movie.id=movieid
           JOIN actor   ON actorid=actor.id
@@ -944,64 +949,55 @@ export const morejoinoperationsTasks = [
   },
   {
     description:
-      `12. Liste den Filmtitel und den Hauptdarsteller für alle Filme auf, in denen 'Julie Andrews' mitgespielt hat.`,
+      `12. Liste den Filmtitel und den/die Hauptdarsteller*in für alle Filme auf, in denen 
+      Julie Andrews mitgespielt hat.`,
     defaultQuery: `SELECT movieid FROM casting
     WHERE actorid IN (
       SELECT id FROM actor
       WHERE name='Julie Andrews')
     `,
     solution:
-      `SELECT
-      movie.title,
-      (CASE WHEN casting.ord = 1 THEN actor.name END) as leading_actor
-    FROM movie
-    INNER JOIN casting
-    ON movie.id = casting.movieid
-    INNER JOIN actor
-    ON casting.actorid = actor.id
-    WHERE (CASE WHEN casting.ord = 1 THEN actor.name END) IS NOT NULL
-      AND casting.movieid IN (
-        SELECT casting.movieid
-        FROM casting
-        INNER JOIN actor
-        ON casting.actorid = actor.id
-        WHERE actor.name = 'Julie Andrews'
-      );`,
+      `SELECT title, actor.name
+       FROM movie, casting, actor
+       WHERE movie.id = casting.movieid
+         AND casting.actorid = actor.id
+         AND movie.id IN (
+            SELECT casting.movieid
+            FROM actor, casting
+            WHERE name='Julie Andrews'
+         AND actor.id = casting.actorid)
+         AND casting.ord = 1`,
   },
   {
     description:
-    `13. Erhalte eine Liste der Schauspieler in alphabetischer Reihenfolge, die mindestens 15 Hauptrollen hatten.`,
+    `13. Erhalte eine Liste der Schauspieler*innen in alphabetischer Reihenfolge, die mindestens 15 Hauptrollen hatten.`,
     defaultQuery: `
   `,
     solution:
       `SELECT actor.name
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      GROUP BY actor.name
-      HAVING SUM(CASE WHEN casting.ord = 1 THEN 1 ELSE 0 END) >= 15;`,
+      FROM casting INNER JOIN actor ON casting.actorid = actor.id
+      WHERE casting.ord = 1
+      GROUP BY actor.id
+      HAVING COUNT(*) >= 15
+      ORDER BY actor.name;`,
   },
   {
     description:
-    `14. Liste die Filme, die im Jahr 1978 veröffentlicht wurden, geordnet nach der Anzahl der Schauspieler in der Besetzung und dann nach dem Titel.`,
+    `14. Liste die Filme aus 1978 mit der Anzahl der Schauspieler*innen in der Besetzung auf (Ergebnisspalte actors). 
+    Ordne die Liste nach der Anzahl (meiste zuerst) und nach dem Titel (alphabetisch).`,
     defaultQuery: `
   `,
     solution:
-      `SELECT movie.title, COUNT(actor.id) as actors
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      WHERE movie.yr = 1978
-      GROUP BY movie.title
-      ORDER BY actors DESC, movie.title;`,
+      `SELECT movie.title, COUNT(casting.actorid) as actors
+        FROM movie
+        INNER JOIN casting ON movie.id = casting.movieid
+        WHERE movie.yr = 1978
+        GROUP BY movie.id
+        ORDER BY actors DESC, movie.title ASC;`,
   },
   {
     description:
-    `15. Liste alle Personen auf, die mit 'Art Garfunkel' zusammengearbeitet haben.`,
+    `15. Liste alle Schauspieler*innen auf, die mit Art Garfunkel zusammen gedreht haben.`,
     defaultQuery: `
   `,
     solution:
@@ -1011,14 +1007,14 @@ export const morejoinoperationsTasks = [
       ON movie.id = casting.movieid
       INNER JOIN actor
       ON casting.actorid = actor.id
-      WHERE casting.movieid IN (
+      WHERE actor.name <> 'Art Garfunkel'
+      AND casting.movieid IN (
         SELECT casting.movieid
         FROM casting
         INNER JOIN actor
         ON casting.actorid = actor.id
         WHERE actor.name = 'Art Garfunkel'
-      )
-        AND actor.name <> 'Art Garfunkel';`,
+      );`,
   },
 ];
 /* export const morejoinoperationsTasks = [
@@ -2428,27 +2424,27 @@ export const nestedselectquizQuestions = [
     options: [
       {
         id: 1,
-        text: "SELECT name, region FROM bbc x WHERE population < ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name != x.name)",
+        text: "SELECT name, region FROM bbc x WHERE population < ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name <> x.name)",
         imageUrl: "",
       },
       {
         id: 2,
-        text: "SELECT name, region FROM bbc x WHERE population = ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name != x.name)",
+        text: "SELECT name, region FROM bbc x WHERE population = ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name <> x.name)",
         imageUrl: "",
       },
       {
         id: 3,
-        text: `SELECT name, region FROM bbc x WHERE population > ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name != x.name)`,
+        text: `SELECT name, region FROM bbc x WHERE population > ALL (SELECT population/3 FROM bbc y WHERE y.region = x.region AND y.name <> x.name)`,
         imageUrl: "",
       },
       {
         id: 4,
-        text: " SELECT name, region FROM bbc x WHERE population < ALL (SELECT population*3 FROM bbc y WHERE y.region = x.region AND y.name != x.name)",
+        text: " SELECT name, region FROM bbc x WHERE population < ALL (SELECT population*3 FROM bbc y WHERE y.region = x.region AND y.name <> x.name)",
         imageUrl: "",
       },
       {
         id: 5,
-        text: " SELECT name, region FROM bbc x WHERE population < ALL (SELECT population/3 FROM bbc y WHERE y.name != x.name)",
+        text: " SELECT name, region FROM bbc x WHERE population < ALL (SELECT population/3 FROM bbc y WHERE y.name <> x.name)",
         imageUrl: "",
       },
     ],
@@ -3331,7 +3327,7 @@ export const sumandcountquizQuestions = [
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal ON matchid = id
        WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid != 'GRE'
+         AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3339,7 +3335,7 @@ export const sumandcountquizQuestions = [
         id: 2,
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal ON matchid = id
-       WHERE (team1 = "GRE") AND teamid != 'GRE'
+       WHERE (team1 = "GRE") AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3348,7 +3344,7 @@ export const sumandcountquizQuestions = [
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal ON matchid = id
        WHERE (team1 = "POL" OR team2 = "POL")
-         AND teamid != 'POL'
+         AND teamid <> 'POL'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3357,7 +3353,7 @@ export const sumandcountquizQuestions = [
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal WITH matchid = id
        WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid != 'GRE'
+         AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3366,7 +3362,7 @@ export const sumandcountquizQuestions = [
         text: `SELECT player, teamid
         FROM game JOIN goal ON matchid = id
        WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid != 'GRE'
+         AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3527,7 +3523,7 @@ export const sumandcountquizQuestions = [
         FROM game JOIN goal ON matchid = id 
         WHERE stadium = 'National Stadium, Warsaw' 
        AND (team1 = 'GER' OR team2 = 'GER')
-         AND teamid != 'GER'`,
+         AND teamid <> 'GER'`,
         imageUrl: "",
       },
       {
@@ -3536,14 +3532,14 @@ export const sumandcountquizQuestions = [
         FROM game JOIN goal ON matchid = id 
        WHERE stadium = 'National Stadium, Warsaw' 
       AND (team1 = 'POL' OR team2 = 'POL')
-        AND teamid != 'POL'`,
+        AND teamid <> 'POL'`,
         imageUrl: "",
       },
       {
         id: 3,
         text: `SELECT DISTINCT player, teamid 
         FROM game JOIN goal ON matchid = id 
-       WHERE stadium = 'National Stadium, Warsaw' AND teamid != 'POL'`,
+       WHERE stadium = 'National Stadium, Warsaw' AND teamid <> 'POL'`,
         imageUrl: "",
       },
       {
@@ -3552,7 +3548,7 @@ export const sumandcountquizQuestions = [
         FROM game JOIN goal ON matchid = id 
        WHERE stadium = 'Stadion Miejski (Wroclaw)' 
       AND (team1 = 'POL' OR team2 = 'POL')
-       AND teamid != 'POL'`,
+       AND teamid <> 'POL'`,
         imageUrl: "",
       },
       {
@@ -3561,7 +3557,7 @@ export const sumandcountquizQuestions = [
         FROM game JOIN goal ON matchid = id 
        WHERE stadium = 'National Stadium, Warsaw' 
       AND (team1 = 'POL' OR team2 = 'POL')
-       AND teamid != 'POL'`,
+       AND teamid <> 'POL'`,
         imageUrl: "",
       },
     ],
@@ -3578,7 +3574,7 @@ export const sumandcountquizQuestions = [
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'National Stadium, Warsaw'
-         AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'))`,
+         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
         imageUrl: "",
       },
       {
@@ -3586,7 +3582,7 @@ export const sumandcountquizQuestions = [
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 != 'ESP') OR ( teamid = team1 AND team2 != 'ESP'))`,
+         AND (( teamid = team2 AND team1 <> 'ESP') OR ( teamid = team1 AND team2 <> 'ESP'))`,
         imageUrl: "",
       },
       {
@@ -3594,7 +3590,7 @@ export const sumandcountquizQuestions = [
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'))`,
+         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
         imageUrl: "",
       },
       {
@@ -3602,14 +3598,14 @@ export const sumandcountquizQuestions = [
         text: `SELECT DISTINCT teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'))`,
+         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
         imageUrl: "",
       },
       {
         id: 5,
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
-       WHERE team1 != 'ITA' AND team2 !='ITA'`,
+       WHERE team1 <> 'ITA' AND team2 <>'ITA'`,
         imageUrl: "",
       },
     ],
@@ -3832,7 +3828,7 @@ export const joinquizQuestions = [
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal ON matchid = id
        WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid != 'GRE'
+         AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3840,7 +3836,7 @@ export const joinquizQuestions = [
         id: 2,
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal ON matchid = id
-       WHERE (team1 = "GRE") AND teamid != 'GRE'
+       WHERE (team1 = "GRE") AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3849,7 +3845,7 @@ export const joinquizQuestions = [
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal ON matchid = id
        WHERE (team1 = "POL" OR team2 = "POL")
-         AND teamid != 'POL'
+         AND teamid <> 'POL'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3858,7 +3854,7 @@ export const joinquizQuestions = [
         text: `SELECT player, teamid, COUNT(*)
         FROM game JOIN goal WITH matchid = id
        WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid != 'GRE'
+         AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -3867,7 +3863,7 @@ export const joinquizQuestions = [
         text: `SELECT player, teamid
         FROM game JOIN goal ON matchid = id
        WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid != 'GRE'
+         AND teamid <> 'GRE'
        GROUP BY player, teamid`,
         imageUrl: "",
       },
@@ -4028,7 +4024,7 @@ export const joinquizQuestions = [
         FROM game JOIN goal ON matchid = id 
         WHERE stadium = 'National Stadium, Warsaw' 
        AND (team1 = 'GER' OR team2 = 'GER')
-         AND teamid != 'GER'`,
+         AND teamid <> 'GER'`,
         imageUrl: "",
       },
       {
@@ -4037,14 +4033,14 @@ export const joinquizQuestions = [
         FROM game JOIN goal ON matchid = id 
        WHERE stadium = 'National Stadium, Warsaw' 
       AND (team1 = 'POL' OR team2 = 'POL')
-        AND teamid != 'POL'`,
+        AND teamid <> 'POL'`,
         imageUrl: "",
       },
       {
         id: 3,
         text: `SELECT DISTINCT player, teamid 
         FROM game JOIN goal ON matchid = id 
-       WHERE stadium = 'National Stadium, Warsaw' AND teamid != 'POL'`,
+       WHERE stadium = 'National Stadium, Warsaw' AND teamid <> 'POL'`,
         imageUrl: "",
       },
       {
@@ -4053,7 +4049,7 @@ export const joinquizQuestions = [
         FROM game JOIN goal ON matchid = id 
        WHERE stadium = 'Stadion Miejski (Wroclaw)' 
       AND (team1 = 'POL' OR team2 = 'POL')
-       AND teamid != 'POL'`,
+       AND teamid <> 'POL'`,
         imageUrl: "",
       },
       {
@@ -4062,7 +4058,7 @@ export const joinquizQuestions = [
         FROM game JOIN goal ON matchid = id 
        WHERE stadium = 'National Stadium, Warsaw' 
       AND (team1 = 'POL' OR team2 = 'POL')
-       AND teamid != 'POL'`,
+       AND teamid <> 'POL'`,
         imageUrl: "",
       },
     ],
@@ -4079,7 +4075,7 @@ export const joinquizQuestions = [
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'National Stadium, Warsaw'
-         AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'))`,
+         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
         imageUrl: "",
       },
       {
@@ -4087,7 +4083,7 @@ export const joinquizQuestions = [
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 != 'ESP') OR ( teamid = team1 AND team2 != 'ESP'))`,
+         AND (( teamid = team2 AND team1 <> 'ESP') OR ( teamid = team1 AND team2 <> 'ESP'))`,
         imageUrl: "",
       },
       {
@@ -4095,7 +4091,7 @@ export const joinquizQuestions = [
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'))`,
+         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
         imageUrl: "",
       },
       {
@@ -4103,14 +4099,14 @@ export const joinquizQuestions = [
         text: `SELECT DISTINCT teamid, gtime
         FROM game JOIN goal ON matchid = id
        WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 != 'ITA') OR ( teamid = team1 AND team2 != 'ITA'))`,
+         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
         imageUrl: "",
       },
       {
         id: 5,
         text: `SELECT DISTINCT player, teamid, gtime
         FROM game JOIN goal ON matchid = id
-       WHERE team1 != 'ITA' AND team2 !='ITA'`,
+       WHERE team1 <> 'ITA' AND team2 <>'ITA'`,
         imageUrl: "",
       },
     ],
@@ -4122,7 +4118,7 @@ export const joinquizQuestions = [
       "Wähle das Ergebnis des folgendes Codes aus:",
     imageUrl: `SELECT teamname, COUNT(*)
     FROM eteam JOIN goal ON teamid = id
-   GROUP BY teamname
+   GROUP BY id
   HAVING COUNT(*) < 3`,
     options: [
       {
