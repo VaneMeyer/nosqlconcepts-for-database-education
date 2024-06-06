@@ -20,7 +20,6 @@ export const topics = [
   { name: "Using Null", link: "usingnull" },
   { name: "Using Null Quiz", link: "usingnullquiz" },
 
-
   /*{ name: "Using Null", link: "usingnull" },
   { name: "Numeric Examples", link: "numericexamples" },
   { name: "Window function", link: "windowfunction" },
@@ -259,7 +258,7 @@ export const selectwithinselectTasks = [
   {
     description:
       "Aufgabe 3: Listen Sie den Namen und den Kontinent aller Länder auf, deren Kontinent entweder Argentina " +
-        "oder Australia als Land enthält. Sortierung alphabetisch nach Ländernamen.",
+      "oder Australia als Land enthält. Sortierung alphabetisch nach Ländernamen.",
     defaultQuery: "",
     solution:
       "SELECT name, continent FROM world WHERE continent IN (SELECT continent FROM world WHERE name = 'Argentina' OR name = 'Australia') ORDER BY name;",
@@ -368,18 +367,16 @@ export const sumandcountTasks = [
 ];
 
 const tableStyle = {
-  borderCollapse: 'collapse',
- 
+  borderCollapse: "collapse",
 };
 
 const thTdStyle = {
-  border: '1px solid black',
-  padding: '8px',
+  border: "1px solid black",
+  padding: "8px",
 };
 export const joinoperationTasks = [
   {
-    description:
-      `1. Das erste Beispiel zeigt ein Tor, das von einem Spieler mit dem Nachnamen 'Bender' erzielt wurde. Das * bedeutet, dass alle Spalten in der Tabelle aufgelistet werden sollen - eine kürzere Möglichkeit, matchid, teamid, player, gtime zu sagen.
+    description: `1. Das erste Beispiel zeigt ein Tor, das von einem Spieler mit dem Nachnamen 'Bender' erzielt wurde. Das * bedeutet, dass alle Spalten in der Tabelle aufgelistet werden sollen - eine kürzere Möglichkeit, matchid, teamid, player, gtime zu sagen.
 
       Ändere es so, dass die matchid und der Spielername für alle Tore, die von Deutschland erzielt wurden, angezeigt werden. Um deutsche Spieler zu identifizieren, prüfe: teamid = 'GER'`,
     defaultQuery: `SELECT * FROM goal 
@@ -389,8 +386,7 @@ export const joinoperationTasks = [
     WHERE teamid = 'GER';`,
   },
   {
-    description:
-      `2. Aus der vorherigen Abfrage kannst du sehen, dass Lars Bender in Spiel 1012 ein Tor erzielt hat. Jetzt wollen wir wissen, welche Teams in diesem Spiel gespielt haben.
+    description: `2. Aus der vorherigen Abfrage kannst du sehen, dass Lars Bender in Spiel 1012 ein Tor erzielt hat. Jetzt wollen wir wissen, welche Teams in diesem Spiel gespielt haben.
 
       Beachte, dass die Spalte matchid in der goal-Tabelle der Spalte id in der game-Tabelle entspricht. Wir können Informationen über Spiel 1012 finden, indem wir diese Zeile in der game-Tabelle suchen.
       
@@ -421,8 +417,7 @@ export const joinoperationTasks = [
     WHERE goal.teamid = 'GER';`,
   },
   {
-    description:
-      `4. Verwende das gleiche JOIN wie in der vorherigen Frage.
+    description: `4. Verwende das gleiche JOIN wie in der vorherigen Frage.
 
       Zeige team1, team2 und player für jedes Tor, das von einem Spieler namens Mario erzielt wurde (player LIKE 'Mario%')`,
     defaultQuery: "",
@@ -433,23 +428,20 @@ export const joinoperationTasks = [
     WHERE goal.player LIKE 'Mario%';`,
   },
   {
-    description:
-      `5. Die Tabelle eteam gibt Details zu jedem Nationalteam, einschließlich des Trainers. Du kannst goal mit eteam verbinden, indem du den Ausdruck goal JOIN eteam on teamid=id verwendest.
+    description: `5. Die Tabelle eteam gibt Details zu jedem Nationalteam, einschließlich des Trainers. Du kannst goal mit eteam verbinden, indem du den Ausdruck goal JOIN eteam on teamid=id verwendest.
 
       Zeige player, teamid, coach, gtime für alle Tore, die in den ersten 10 Minuten erzielt wurden (gtime<=10)`,
     defaultQuery: `SELECT player, teamid, gtime
     FROM goal 
    WHERE gtime<=10`,
-    solution:
-      `SELECT goal.player, goal.teamid, eteam.coach, goal.gtime
+    solution: `SELECT goal.player, goal.teamid, eteam.coach, goal.gtime
       FROM goal
       INNER JOIN eteam
       ON goal.teamid = eteam.id
       WHERE goal.gtime <= 10;`,
   },
   {
-    description:
-      `6. Um game mit eteam zu verbinden, könntest du entweder
+    description: `6. Um game mit eteam zu verbinden, könntest du entweder
       game JOIN eteam ON (team1=eteam.id) oder game JOIN eteam ON (team2=eteam.id) verwenden.
       
       Beachte, dass, weil id sowohl in game als auch in eteam eine Spalte ist, du eteam.id anstelle von nur id angeben musst.
@@ -463,26 +455,22 @@ export const joinoperationTasks = [
     WHERE eteam.coach = 'Fernando Santos';`,
   },
   {
-    description:
-     `7. Liste die Spieler für jedes Tor auf, das in einem Spiel erzielt wurde, bei dem das Stadion 'National Stadium, Warsaw' war.`,
+    description: `7. Liste die Spieler für jedes Tor auf, das in einem Spiel erzielt wurde, bei dem das Stadion 'National Stadium, Warsaw' war.`,
     defaultQuery: "",
-    solution:
-      `SELECT goal.player
+    solution: `SELECT goal.player
       FROM game
       INNER JOIN goal
       ON goal.matchid = game.id
       WHERE game.stadium = 'National Stadium, Warsaw';`,
   },
   {
-    description:
-      `8. Die Beispielabfrage zeigt alle Tore, die im Viertelfinale Deutschland-Griechenland erzielt wurden.
+    description: `8. Die Beispielabfrage zeigt alle Tore, die im Viertelfinale Deutschland-Griechenland erzielt wurden.
       Zeige stattdessen die Namen aller Spieler, die über das ganze Turnier hinweg ein Tor gegen Deutschland 
       erzielt haben.`,
     defaultQuery: `SELECT player, gtime
     FROM game JOIN goal ON matchid = id 
       WHERE (team1='GER' AND team2='GRE')`,
-    solution:
-      `SELECT DISTINCT goal.player
+    solution: `SELECT DISTINCT goal.player
       FROM game
       INNER JOIN goal
       ON goal.matchid = game.id
@@ -490,39 +478,33 @@ export const joinoperationTasks = [
         AND (game.team1 = 'GER' OR game.team2 = 'GER');`,
   },
   {
-    description:
-      `9. Zeige die Namen der Teams und die Gesamtzahl der erzielten Tore für das jeweilige Team. 
+    description: `9. Zeige die Namen der Teams und die Gesamtzahl der erzielten Tore für das jeweilige Team. 
       (Teams ohne Tore werden nicht berücksichtigt)`,
     defaultQuery: `SELECT teamname, player
     FROM eteam JOIN goal ON id=teamid
    ORDER BY teamname`,
-    solution:
-      `SELECT eteam.teamname, COUNT(goal.teamid)
+    solution: `SELECT eteam.teamname, COUNT(goal.teamid)
       FROM goal
       INNER JOIN eteam
       ON eteam.id = goal.teamid
       GROUP BY eteam.teamname;`,
   },
   {
-    description:
-      `10. Zeige das Stadion und die Anzahl der im jeweiligen Stadion erzielten Tore.`,
+    description: `10. Zeige das Stadion und die Anzahl der im jeweiligen Stadion erzielten Tore.`,
     defaultQuery: ``,
-    solution:
-      `SELECT game.stadium, COUNT(goal.matchid)
+    solution: `SELECT game.stadium, COUNT(goal.matchid)
       FROM game
       INNER JOIN goal
       ON game.id = goal.matchid
       GROUP BY game.stadium;`,
   },
   {
-    description:
-      `11. Für jedes Spiel, an dem Polen (Teamid 'POL') beteiligt war, zeige die matchid, das Datum und die Anzahl
+    description: `11. Für jedes Spiel, an dem Polen (Teamid 'POL') beteiligt war, zeige die matchid, das Datum und die Anzahl
        der erzielten Tore (soll total_goals im Ergebnis heißen).`,
     defaultQuery: `SELECT matchid,mdate, team1, team2,teamid
     FROM game JOIN goal ON matchid = id 
    WHERE (team1 = 'POL' OR team2 = 'POL')`,
-    solution:
-      `SELECT
+    solution: `SELECT
       goal.matchid,
       game.mdate,
       COUNT(goal.matchid) AS total_goals
@@ -533,13 +515,11 @@ export const joinoperationTasks = [
     `,
   },
   {
-    description:
-      `12. Für jedes Spiel, in dem 'GER' ein Tor erzielt hat, zeige matchid, Spieldatum und die Anzahl der von 
+    description: `12. Für jedes Spiel, in dem 'GER' ein Tor erzielt hat, zeige matchid, Spieldatum und die Anzahl der von 
       'GER' erzielten Tore (soll german_goals im Ergebnis heißen). 
       (Spiele ohne deutsche Tore werden nicht berücksichtigt)`,
     defaultQuery: ``,
-    solution:
-      `SELECT
+    solution: `SELECT
       goal.matchid,
       game.mdate,
       COUNT(goal.matchid) AS german_goals
@@ -551,15 +531,19 @@ export const joinoperationTasks = [
     `,
   },
   {
-    description:
-    (
+    description: (
       <>
-        <p>13. Liste jedes Spiel mit den Toren auf, die von jedem Team erzielt wurden. Dies wird "CASE WHEN"
-          verwenden, das in den vorherigen Übungen nicht erklärt wurde.</p>
         <p>
-          Beachte, dass in der angegebenen Abfrage jedes Tor aufgelistet ist. Wenn es ein team1-Tor war,
-          erscheint eine 1 in score1, andernfalls eine 0. Du könntest diese Spalte summieren, um eine Zählung
-          der von team1 erzielten Tore zu erhalten. Sortiere dein Ergebnis nach mdate, team1 und team2.
+          13. Liste jedes Spiel mit den Toren auf, die von jedem Team erzielt
+          wurden. Dies wird "CASE WHEN" verwenden, das in den vorherigen Übungen
+          nicht erklärt wurde.
+        </p>
+        <p>
+          Beachte, dass in der angegebenen Abfrage jedes Tor aufgelistet ist.
+          Wenn es ein team1-Tor war, erscheint eine 1 in score1, andernfalls
+          eine 0. Du könntest diese Spalte summieren, um eine Zählung der von
+          team1 erzielten Tore zu erhalten. Sortiere dein Ergebnis nach mdate,
+          team1 und team2.
         </p>
         <table style={tableStyle}>
           <thead>
@@ -605,8 +589,7 @@ export const joinoperationTasks = [
     CASE WHEN teamid=team1 THEN 1 ELSE 0 END score1
     FROM game JOIN goal ON matchid = id
   `,
-    solution:
-      `SELECT
+    solution: `SELECT
       game.mdate,
       game.team1,
       SUM(CASE WHEN goal.teamid = game.team1 THEN 1 ELSE 0 END) AS score1,
@@ -622,8 +605,7 @@ export const joinoperationTasks = [
 ];
 export const morejoinoperationsTasks = [
   {
-    description:
-      `1. Liste die Filme auf, bei denen das Jahr (yr) 1962 ist [Zeige id, title].`,
+    description: `1. Liste die Filme auf, bei denen das Jahr (yr) 1962 ist [Zeige id, title].`,
     defaultQuery: `SELECT id, title
     FROM movie
     WHERE yr=1962`,
@@ -632,8 +614,7 @@ export const morejoinoperationsTasks = [
     WHERE yr = 1962;`,
   },
   {
-    description:
-      `2. Gebe das Jahr (yr) von 'Citizen Kane' aus.`,
+    description: `2. Gebe das Jahr (yr) von 'Citizen Kane' aus.`,
     defaultQuery: ``,
     solution: `SELECT yr
     FROM movie
@@ -649,25 +630,21 @@ export const morejoinoperationsTasks = [
     ORDER BY yr;`,
   },
   {
-    description:
-      `4. Welche id hat der Schauspieler Glenn Close?`,
+    description: `4. Welche id hat der Schauspieler Glenn Close?`,
     defaultQuery: "",
     solution: `SELECT id
     FROM actor
     WHERE name = 'Glenn Close';`,
   },
   {
-    description:
-      `5. Was ist die id des Films Casablanca?`,
+    description: `5. Was ist die id des Films Casablanca?`,
     defaultQuery: ``,
-    solution:
-      `SELECT id
+    solution: `SELECT id
       FROM movie
       WHERE title = 'Casablanca';`,
   },
   {
-    description:
-      `6. Gib die Liste der Namen aller Schauspieler*innen vom Film Casablanca aus.
+    description: `6. Gib die Liste der Namen aller Schauspieler*innen vom Film Casablanca aus.
       Die Ergebnisspalte soll casablanca_cast_list heißen.
       Nutze movieid=11768 (oder den Ausgabewert aus vorheriger Frage).`,
     defaultQuery: "",
@@ -684,11 +661,9 @@ export const morejoinoperationsTasks = [
       );`,
   },
   {
-    description:
-     `7. Gib die Castliste (alien_cast_list) des Films Alien aus.`,
+    description: `7. Gib die Castliste (alien_cast_list) des Films Alien aus.`,
     defaultQuery: "",
-    solution:
-      `SELECT actor.name AS alien_cast_list
+    solution: `SELECT actor.name AS alien_cast_list
       FROM movie
       INNER JOIN casting
       ON movie.id = casting.movieid
@@ -701,11 +676,9 @@ export const morejoinoperationsTasks = [
         );`,
   },
   {
-    description:
-      `8. Liste die Filmtitel auf, in denen Harrison Ford mitspielt.`,
+    description: `8. Liste die Filmtitel auf, in denen Harrison Ford mitspielt.`,
     defaultQuery: ``,
-    solution:
-      `SELECT movie.title
+    solution: `SELECT movie.title
       FROM movie
       INNER JOIN casting
       ON movie.id = casting.movieid
@@ -716,13 +689,11 @@ export const morejoinoperationsTasks = [
         );`,
   },
   {
-    description:
-      `9. Liste die Filmtitel auf, in denen Harrison Ford mitgespielt hat - jedoch nicht in der Hauptrolle. 
+    description: `9. Liste die Filmtitel auf, in denen Harrison Ford mitgespielt hat - jedoch nicht in der Hauptrolle. 
       [Hinweis: Das Feld "ord" in der Besetzung gibt die Position des Schauspielers an. Wenn ord=1, dann ist 
       dieser Schauspieler in der Hauptrolle.]`,
     defaultQuery: ``,
-    solution:
-      `SELECT movie.title
+    solution: `SELECT movie.title
       FROM movie
       INNER JOIN casting
       ON movie.id = casting.movieid
@@ -734,11 +705,9 @@ export const morejoinoperationsTasks = [
         AND casting.ord <> 1;`,
   },
   {
-    description:
-      `10. Liste die Filmtitel zusammen mit dem Name des/r Hauptdarsteller*in für alle Filme des Jahres 1962 auf.`,
+    description: `10. Liste die Filmtitel zusammen mit dem Name des/r Hauptdarsteller*in für alle Filme des Jahres 1962 auf.`,
     defaultQuery: ``,
-    solution:
-      `SELECT movie.title, actor.name
+    solution: `SELECT movie.title, actor.name
     FROM movie
     INNER JOIN casting
     ON movie.id = casting.movieid
@@ -748,8 +717,7 @@ export const morejoinoperationsTasks = [
      AND casting.ord = 1;`,
   },
   {
-    description:
-      `11. Welche waren die geschäftigsten Jahre für den Schauspieler Rock Hudson? Zeige das Jahr und die Anzahl 
+    description: `11. Welche waren die geschäftigsten Jahre für den Schauspieler Rock Hudson? Zeige das Jahr und die Anzahl 
       der Filme, die er in dem jeweiligen Jahr gemacht, wenn er mehr als 2 Filme in dem Jahr gedreht hat.`,
     defaultQuery: `SELECT yr,COUNT(title) FROM
     movie JOIN casting ON movie.id=movieid
@@ -757,8 +725,7 @@ export const morejoinoperationsTasks = [
   WHERE name='Doris Day'
   GROUP BY yr
   HAVING COUNT(title) > 1`,
-    solution:
-      `SELECT yr, COUNT(movie.title)
+    solution: `SELECT yr, COUNT(movie.title)
       FROM movie
       INNER JOIN casting
       ON movie.id = casting.movieid
@@ -769,16 +736,14 @@ export const morejoinoperationsTasks = [
       HAVING COUNT(movie.title) > 2;`,
   },
   {
-    description:
-      `12. Liste den Filmtitel und den/die Hauptdarsteller*in für alle Filme auf, in denen 
+    description: `12. Liste den Filmtitel und den/die Hauptdarsteller*in für alle Filme auf, in denen 
       Julie Andrews mitgespielt hat.`,
     defaultQuery: `SELECT movieid FROM casting
     WHERE actorid IN (
       SELECT id FROM actor
       WHERE name='Julie Andrews')
     `,
-    solution:
-      `SELECT title, actor.name
+    solution: `SELECT title, actor.name
        FROM movie, casting, actor
        WHERE movie.id = casting.movieid
          AND casting.actorid = actor.id
@@ -790,12 +755,10 @@ export const morejoinoperationsTasks = [
          AND casting.ord = 1`,
   },
   {
-    description:
-    `13. Erhalte eine Liste der Schauspieler*innen in alphabetischer Reihenfolge, die mindestens 15 Hauptrollen hatten.`,
+    description: `13. Erhalte eine Liste der Schauspieler*innen in alphabetischer Reihenfolge, die mindestens 15 Hauptrollen hatten.`,
     defaultQuery: `
   `,
-    solution:
-      `SELECT actor.name
+    solution: `SELECT actor.name
       FROM casting INNER JOIN actor ON casting.actorid = actor.id
       WHERE casting.ord = 1
       GROUP BY actor.id
@@ -803,13 +766,11 @@ export const morejoinoperationsTasks = [
       ORDER BY actor.name;`,
   },
   {
-    description:
-    `14. Liste die Filme aus 1978 mit der Anzahl der Schauspieler*innen in der Besetzung auf (Ergebnisspalte actors). 
+    description: `14. Liste die Filme aus 1978 mit der Anzahl der Schauspieler*innen in der Besetzung auf (Ergebnisspalte actors). 
     Ordne die Liste nach der Anzahl (meiste zuerst) und nach dem Titel (alphabetisch).`,
     defaultQuery: `
   `,
-    solution:
-      `SELECT movie.title, COUNT(casting.actorid) as actors
+    solution: `SELECT movie.title, COUNT(casting.actorid) as actors
         FROM movie
         INNER JOIN casting ON movie.id = casting.movieid
         WHERE movie.yr = 1978
@@ -817,12 +778,10 @@ export const morejoinoperationsTasks = [
         ORDER BY actors DESC, movie.title ASC;`,
   },
   {
-    description:
-    `15. Liste alle Schauspieler*innen auf, die mit Art Garfunkel zusammen gedreht haben.`,
+    description: `15. Liste alle Schauspieler*innen auf, die mit Art Garfunkel zusammen gedreht haben.`,
     defaultQuery: `
   `,
-    solution:
-      `SELECT DISTINCT actor.name
+    solution: `SELECT DISTINCT actor.name
       FROM movie
       INNER JOIN casting
       ON movie.id = casting.movieid
@@ -847,7 +806,8 @@ export const usingnullTasks = [
     WHERE dept IS NULL;`,
   },
   {
-    description: `2. Beachten Sie bei der default Aussage, dass der INNER JOIN die Lehrer ohne Abteilung und die Abteilungen ohne Lehrer auslässt. Schauen Sie sich das Ergebnis an. (Hier muss keine neue Query gefunden werden.)`,
+    description: `2. Beachten Sie bei der default Aussage, dass der INNER JOIN die Lehrenden ohne Abteilung und die Abteilungen ohne Lehrende auslässt. Schauen Sie sich das Ergebnis an. (Hier muss keine neue Query gefunden werden.)
+`,
     defaultQuery: `SELECT teacher.name, dept.name
     FROM teacher INNER JOIN dept
               ON (teacher.dept=dept.id)
@@ -907,7 +867,8 @@ export const usingnullTasks = [
       GROUP BY dept.name;`,
   },
   {
-    description: `9. Verwenden Sie CASE, um den Namen jedes Lehrers anzuzeigen, gefolgt von 'Sci', wenn der Lehrer in Abteilung 1 oder 2 ist, und 'Art' andernfalls.`,
+    description: `9. Verwenden Sie CASE, um den Namen jeder lehrenden Person anzuzeigen, gefolgt von 'Sci', wenn die lehrende Person in Abteilung 1 oder 2 ist, und 'Art' andernfalls.
+`,
     defaultQuery: ``,
     solution: `SELECT
       name,
@@ -915,7 +876,8 @@ export const usingnullTasks = [
     FROM teacher;`,
   },
   {
-    description: `10. Verwenden Sie CASE, um den Namen jedes Lehrers anzuzeigen, gefolgt von 'Sci', wenn der Lehrer in Abteilung 1 oder 2 ist, zeigen Sie 'Art', wenn die Abteilung des Lehrers 3 ist und 'None' sonst.`,
+    description: `10. Verwenden Sie CASE, um den Namen jeder lehrenden Person anzuzeigen, gefolgt von 'Sci', wenn der/die Lehrende in Abteilung 1 oder 2 ist, zeigen Sie 'Art', wenn die Abteilung des/der Lehrenden 3 ist und 'None' sonst.
+`,
     defaultQuery: ``,
     solution: `SELECT
       name,
@@ -925,7 +887,6 @@ export const usingnullTasks = [
     FROM teacher;`,
   },
 ];
-
 
 //Quizzes
 
@@ -2054,8 +2015,7 @@ export const nestedselectquizQuestions = [
       {
         id: 5,
         text: " SELECT region, name, population FROM bbc x WHERE population <= ALL (SELECT population FROM bbc y WHERE y.region=x.region AND population<0)",
-        imageUrl:
-          "",
+        imageUrl: "",
       },
     ],
     correctAnswer: 3,
@@ -2510,8 +2470,7 @@ export const sumandcountquizQuestions = [
       {
         id: 5,
         text: `SUM population FROM bbc WHERE region = 'Europe'`,
-        imageUrl:
-          "",
+        imageUrl: "",
       },
     ],
     correctAnswer: 3,
@@ -2552,8 +2511,7 @@ export const sumandcountquizQuestions = [
   },
   {
     id: 3,
-    question:
-      "Wählen Sie die Liste der wichtigsten SQL-Aggregatfunktionen aus",
+    question: "Wählen Sie die Liste der wichtigsten SQL-Aggregatfunktionen aus",
     imageUrl: "",
     options: [
       {
@@ -2588,8 +2546,7 @@ export const sumandcountquizQuestions = [
     id: 4,
     question:
       "Wählen Sie das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
-    imageUrl:
-      ` SELECT region, SUM(area)
+    imageUrl: ` SELECT region, SUM(area)
       FROM bbc 
      WHERE SUM(area) > 15000000 
      GROUP BY region`,
@@ -2605,7 +2562,6 @@ export const sumandcountquizQuestions = [
                 <td style={{ border: "1px solid black" }}>Europe</td>
                 <td style={{ border: "1px solid black" }}>17000000</td>
               </tr>
-              
             </table>
           </div>
         ),
@@ -2630,7 +2586,6 @@ export const sumandcountquizQuestions = [
                 <td style={{ border: "1px solid black" }}>North America</td>
                 <td style={{ border: "1px solid black" }}>21660000</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -2652,7 +2607,6 @@ export const sumandcountquizQuestions = [
               <tr>
                 <td style={{ border: "1px solid black" }}>North America</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -2762,7 +2716,7 @@ export const sumandcountquizQuestions = [
       },
       {
         id: 4,
-        text:` SELECT name, population/area AS density FROM bbc WHERE population = (SELECT MAX(population) FROM bbc)`,
+        text: ` SELECT name, population/area AS density FROM bbc WHERE population = (SELECT MAX(population) FROM bbc)`,
         imageUrl: "",
       },
       {
@@ -2777,8 +2731,7 @@ export const sumandcountquizQuestions = [
     id: 8,
     question:
       "Wählen Sie das Ergebnis aus, das man mit dem folgenden Code erhalten würde:",
-    imageUrl:
-      `  SELECT region, SUM(area) 
+    imageUrl: `  SELECT region, SUM(area) 
       FROM bbc 
      GROUP BY region 
      HAVING SUM(area)<= 20000000`,
@@ -2792,21 +2745,16 @@ export const sumandcountquizQuestions = [
             >
               <tr>
                 <td style={{ border: "1px solid black" }}>732240</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>13403102</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>17740392</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>4943771</td>
-                
               </tr>
-              
             </table>
           </div>
         ),
@@ -2835,7 +2783,6 @@ export const sumandcountquizQuestions = [
                 <td style={{ border: "1px solid black" }}>North America</td>
                 <td style={{ border: "1px solid black" }}>21660000</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -2860,7 +2807,6 @@ export const sumandcountquizQuestions = [
               <tr>
                 <td style={{ border: "1px solid black" }}>North America</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -2889,7 +2835,6 @@ export const sumandcountquizQuestions = [
                 <td style={{ border: "1px solid black" }}>South Asia</td>
                 <td style={{ border: "1px solid black" }}>9437710</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -2914,7 +2859,6 @@ export const sumandcountquizQuestions = [
               <tr>
                 <td style={{ border: "1px solid black" }}>South Asia</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -2955,8 +2899,7 @@ export const joinquizQuestions = [
       {
         id: 5,
         text: `game  JOIN goal ON (team1=teamid OR team2=teamid)`,
-        imageUrl:
-          "",
+        imageUrl: "",
       },
     ],
     correctAnswer: 4,
@@ -3050,10 +2993,8 @@ export const joinquizQuestions = [
   },
   {
     id: 4,
-    question:
-      "Wähle das Ergebnis des folgenden Codes aus:",
-    imageUrl:
-      `SELECT DISTINCT teamid, mdate
+    question: "Wähle das Ergebnis des folgenden Codes aus:",
+    imageUrl: `SELECT DISTINCT teamid, mdate
       FROM goal JOIN game on (matchid=id)
      WHERE mdate = '9 June 2012'`,
     options: [
@@ -3072,7 +3013,6 @@ export const joinquizQuestions = [
                 <td style={{ border: "1px solid black" }}>GER</td>
                 <td style={{ border: "1px solid black" }}>9 June 2012</td>
               </tr>
-              
             </table>
           </div>
         ),
@@ -3087,14 +3027,10 @@ export const joinquizQuestions = [
             >
               <tr>
                 <td style={{ border: "1px solid black" }}>DEN</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>GER</td>
-                
               </tr>
-              
-            
             </table>
           </div>
         ),
@@ -3123,7 +3059,6 @@ export const joinquizQuestions = [
                 <td style={{ border: "1px solid black" }}>RUS </td>
                 <td style={{ border: "1px solid black" }}>9 June 2012</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -3138,21 +3073,16 @@ export const joinquizQuestions = [
             >
               <tr>
                 <td style={{ border: "1px solid black" }}>GRE</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>CZE</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>POL</td>
-               
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>RUS </td>
-                
               </tr>
-            
             </table>
           </div>
         ),
@@ -3181,7 +3111,6 @@ export const joinquizQuestions = [
                 <td style={{ border: "1px solid black" }}>CZE </td>
                 <td style={{ border: "1px solid black" }}>9 June 2012</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -3292,8 +3221,7 @@ export const joinquizQuestions = [
   },
   {
     id: 7,
-    question:
-      "Wähle das Ergebnis des folgendes Codes aus:",
+    question: "Wähle das Ergebnis des folgendes Codes aus:",
     imageUrl: `SELECT teamname, COUNT(*)
     FROM eteam JOIN goal ON teamid = id
    GROUP BY id
@@ -3308,21 +3236,16 @@ export const joinquizQuestions = [
             >
               <tr>
                 <td style={{ border: "1px solid black" }}>2</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>2</td>
-               
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>1</td>
-                
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>2 </td>
-                
               </tr>
-            
             </table>
           </div>
         ),
@@ -3344,14 +3267,15 @@ export const joinquizQuestions = [
                 <td style={{ border: "1px solid black" }}>2</td>
               </tr>
               <tr>
-                <td style={{ border: "1px solid black" }}>Republic of Ireland</td>
+                <td style={{ border: "1px solid black" }}>
+                  Republic of Ireland
+                </td>
                 <td style={{ border: "1px solid black" }}>1</td>
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>Ukraine </td>
                 <td style={{ border: "1px solid black" }}>2</td>
               </tr>
-            
             </table>
           </div>
         ),
@@ -3366,21 +3290,18 @@ export const joinquizQuestions = [
             >
               <tr>
                 <td style={{ border: "1px solid black" }}>Netherlands</td>
-               
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>Poland</td>
-                
               </tr>
               <tr>
-                <td style={{ border: "1px solid black" }}>Republic of Ireland</td>
-                
+                <td style={{ border: "1px solid black" }}>
+                  Republic of Ireland
+                </td>
               </tr>
               <tr>
                 <td style={{ border: "1px solid black" }}>Ukraine </td>
-                
               </tr>
-            
             </table>
           </div>
         ),
@@ -3388,7 +3309,7 @@ export const joinquizQuestions = [
       },
       {
         id: 4,
-        text:(
+        text: (
           <div>
             <table
               style={{ borderCollapse: "collapse", border: "1px solid black" }}
@@ -3397,8 +3318,6 @@ export const joinquizQuestions = [
                 <td style={{ border: "1px solid black" }}>Poland</td>
                 <td style={{ border: "1px solid black" }}>76</td>
               </tr>
-             
-            
             </table>
           </div>
         ),
@@ -3412,10 +3331,11 @@ export const joinquizQuestions = [
               style={{ borderCollapse: "collapse", border: "1px solid black" }}
             >
               <tr>
-                <td style={{ border: "1px solid black" }}>Republic of Ireland</td>
+                <td style={{ border: "1px solid black" }}>
+                  Republic of Ireland
+                </td>
                 <td style={{ border: "1px solid black" }}>1</td>
               </tr>
-              
             </table>
           </div>
         ),
@@ -3424,7 +3344,6 @@ export const joinquizQuestions = [
     ],
     correctAnswer: 2,
   },
-  
 ];
 export const joinquiz2Questions = [
   {
@@ -4770,7 +4689,7 @@ export const usingnullquizQuestions = [
     ],
     correctAnswer: 1,
   },
-   {
+  {
     id: 6,
     question:
       "Wählen Sie das Ergebnis, dass man durch folgende Aussage erhält:",
@@ -4787,7 +4706,7 @@ export const usingnullquizQuestions = [
         id: 1,
         text: (
           <div>
-             <table
+            <table
               style={{ borderCollapse: "collapse", border: "1px solid black" }}
             >
               <tr>
@@ -4814,7 +4733,7 @@ export const usingnullquizQuestions = [
                 <td style={{ border: "1px solid black" }}>Deadyawn</td>
                 <td style={{ border: "1px solid black" }}>Other</td>
               </tr>
-            </table> 
+            </table>
           </div>
         ),
         imageUrl: "",
@@ -4850,7 +4769,7 @@ export const usingnullquizQuestions = [
                 <td style={{ border: "1px solid black" }}>Deadyawn</td>
                 <td style={{ border: "1px solid black" }}>Computing</td>
               </tr>
-            </table> 
+            </table>
           </div>
         ),
         imageUrl: "",
@@ -4859,7 +4778,7 @@ export const usingnullquizQuestions = [
         id: 3,
         text: (
           <div>
-              <table
+            <table
               style={{ borderCollapse: "collapse", border: "1px solid black" }}
             >
               <tr>
@@ -4874,7 +4793,7 @@ export const usingnullquizQuestions = [
                 <td style={{ border: "1px solid black" }}>Splint</td>
                 <td style={{ border: "1px solid black" }}>Computing</td>
               </tr>
-            </table>  
+            </table>
           </div>
         ),
         imageUrl: "",
@@ -4883,7 +4802,7 @@ export const usingnullquizQuestions = [
         id: 4,
         text: (
           <div>
-             <table
+            <table
               style={{ borderCollapse: "collapse", border: "1px solid black" }}
             >
               <tr>
@@ -4898,7 +4817,7 @@ export const usingnullquizQuestions = [
                 <td style={{ border: "1px solid black" }}>Deadyawn</td>
                 <td style={{ border: "1px solid black" }}>Other</td>
               </tr>
-            </table> 
+            </table>
           </div>
         ),
         imageUrl: "",
@@ -4934,12 +4853,12 @@ export const usingnullquizQuestions = [
                 <td style={{ border: "1px solid black" }}>Deadyawn</td>
                 <td style={{ border: "1px solid black" }}>0</td>
               </tr>
-            </table> 
+            </table>
           </div>
         ),
         imageUrl: "",
       },
     ],
     correctAnswer: 1,
-  }, 
+  },
 ];
