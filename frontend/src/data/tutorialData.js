@@ -20,11 +20,8 @@ export const topics = [
   { name: "Using Null", link: "usingnull" },
   { name: "Using Null Quiz", link: "usingnullquiz" },
 
-  /*{ name: "Using Null", link: "usingnull" },
-  { name: "Numeric Examples", link: "numericexamples" },
-  { name: "Window function", link: "windowfunction" },
-  { name: "Self join", link: "selfjoin" },
-  { name: "Self join Quiz", link: "selfjoinquiz" }, */
+  { name: "Self join", link: "selfjoin" } /*
+  { name: "Self join Quiz", link: "selfjoinquiz" }, */,
 ];
 
 export const basicsTasks = [
@@ -885,6 +882,150 @@ export const usingnullTasks = [
             WHEN dept = 3 THEN 'Art'
             ELSE 'None' END)
     FROM teacher;`,
+  },
+];
+export const selfjoinTasks = [
+  {
+    description: `1. Wie viele stops sind in der Datenbank?`,
+    defaultQuery: ``,
+    solution: `SELECT COUNT(*)
+FROM stops;`,
+  },
+  {
+    description: `2. Finde die id für stop 'Craiglockhart'
+`,
+    defaultQuery: `
+   `,
+    solution: `SELECT id
+FROM stops
+WHERE name = 'Craiglockhart';`,
+  },
+  {
+    description: `3. Geben die id und name für stops an, die zur Route mit num = '4' und company = 'LRT' gehören.`,
+    defaultQuery: ``,
+    solution: `SELECT stops.id, stops.name
+FROM stops
+INNER JOIN route
+ON stops.id = route.stop
+WHERE route.num = 4 AND route.company = 'LRT'
+ORDER BY route.pos;`,
+  },
+  {
+    description: `4. Die gezeigte Abfrage gibt die Anzahl der Linien aus, die entweder London Road (149) oder Craiglockhart (53) anfahren. Führen Sie die Abfrage aus und bachten Sie, dass die beiden Linien, die diese Haltestellen miteinander verbinden, eine Anzahl von 2 haben. Fügen Sie eine HAVING-Klausel hinzu, um die Ausgabe auf diese beiden Linien zu beschränken.`,
+    defaultQuery: `SELECT company, num, COUNT(*)
+FROM route WHERE stop=149 OR stop=53
+GROUP BY company, num
+`,
+    solution: `SELECT company, num, COUNT(*)
+FROM route
+WHERE stop = 149 OR stop = 53
+GROUP BY company, num
+HAVING COUNT(*) = 2;`,
+  },
+  {
+    description: `5. Führen Sie den gezeigten Self Join aus und beachten Sie, dass b.stop alle Orte anzeigt, die Sie von Craiglockhart aus erreichen können, ohne die Route zu wechseln. Ändern Sie die Abfrage so, dass sie die Verbindungen von Craiglockhart nach London Road anzeigt.`,
+    defaultQuery: `SELECT a.company, a.num, a.stop, b.stop
+FROM route a JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+WHERE a.stop=53`,
+    solution: `SELECT a.company, a.num, a.stop, b.stop
+FROM route a
+INNER JOIN route b
+ON (a.company = b.company AND a.num = b.num)
+WHERE a.stop = 53
+  AND b.stop = (
+    SELECT id
+    FROM stops
+    WHERE name = 'London Road'
+  );`,
+  },
+  {
+    description: `6. Die gezeigte Abfrage ähnelt der vorherigen, doch durch die Verknüpfung von zwei Kopien der Tabelle „stops“ können wir auf die Haltestellen nach Namen statt nach Nummern verweisen. Ändern Sie die Abfrage so, dass die Verbindungen zwischen „Craiglockhart“ und „London Road“ angezeigt werden. Wenn Sie dieser Orte überdrüssig sind, versuchen Sie es mit 'Fairmilehead' gegen 'Tollcross'.`,
+    defaultQuery: `SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+WHERE stopa.name='Craiglockhart'`,
+    solution: `SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a
+INNER JOIN route b
+ON (a.company = b.company AND a.num = b.num)
+INNER JOIN stops stopa
+  ON a.stop = stopa.id
+INNER JOIN stops stopb
+  ON b.stop = stopb.id
+WHERE stopa.name = 'Craiglockhart' AND stopb.name = 'London Road';`,
+  },
+  {
+    description: `7.Geben Sie eine Liste aller Linien an, die die Haltestellen 115 und 137 („Haymarket“ und „Leith“) verbinden.`,
+    defaultQuery: "",
+    solution: `SELECT DISTINCT a.company, a.num
+FROM route a
+INNER JOIN route b
+ON (a.company = b.company AND a.num = b.num)
+WHERE a.stop = 115 AND b.stop = 137;`,
+  },
+  {
+    description: `8. Geben Sie eine Liste der Dienste an, die die Haltestellen „Craiglockhart“ und „Tollcross“ verbinden`,
+    defaultQuery: ``,
+    solution: `SELECT a.company, a.num
+FROM route a
+INNER JOIN route b
+  ON (a.company = b.company AND a.num = b.num)
+INNER JOIN stops stopa
+  ON (a.stop = stopa.id)
+INNER JOIN stops stopb
+  ON (b.stop = stopb.id)
+WHERE stopa.name = 'Craiglockhart' AND stopb.name = 'Tollcross';`,
+  },
+  {
+    description: `9. Geben Sie eine (distinct) Liste der Haltestellen an, die von „Craiglockhart“ aus mit einem Bus erreicht werden können, einschließlich „Craiglockhart“ selbst, der von der LRT-Gesellschaft angeboten wird. Geben Sie das Unternehmen und die Busnummer der jeweiligen Linie an.
+`,
+    defaultQuery: ``,
+    solution: `SELECT DISTINCT stopb.name, a.company, a.num
+FROM route a
+INNER JOIN route b
+  ON (a.company = b.company AND a.num = b.num)
+INNER JOIN stops stopa
+  ON (a.stop = stopa.id)
+INNER JOIN stops stopb
+  ON (b.stop = stopb.id)
+WHERE stopa.name = 'Craiglockhart' AND a.company = 'LRT';`,
+  },
+  {
+    description: `Finde die Strecken mit zwei Bussen, die von Craiglockhart nach Lochend fahren können.
+Geben Sie die Busnummer und das Unternehmen des ersten Busses an, den Namen der Haltestelle für den Umstieg,
+und die Busnummer und das Unternehmen für den zweiten Bus.
+`,
+    defaultQuery: ``,
+    solution: `SELECT DISTINCT a.num, a.company, stops.name, b.num, b.company
+FROM (
+  SELECT x.company, x.num, y.stop
+  FROM route x
+  INNER JOIN route y
+    ON (x.company = y.company AND x.num = y.num)
+  INNER JOIN stops stopx
+    ON (x.stop = stopx.id)
+  INNER JOIN stops stopy
+    ON (y.stop = stopy.id)
+  WHERE stopx.name = 'Craiglockhart'
+) AS a
+INNER JOIN (
+  SELECT x.company, x.num, y.stop
+  FROM route x
+  INNER JOIN route y
+    ON (x.company = y.company AND x.num = y.num)
+  INNER JOIN stops stopx
+    ON (x.stop = stopx.id)
+  INNER JOIN stops stopy
+    ON (y.stop = stopy.id)
+  WHERE stopx.name = 'Lochend'
+) AS b
+ON (a.stop = b.stop)
+INNER JOIN stops
+  ON (a.stop = stops.id)
+ORDER BY a.num, stops.name, b.num`,
   },
 ];
 

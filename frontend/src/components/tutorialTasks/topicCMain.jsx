@@ -1,6 +1,6 @@
 import React from "react";
 import WorldTaskSheet from "./worldTaskSheet";
-import { basicsTasks, joinoperationTasks, morejoinoperationsTasks, usingnullTasks } from "../../data/tutorialData";
+import { basicsTasks, joinoperationTasks, morejoinoperationsTasks, selfjoinTasks, usingnullTasks } from "../../data/tutorialData";
 import { namesTasks } from "../../data/tutorialData";
 import { selectfromworldTasks } from "../../data/tutorialData";
 import { selectwithinselectTasks } from "../../data/tutorialData";
@@ -84,6 +84,16 @@ export const UsingNullC = () => {
         Using null
       </h1>
       <WorldTaskSheet title="usingnull" tasks={usingnullTasks} />
+    </div>
+  );
+};
+export const SelfJoinC = () => {
+  return (
+    <div>
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
+        Self Join
+      </h1>
+      <WorldTaskSheet title="selfjoin" tasks={selfjoinTasks} />
     </div>
   );
 };

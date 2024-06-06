@@ -121,7 +121,7 @@ const WorldTaskSheet = ({ title, tasks }) => {
           <Button>Zurück zur Themenübersicht</Button>
         </Link>
         <hr></hr>
-        {title !== "joinoperation" && title !== "morejoinoperations" && title !== "usingnull" && (
+        {title !== "joinoperation" && title !== "morejoinoperations" && title !== "usingnull" && title !== "selfjoin" && (
           <div>
             <p>Tabelle world </p>
             <table
@@ -431,6 +431,16 @@ const WorldTaskSheet = ({ title, tasks }) => {
                 <td style={{ border: "1px solid black" }}>...</td>
               </tr>
             </table>
+            
+          </div>
+        )}
+        {title === "selfjoin" && (
+          <div>
+            <h3>Relationen</h3>
+            <p>stops(<b>id</b>, name) </p>
+            
+            <p>route(<b>num</b>, <b>company</b>, <b>pos</b>, stop) </p>
+            
             
           </div>
         )}
