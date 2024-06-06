@@ -849,7 +849,7 @@ export const usingnullTasks = [
   ON teacher.dept = dept.id;`,
   },
   {
-    description: `7.Mutzen Sie COUNT, um die Anzahl der lehrenden Personen und die Anzahl von Mobiltelefonen (mobile) auszugeben.`,
+    description: `7.Nutzen Sie COUNT, um die Anzahl der lehrenden Personen und die Anzahl von Mobiltelefonen (mobile) auszugeben.`,
     defaultQuery: "",
     solution: `SELECT Count(name), Count(mobile)
       FROM teacher;`,
@@ -994,7 +994,7 @@ INNER JOIN stops stopb
 WHERE stopa.name = 'Craiglockhart' AND a.company = 'LRT';`,
   },
   {
-    description: `Finde die Strecken mit zwei Bussen, die von Craiglockhart nach Lochend fahren können.
+    description: `10. Finde die Strecken mit zwei Bussen, die von Craiglockhart nach Lochend fahren können.
 Geben Sie die Busnummer und das Unternehmen des ersten Busses an, den Namen der Haltestelle für den Umstieg,
 und die Busnummer und das Unternehmen für den zweiten Bus.
 `,
