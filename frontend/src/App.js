@@ -16,6 +16,7 @@ import {
   SelectFromWorldC,
   SelectWithinSelectC,
   SumAndCountC,
+  UsingNullC,
 } from "./components/tutorialTasks/topicCMain";
 import { NamesC } from "./components/tutorialTasks/topicCMain";
 import {
@@ -24,7 +25,12 @@ import {
   NestedSelectQuizC,
   SumAndCountQuizC,
   JoinQuizC,
+  JoinQuiz2C,
+  UsingNullQuizC,
 } from "./components/tutorialTasks/selectQuizMain";
+
+
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -35,7 +41,7 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-
+<ErrorBoundary>
         <div className="app">
           {/* <Sidebar /> */}
           <main className="content">
@@ -69,19 +75,19 @@ function App() {
                 path="/tutorial/joinoperation"
                 element={<JoinOperationC />}
               />
+              
               <Route path="/tutorial/joinquiz" element={<JoinQuizC />} />
+              <Route path="/tutorial/joinquiz2" element={<JoinQuiz2C />} />
               <Route path="/tutorial/morejoinoperations" element={<MoreJoinOperationsC />} />
+              <Route path="/tutorial/usingnull" element={<UsingNullC />} />
+              <Route path="/tutorial/usingnullquiz" element={<UsingNullQuizC />} />
               {/*
 
 
 
-<Route path="/tutorial/aggregatefunctions" element={<AggregateFunctionsC />} />
 
 
-<Route path="/tutorial/oldjoin" element={<OldJoinC />} />
-<Route path="/tutorial/morejoin" element={<MoreJoinC />} />
-<Route path="/tutorial/joinquiz2" element={<JoinQuiz2C />} />
-<Route path="/tutorial/usingnull" element={<UsingNullC />} />
+
 <Route path="/tutorial/numericexamples" element={<NumericExamplesC />} />
 <Route path="/tutorial/windowfunction" element={<WindowFunctionC />} />
 <Route path="/tutorial/selfjoin" element={<SelfJoinC />} />
@@ -90,9 +96,34 @@ function App() {
             {/* <Footer/> */}
           </main>
         </div>
+        </ErrorBoundary>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }
 
 export default App;
+
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Fehlerberichterstattung hier
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong. Please refresh the page.</h1>;
+    }
+
+    return this.props.children; 
+  }
+}
