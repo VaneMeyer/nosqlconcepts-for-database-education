@@ -1,6 +1,6 @@
 import React from "react";
 import WorldTaskSheet from "./worldTaskSheet";
-import { basicsTasks, joinoperationTasks, morejoinoperationsTasks } from "../../data/tutorialData";
+import { basicsTasks, joinoperationTasks, morejoinoperationsTasks, usingnullTasks } from "../../data/tutorialData";
 import { namesTasks } from "../../data/tutorialData";
 import { selectfromworldTasks } from "../../data/tutorialData";
 import { selectwithinselectTasks } from "../../data/tutorialData";
@@ -74,6 +74,16 @@ export const MoreJoinOperationsC = () => {
         More Join Operations
       </h1>
       <WorldTaskSheet title="morejoinoperations" tasks={morejoinoperationsTasks} />
+    </div>
+  );
+};
+export const UsingNullC = () => {
+  return (
+    <div>
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
+        Using null
+      </h1>
+      <WorldTaskSheet title="usingnull" tasks={usingnullTasks} />
     </div>
   );
 };
