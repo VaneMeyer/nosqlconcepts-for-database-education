@@ -1,6 +1,6 @@
 import React from "react";
 import QuizTaskSheet from "./quizTaskSheet";
-import { BBCquizQuestions, joinquizQuestions, nestedselectquizQuestions, selectquizQuestions, sumandcountquizQuestions } from "../../data/tutorialData";
+import { BBCquizQuestions, joinquiz2Questions, joinquizQuestions, nestedselectquizQuestions, selectquizQuestions, sumandcountquizQuestions, usingnullquizQuestions } from "../../data/tutorialData";
 
 export const SelectQuizC = () => {
   return (
@@ -49,6 +49,26 @@ export const JoinQuizC = () => {
         Join Quiz
       </h1>
       <QuizTaskSheet title="joinquiz" tasks={joinquizQuestions} />
+    </div>
+  );
+};
+export const JoinQuiz2C = () => {
+  return (
+    <div>
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
+        Join Quiz 2
+      </h1>
+      <QuizTaskSheet title="joinquiz2" tasks={joinquiz2Questions} />
+    </div>
+  );
+};
+export const UsingNullQuizC = () => {
+  return (
+    <div>
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
+        Using Null Quiz
+      </h1>
+      <QuizTaskSheet title="usingnullquiz" tasks={usingnullquizQuestions} />
     </div>
   );
 };
