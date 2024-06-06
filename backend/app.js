@@ -60,10 +60,10 @@ const executeQueryWithTimeout = (queryFunction, timeout) => {
 
 // PostgreSQL connections
 const pool = new Pool({
-  host: process.env.PG_HOST,
-  user: process.env.PG_USER,
-  password: process.env.PG_PASSWORD,
-  database: process.env.PG_DATABASE,
+  host: process.env.POSTGRES_HOST,
+  user: process.env.DASHBOARD_USER,
+  password: process.env.DASHBOARD_PASSWORD,
+  database: process.env.POSTGRES_DB,
 });
 
 app.get("/", (req, res) => {
@@ -96,11 +96,11 @@ app.post("/api/execute-sql", async (req, res) => {
   }
 });
 
-const pgPort = 8000;
-
 
 //start server
-
-app.listen(pgPort, () => {
-  console.log(`App is running on port ${pgPort} for PostgreSQL`);
-});
+app.listen(
+    8000,
+    () => {
+      console.log(`App is running on port ${8000} for PostgreSQL`);
+    }
+);

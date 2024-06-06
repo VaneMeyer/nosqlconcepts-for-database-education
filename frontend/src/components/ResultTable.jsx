@@ -42,8 +42,6 @@ const ResultTable = ({ queryResult, resultSize }) => {
     ...row,
   }));
 
-  let minTableRows = resultSize < 5 ? resultSize : 5;
-  let maxTableRows = resultSize > 100 ? 100 : resultSize;
 
   return (
     <div>
@@ -56,10 +54,10 @@ const ResultTable = ({ queryResult, resultSize }) => {
             getRowId={(row) => row.id}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: minTableRows },
+                paginationModel: { pageSize: 5 },
               },
             }}
-            pageSizeOptions={[minTableRows, 25, 50, maxTableRows]}
+            pageSizeOptions={[5, 25, 50, 100]}
           />
         </div>
       )}

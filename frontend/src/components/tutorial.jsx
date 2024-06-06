@@ -13,8 +13,7 @@ const Tutorial = () => {
     
        <div style={{ display: "flex", justifyContent: "center" }}>
       <div style={{ width: "70%" }}>
-      <h1>SQL Tutorial</h1>
-      <p>Liste der Themen:</p>
+      <h1>SQL Tutorial Kapitel</h1>
       <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
         <List component="nav" aria-label="secondary mailbox folder">
           {topics.map((topic) => (
