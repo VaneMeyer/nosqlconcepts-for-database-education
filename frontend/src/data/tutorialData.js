@@ -907,7 +907,7 @@ WHERE name = 'Craiglockhart';`,
 FROM stops
 INNER JOIN route
 ON stops.id = route.stop
-WHERE route.num = 4 AND route.company = 'LRT'
+WHERE route.num = '4' AND route.company = 'LRT'
 ORDER BY route.pos;`,
   },
   {
