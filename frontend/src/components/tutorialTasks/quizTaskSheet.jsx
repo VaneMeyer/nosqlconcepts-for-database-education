@@ -165,7 +165,7 @@ const QuizTaskSheet = ({ title, tasks }) => {
             </table>
           </div>
         ) } 
-        {(title !== "nestedselectquiz" && title !== "joinquiz") && (
+        {(title !== "nestedselectquiz" && title !== "joinquiz" && title !== "joinquiz2" && title !=="usingnullquiz") && (
           <div>
             {" "}
             <p>Tabelle world </p>
@@ -210,7 +210,7 @@ const QuizTaskSheet = ({ title, tasks }) => {
             </table>
           </div>
         )}
-        {title === "joinquiz" && (<div><p>game </p>
+        {(title === "joinquiz") && (<div><p>game </p>
         <table
           style={{ borderCollapse: "collapse", border: "1px solid black" }}
         >
@@ -351,6 +351,122 @@ const QuizTaskSheet = ({ title, tasks }) => {
           </tr>
         </table>
         </div>)}
+        {title === "joinquiz2" && (
+          <div>
+            <p>movie </p>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <th style={{ border: "1px solid black" }}>id</th>
+                <td style={{ border: "1px solid black" }}>title</td>
+                <td style={{ border: "1px solid black" }}>yr</td>
+                <td style={{ border: "1px solid black" }}>director</td>
+                <td style={{ border: "1px solid black" }}>budget</td>
+                <td style={{ border: "1px solid black" }}>gross</td>
+              </tr>
+            </table>
+            <p>actor </p>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <th style={{ border: "1px solid black" }}>id</th>
+                <td style={{ border: "1px solid black" }}>name</td>
+              </tr>
+            </table>
+            <p>casting </p>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <th style={{ border: "1px solid black" }}>movieid</th>
+                <th style={{ border: "1px solid black" }}>actorid</th>
+                <th style={{ border: "1px solid black" }}>ord</th>
+              </tr>
+            </table>
+          </div>
+        )}
+        {title === "usingnullquiz" && (
+          <div>
+            <p>teacher </p>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <th style={{ border: "1px solid black" }}>id</th>
+                <th style={{ border: "1px solid black" }}>dept</th>
+                <th style={{ border: "1px solid black" }}>name</th>
+                <th style={{ border: "1px solid black" }}>phone</th>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>101</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Shrivell</td>
+                <td style={{ border: "1px solid black" }}>2753</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>102</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Throd</td>
+                <td style={{ border: "1px solid black" }}>2754</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>103</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Splint</td>
+                <td style={{ border: "1px solid black" }}></td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>104</td>
+                <td style={{ border: "1px solid black" }}></td>
+                <td style={{ border: "1px solid black" }}>Spiregrain</td>
+                <td style={{ border: "1px solid black" }}></td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>105</td>
+                <td style={{ border: "1px solid black" }}>2</td>
+                <td style={{ border: "1px solid black" }}>Cutflower</td>
+                <td style={{ border: "1px solid black" }}>3212</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>106</td>
+                <td style={{ border: "1px solid black" }}></td>
+                <td style={{ border: "1px solid black" }}>Deadyawn</td>
+                <td style={{ border: "1px solid black" }}></td>
+                
+              </tr>
+            </table>
+            <p>dept </p>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <th style={{ border: "1px solid black" }}>id</th>
+                <th style={{ border: "1px solid black" }}>name</th>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>2</td>
+                <td style={{ border: "1px solid black" }}>Design</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>3</td>
+                <td style={{ border: "1px solid black" }}>Engineering</td>
+              </tr>
+            </table>
+            
+          </div>
+        )}
 
         {questions.map((quiz, index) => (
           <Box key={index}>
