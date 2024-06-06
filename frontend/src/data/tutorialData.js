@@ -20,8 +20,8 @@ export const topics = [
   { name: "Using Null", link: "usingnull" },
   { name: "Using Null Quiz", link: "usingnullquiz" },
 
-  { name: "Self join", link: "selfjoin" } /*
-  { name: "Self join Quiz", link: "selfjoinquiz" }, */,
+  { name: "Self join", link: "selfjoin" },
+  { name: "Self join Quiz", link: "selfjoinquiz" }
 ];
 
 export const basicsTasks = [
@@ -4068,594 +4068,7 @@ export const joinquiz2Questions = [
   },
 ];
 
-/* export const joinquiz2Questions = [
-  {
-    id: 1,
-    question:
-      "Select the statement which lists the unfortunate directors of the movies which have caused financial loses (gross < budget)",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `SELECT JOIN(name FROM actor, movie
-          ON actor.id:director WHERE gross < budget)
-    GROUP BY name`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: `SELECT name
-        FROM actor INNER JOIN movie BY actor.id = director
-        HAVING gross < budget`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `SELECT name
-        FROM actor INNER JOIN movie ON actor.id = director
-       WHERE gross < budget`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `SELECT name
-        FROM actor INNER JOIN movie ON actor.id:director
-       WHERE gross < budget`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `SELECT name
-        FROM director INNER JOIN movie ON movie.id = director.id
-       WHERE gross < budget`,
-        imageUrl:
-          "",
-      },
-    ],
-    correctAnswer: 3,
-  },
-  {
-    id: 2,
-    question:
-      "Select the correct example of JOINing three tables",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `SELECT * 
-        FROM actor JOIN casting BY actor.id = actorid
-       JOIN movie BY movie.id = movieid`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: `SELECT *
-        FROM actor JOIN casting ON actor.id = actorid
-         AND JOIN movie ON movie.id = movieid`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `SELECT *
-        FROM actor JOIN casting
-        JOIN movie ON actor.id = actorid
-         AND movie.id = movieid`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `SELECT *
-        FROM actor JOIN casting ON actor.id = actorid
-         AND movie ON movie.id = movieid`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `SELECT *
-        FROM actor JOIN casting ON actor.id = actorid
-        JOIN movie ON movie.id = movieid`,
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 5,
-  },
-  {
-    id: 3,
-    question:
-      "Select the statement that shows the list of actors called 'John' by order of number of movies in which they acted",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `SELECT name, COUNT(movieid)
-        FROM actor JOIN casting ON actorid=actor.id
-       WHERE name IN 'John %'
-       GROUP BY name ORDER BY 2`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: `SELECT name, COUNT(movieid)
-        FROM actor JOIN casting ON actorid=actor.id
-       WHERE name LIKE 'J%'
-       GROUP BY name ORDER BY 2 DESC`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `SELECT name, COUNT(movieid)
-        FROM casting JOIN actor ON actorid=actor.id
-       WHERE name LIKE 'John %'
-       GROUP BY name ORDER BY 2 DESC`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `SELECT name, COUNT(movieid)
-        FROM casting JOIN actor
-       WHERE (actorid ON actor.id)
-         AND name LIKE 'John %'
-       GROUP BY name ORDER BY 2 DESC`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `SELECT name, COUNT(movieid)
-        FROM casting JOIN actor
-       WHERE name LIKE 'John %'
-       GROUP BY name ORDER BY COUNT(movieid) DESC`,
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 3,
-  },
-  {
-    id: 4,
-    question:
-      "Select the result that would be obtained from the following code:",
-    imageUrl:
-      ` SELECT title 
-      FROM movie JOIN casting ON (movieid=movie.id)
-                 JOIN actor   ON (actorid=actor.id)
-     WHERE name='Paul Hogan' AND ord = 1`,
-    options: [
-      {
-        id: 1,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Flipper</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Lightning Jack</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Flipper</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Lightning Jack</td>
-                
-              </tr>
-              
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>1</td>
-               
-              </tr>
-            
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Flipper</td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Lightning Jack </td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan </td>
-                <td style={{ border: "1px solid black" }}>1 </td>
-                
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: (
-          <div>
-                <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
-                
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
-                
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Flipper</td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
-               
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Lightning Jack </td>
-                <td style={{ border: "1px solid black" }}>Paul Hogan </td>
-                
-                
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 2,
-  },
-  {
-    id: 5,
-    question:
-      "Select the statement that lists all the actors that starred in movies directed by Ridley Scott who has id 351",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `SELECT name
-        FROM movie JOIN casting
-         AND actor ON movie.id = movieid
-         AND actor.id = actorid
-       WHERE ord = 1
-        AND actor = 351`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: `SELECT name
-        FROM movie JOIN casting
-        JOIN actor ON movie.id = movieid
-          OR actor.id = actorid
-       WHERE ord = 1 AND director = 351`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `SELECT name
-        FROM movie JOIN casting ON movie.id = movieid
-        JOIN actor ON actor.id = actorid
-       WHERE ord = 1 AND actorid = 351`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `SELECT name
-        FROM movie JOIN casting ON movie.id = movieid
-        JOIN actor ON actor.id = actorid
-      WHERE ord = 1 AND director = 351`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `SELECT name
-        FROM movie JOIN casting ON movie.id = actorid
-        JOIN actor ON actor.id = movieid
-       WHERE director = 351`,
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 4,
-  },
-  {
-    id: 6,
-    question:
-      " There are two sensible ways to connect movie and actor. They are:",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: (<ul>
-          <li>link the director column in movies with the id column in actor</li>
-          <li>join casting to itself</li>
-        </ul>),
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: (<ul>
-          <li>link the actor column in movies with the primary key in actor</li>
-          <li>connect the primary keys of movie and actor via the casting table</li>
-        </ul>),
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: (<ul>
-          <li>link the director column in movies with the primary key in actor</li>
-          <li>connect the primary keys of movie and actor via the casting table</li>
-        </ul>),
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: (<ul>
-          <li>link the director column in movies with the primary key in actor</li>
-          <li>connect the primary keys of movie and casting via the actor table</li>
-        </ul>),
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: (<ul>
-          <li>link the movie column in actor with the director column in actor</li>
-          <li>connect movie and actor via the casting table</li>
-        </ul>),
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 3,
-  },
-  {
-    id: 7,
-    question:
-      "Select the result that would be obtained from the following code:",
-    imageUrl: `SELECT title, yr 
-    FROM movie, casting, actor 
-   WHERE name='Robert De Niro' AND movieid=movie.id AND actorid=actor.id AND ord = 3`,
-    options: [
-      {
-        id: 1,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
-                <td style={{ border: "1px solid black" }}>1993</td>
-                <td style={{ border: "1px solid black" }}>3</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
-                <td style={{ border: "1px solid black" }}>1973</td>
-                <td style={{ border: "1px solid black" }}>3</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Limitless</td>
-                <td style={{ border: "1px solid black" }}>2011</td>
-                <td style={{ border: "1px solid black" }}>3</td>
-                
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: (
-          <div>
-             <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
-                <td style={{ border: "1px solid black" }}>1993</td>
-               
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
-                <td style={{ border: "1px solid black" }}>1973</td>
-               
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Limitless</td>
-                <td style={{ border: "1px solid black" }}>2011</td>
-               
-                
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: (
-          <div>
-                  <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
-                
-                <td style={{ border: "1px solid black" }}>3</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
-               
-                <td style={{ border: "1px solid black" }}>3</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Limitless</td>
-                
-                <td style={{ border: "1px solid black" }}>3</td>
-                
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text:(
-          <div>
-                 <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
-                
-                
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
-               
-               
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Limitless</td>
-                
-               
-                
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: (
-          <div>
-                 <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
-                
-                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
-                <td style={{ border: "1px solid black" }}>1993</td>
-               
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
-                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
-               
-                <td style={{ border: "1px solid black" }}>1973</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Limitless</td>
-                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
-                
-                <td style={{ border: "1px solid black" }}>2011</td>
-                
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 2,
-  },
-  
-];
 
- */
 export const usingnullquizQuestions = [
   {
     id: 1,
@@ -5002,4 +4415,166 @@ export const usingnullquizQuestions = [
     ],
     correctAnswer: 1,
   },
+];
+export const selfjoinquizQuestions = [
+  {
+    id: 1,
+    question: "Wählen Sie den Code, der zeigt, dass es möglich ist, von Craiglockhart nach Haymarket zu gelangen",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: ` SELECT DISTINCT a.name, b.name
+  FROM stops a JOIN route z IN a.id=z.stop
+  JOIN route y ON y.num = z.num
+  JOIN stops b IN y.stop=b.id
+ WHERE a.name='Craiglockhart' AND b.name ='Haymarket'`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT DISTINCT a.name, b.name
+  FROM stops a JOIN route z ON a.id=z.stop
+  JOIN route y JOIN stops b ON y.stop=b.id
+ WHERE a.name='Craiglockhart' AND b.name ='Haymarket'`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT DISTINCT a.name, b.name
+  FROM stops a JOIN route z ON a.id=z.stop
+  JOIN route y ON y.num = z.num
+  JOIN stops b ON y.stop=b.id
+ WHERE a.name='Craiglockhart' AND b.name ='Haymarket'`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT DISTINCT a.name, b.name from stops a
+  JOIN route z ON a.id=z.stop
+  JOIN route y ON y.num = z.num
+  JOIN stops b ON y.stop=b.id
+ WHERE a.name='Craiglockhart' AND b.name ='Sighthill'`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT DISTINCT a.name, b.name
+  FROM stops a JOIN route z ON a.id=z.stop
+  JOIN route y ON y.num = z.num
+  JOIN stops b ON y.stop=b.id
+ WHERE y.name='Craiglockhart' AND z.name ='Haymarket'`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 2,
+    question:
+      " Wählen Sie den Code, der die Haltestellen anzeigt, die sich auf der Strecke (route.num) '2A' befinden, die mit einem Bus von Haymarket aus erreicht werden können",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: ` SELECT S2.id, S2.name, R2.company, R2.num
+  FROM stops S1, stops S2, route R1, route R2
+ WHERE S1.name='Haymarket' AND S1.id=R1.stop
+   AND S1.company=S2.company AND S1.num=S2.num
+   AND R2.stop=S2.id AND R1.num='2A'`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT S2.id, S2.name, R2.company, R2.num
+  FROM stops S1, stops S2, route R1, route R2
+ WHERE S1.name='Haymarket' AND S1.id=R1.num
+   AND R1.company=R2.company AND R1.num=R2.num
+   AND R2.stop=S2.id AND R2.num='2A'`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: ` SELECT S2.id, S2.name, R2.company, R2.num
+  FROM stops S1, stops S2, route R1, route R2
+ WHERE S1.name='Haymarket' AND S1.id=R1.stop
+   AND R1.company=R2.company AND R1.num=R2.num
+   AND R2.stop=S2.id`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: ` SELECT S2.id, S2.name, R2.company, R2.num
+  FROM stops S1, stops S2, route R1, route R2
+ WHERE S1.name='Haymarket' AND S1.id=R1.stop
+   AND R1.company=R2.company AND R1.num=R2.num
+   AND R2.stop=S2.id AND R2.num='2'`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: ` SELECT S2.id, S2.name, R2.company, R2.num
+  FROM stops S1, stops S2, route R1, route R2
+ WHERE S1.name='Haymarket' AND S1.id=R1.stop
+   AND R1.company=R2.company AND R1.num=R2.num
+   AND R2.stop=S2.id AND R2.num='2A'`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 5,
+  },
+  {
+    id: 3,
+    question:
+      "Wählen Sie den Code, der die verfügbaren Dienste von Tollcross anzeigt.",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT a.company, a.num, stopa.name, stopb.name
+  FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: ` SELECT a.company, a.num, stopa.name, stopb.name
+  FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+ WHERE stopa.name='Sighthill'`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT a.company, a.num, stopa.name, stopb.name
+  FROM route a JOIN route b IN (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa IN (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+ WHERE stopa.name='Tollcross'`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: ` SELECT a.company, a.num, stopa.name, stopb.name
+  FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+ WHERE stopa.name='Tollcross'`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: ` SELECT a.company, a.num, stopa.name, stopb.name
+  FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+ WHERE stopz.name='Tollcross'`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 4,
+  }
+  
 ];

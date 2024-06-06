@@ -28,6 +28,7 @@ import {
   JoinQuizC,
   JoinQuiz2C,
   UsingNullQuizC,
+  SelfJoinQuizC,
 } from "./components/tutorialTasks/selectQuizMain";
 
 function App() {
@@ -89,10 +90,11 @@ function App() {
                   element={<UsingNullQuizC />}
                 />
                 <Route path="/tutorial/selfjoin" element={<SelfJoinC />} />
-                {/*
 
-
-<Route path="/tutorial/selfjoinquiz" element={<SelfJoinQuizC />} /> */}
+                <Route
+                  path="/tutorial/selfjoinquiz"
+                  element={<SelfJoinQuizC />}
+                />
               </Routes>{" "}
               {/* <Footer/> */}
             </main>

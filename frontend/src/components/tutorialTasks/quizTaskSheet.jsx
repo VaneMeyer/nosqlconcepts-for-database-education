@@ -165,7 +165,7 @@ const QuizTaskSheet = ({ title, tasks }) => {
             </table>
           </div>
         ) } 
-        {(title !== "nestedselectquiz" && title !== "joinquiz" && title !== "joinquiz2" && title !=="usingnullquiz") && (
+        {(title !== "nestedselectquiz" && title !== "joinquiz" && title !== "joinquiz2" && title !=="usingnullquiz" && title !== "selfjoinquiz") && (
           <div>
             {" "}
             <p>Tabelle world </p>
@@ -464,6 +464,16 @@ const QuizTaskSheet = ({ title, tasks }) => {
                 <td style={{ border: "1px solid black" }}>Engineering</td>
               </tr>
             </table>
+            
+          </div>
+        )}
+         {title === "selfjoinquiz" && (
+          <div>
+            <h3>Relationen</h3>
+            <p>stops(<b>id</b>, name) </p>
+            
+            <p>route(<b>num</b>, <b>company</b>, <b>pos</b>, stop) </p>
+            
             
           </div>
         )}
