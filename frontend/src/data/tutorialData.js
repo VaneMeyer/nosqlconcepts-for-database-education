@@ -16,6 +16,10 @@ export const topics = [
   { name: "The JOIN operation", link: "joinoperation" },
   { name: "JOIN Quiz", link: "joinquiz" },
   { name: "More JOIN operations", link: "morejoinoperations" },
+  { name: "JOIN Quiz 2", link: "joinquiz2" },
+  { name: "Using Null", link: "usingnull" },
+  { name: "Using Null Quiz", link: "usingnullquiz" },
+
 
   /*{ name: "Using Null", link: "usingnull" },
   { name: "Numeric Examples", link: "numericexamples" },
@@ -362,191 +366,7 @@ export const sumandcountTasks = [
       "SELECT continent FROM world GROUP BY continent HAVING SUM(population) >= 100000000;",
   },
 ];
-/* export const joinoperationTasks = [
-  {
-    description:
-      `1. The first example shows the goal scored by a player with the last name 'Bender'. The * says to list all the columns in the table - a shorter way of saying matchid, teamid, player, gtime
 
-      Modify it to show the matchid and player name for all goals scored by Germany. To identify German players, check for: teamid = 'GER'`,
-    defaultQuery: `SELECT * FROM goal 
-    WHERE player LIKE '%Bender'`,
-    solution: `SELECT matchid, player
-    FROM goal
-    WHERE teamid = 'GER';`,
-  },
-  {
-    description:
-      `2. From the previous query you can see that Lars Bender's scored a goal in game 1012. Now we want to know what teams were playing in that match.
-
-      Notice in the that the column matchid in the goal table corresponds to the id column in the game table. We can look up information about game 1012 by finding that row in the game table.
-      
-      Show id, stadium, team1, team2 for just game 1012`,
-    defaultQuery: `SELECT id,stadium,team1,team2
-    FROM game`,
-    solution: `SELECT id,stadium,team1,team2
-    FROM game
-    WHERE id = 1012;`,
-  },
-  {
-    description: `3. You can combine the two steps into a single query with a JOIN.
-
-    SELECT *
-      FROM game JOIN goal ON (id=matchid)
-    The FROM clause says to merge data from the goal table with that from the game table. The ON says how to figure out which rows in game go with which rows in goal - the matchid from goal must match id from game. (If we wanted to be more clear/specific we could say
-    ON (game.id=goal.matchid)
-    
-    The code below shows the player (from the goal) and stadium name (from the game table) for every goal scored.
-    
-    Modify it to show the player, teamid, stadium and mdate for every German goal.`,
-    defaultQuery: `SELECT player,stadium
-    FROM game JOIN goal ON (id=matchid)`,
-    solution: `SELECT goal.player, goal.teamid, game.stadium, game.mdate
-    FROM game
-    INNER JOIN goal
-    ON game.id = goal.matchid
-    WHERE goal.teamid = 'GER';`,
-  },
-  {
-    description:
-      `4. Use the same JOIN as in the previous question.
-
-      Show the team1, team2 and player for every goal scored by a player called Mario player LIKE 'Mario%'`,
-    defaultQuery: "",
-    solution: `SELECT game.team1, game.team2, goal.player
-    FROM game
-    INNER JOIN goal
-    ON game.id = goal.matchid
-    WHERE goal.player LIKE 'Mario%';`,
-  },
-  {
-    description:
-      `5. The table eteam gives details of every national team including the coach. You can JOIN goal to eteam using the phrase goal JOIN eteam on teamid=id
-
-      Show player, teamid, coach, gtime for all goals scored in the first 10 minutes gtime<=10`,
-    defaultQuery: `SELECT player, teamid, gtime
-    FROM goal 
-   WHERE gtime<=10`,
-    solution:
-      `SELECT goal.player, goal.teamid, eteam.coach, goal.gtime
-      FROM goal
-      INNER JOIN eteam
-      ON goal.teamid = eteam.id
-      WHERE goal.gtime <= 10;`,
-  },
-  {
-    description:
-      `6. To JOIN game with eteam you could use either
-      game JOIN eteam ON (team1=eteam.id) or game JOIN eteam ON (team2=eteam.id)
-      
-      Notice that because id is a column name in both game and eteam you must specify eteam.id instead of just id
-      
-      List the dates of the matches and the name of the team in which 'Fernando Santos' was the team1 coach.`,
-    defaultQuery: "",
-    solution: `SELECT game.mdate, eteam.teamname
-    FROM game
-    INNER JOIN eteam
-    ON game.team1 = eteam.id
-    WHERE eteam.coach = 'Fernando Santos';`,
-  },
-  {
-    description:
-     `7. List the player for every goal scored in a game where the stadium was 'National Stadium, Warsaw'`,
-    defaultQuery: "",
-    solution:
-      `SELECT goal.player
-      FROM game
-      INNER JOIN goal
-      ON goal.matchid = game.id
-      WHERE game.stadium = 'National Stadium, Warsaw';`,
-  },
-  {
-    description:
-      `8. The example query shows all goals scored in the Germany-Greece quarterfinal.
-      Instead show the name of all players who scored a goal against Germany.`,
-    defaultQuery: `SELECT player, gtime
-    FROM game JOIN goal ON matchid = id 
-      WHERE (team1='GER' AND team2='GRE')`,
-    solution:
-      `SELECT DISTINCT goal.player
-      FROM game
-      INNER JOIN goal
-      ON goal.matchid = game.id
-      WHERE goal.teamid <> 'GER'
-        AND (game.team1 = 'GER' OR game.team2 = 'GER');`,
-  },
-  {
-    description:
-      `9. Show teamname and the total number of goals scored.
-      COUNT and GROUP BY`,
-    defaultQuery: `SELECT teamname, player
-    FROM eteam JOIN goal ON id=teamid
-   ORDER BY teamname`,
-    solution:
-      `SELECT eteam.teamname, COUNT(goal.teamid)
-      FROM goal
-      INNER JOIN eteam
-      ON eteam.id = goal.teamid
-      GROUP BY eteam.teamname;`,
-  },
-  {
-    description:
-      `10. Show the stadium and the number of goals scored in each stadium.`,
-    defaultQuery: ``,
-    solution:
-      `SELECT game.stadium, COUNT(goal.matchid)
-      FROM game
-      INNER JOIN goal
-      ON game.id = goal.matchid
-      GROUP BY game.stadium;`,
-  },
-  {
-    description:
-      `11. For every match involving 'POL', show the matchid, date and the number of goals scored.`,
-    defaultQuery: `SELECT matchid,mdate, team1, team2,teamid
-    FROM game JOIN goal ON matchid = id 
-   WHERE (team1 = 'POL' OR team2 = 'POL')`,
-    solution:
-      `SELECT goal.matchid, game.mdate, COUNT(goal.matchid)
-      FROM game
-      INNER JOIN goal
-      ON goal.matchid = game.id
-      WHERE game.team1 = 'POL' OR game.team2 = 'POL'
-      GROUP BY goal.matchid;`,
-  },
-  {
-    description:
-      `12. For every match where 'GER' scored, show matchid, match date and the number of goals scored by 'GER'`,
-    defaultQuery: ``,
-    solution:
-      `SELECT goal.matchid, game.mdate, COUNT(goal.matchid) AS german_goals
-      FROM game
-      INNER JOIN goal
-      ON game.id = goal.matchid
-      WHERE goal.teamid = 'GER'
-      GROUP BY goal.matchid;`,
-  },
-  {
-    description:
-      `13. List every match with the goals scored by each team as shown. This will use "CASE WHEN" which has not been explained in any previous exercises. ${<table><th><td>mdate</td><td>team1</td><td>score1</td><td>team2</td><td>score2</td></th><tr><td>1 July 2012</td><td>ESP</td><td>4</td><td>ITA</td><td>0</td></tr><tr><td>10 June 2012</td><td>ESP</td><td>1</td><td>ITA</td><td>1</td></tr><tr><td>10 June 2012</td><td>IRL</td><td>1</td><td>CRO</td><td>3</td></tr><tr>...</tr></table>}Notice in the query given every goal is listed. If it was a team1 goal then a 1 appears in score1, otherwise there is a 0. You could SUM this column to get a count of the goals scored by team1. Sort your result by mdate, matchid, team1 and team2.`,
-    defaultQuery: `SELECT mdate,
-    team1,
-    CASE WHEN teamid=team1 THEN 1 ELSE 0 END score1
-    FROM game JOIN goal ON matchid = id
-  `,
-    solution:
-      `SELECT
-      game.mdate,
-      game.team1,
-      SUM(CASE WHEN goal.teamid = game.team1 THEN 1 ELSE 0 END) AS score1,
-      game.team2,
-      SUM(CASE WHEN goal.teamid = game.team2 THEN 1 ELSE 0 END) AS score2
-    FROM game
-    LEFT JOIN goal
-    ON game.id = goal.matchid
-    GROUP BY game.id, game.mdate
-    ORDER BY game.mdate, goal.matchid, game.team1, game.team2`,
-  },
-]; */
 const tableStyle = {
   borderCollapse: 'collapse',
  
@@ -1018,236 +838,93 @@ export const morejoinoperationsTasks = [
       );`,
   },
 ];
-/* export const morejoinoperationsTasks = [
+export const usingnullTasks = [
   {
-    description:
-      `1. List the films where the yr is 1962 [Show id, title]`,
-    defaultQuery: `SELECT id, title
-    FROM movie
-    WHERE yr=1962`,
-    solution: `SELECT id, title
-    FROM movie
-    WHERE yr = 1962;`,
-  },
-  {
-    description:
-      `2. Give year of 'Citizen Kane'.`,
+    description: `1. Listen Sie die Lehrenden auf, deren Abteilung NULL entspricht.`,
     defaultQuery: ``,
-    solution: `SELECT yr
-    FROM movie
-    WHERE title = 'Citizen Kane';`,
+    solution: `SELECT name
+    FROM teacher
+    WHERE dept IS NULL;`,
   },
   {
-    description: `3. List all of the Star Trek movies, include the id, title and yr (all of these movies include the words Star Trek in the title). Order results by year.`,
+    description: `2. Beachten Sie bei der default Aussage, dass der INNER JOIN die Lehrer ohne Abteilung und die Abteilungen ohne Lehrer auslässt. Schauen Sie sich das Ergebnis an. (Hier muss keine neue Query gefunden werden.)`,
+    defaultQuery: `SELECT teacher.name, dept.name
+    FROM teacher INNER JOIN dept
+              ON (teacher.dept=dept.id)
+   `,
+    solution: `SELECT teacher.name, dept.name
+    FROM teacher
+    INNER JOIN dept
+    ON teacher.dept = dept.id;`,
+  },
+  {
+    description: `3. Nutzen Sie nun eine andere JOIN Variante als zuvor, damit alle Namen der Lehrenden aufgelistet werden.`,
     defaultQuery: ``,
-    solution: `SELECT id, title, yr
-    FROM movie
-    WHERE title LIKE '%Star Trek%'
-    ORDER BY yr;`,
+    solution: `SELECT teacher.name, dept.name
+    FROM teacher
+    LEFT JOIN dept
+    ON teacher.dept = dept.id;`,
   },
   {
-    description:
-      `4. What id number does the actor 'Glenn Close' have?`,
+    description: `4. Nutzen Sie nun eine andere JOIN Variante als zuvor, damit alle Namen der Abteilungen aufgelistet werden.`,
     defaultQuery: "",
-    solution: `SELECT id
-    FROM actor
-    WHERE name = 'Glenn Close';`,
+    solution: `SELECT teacher.name, dept.name
+    FROM teacher
+    RIGHT JOIN dept
+    ON teacher.dept = dept.id;`,
   },
   {
-    description:
-      `5. What is the id of the film 'Casablanca'`,
+    description: `5. Verwenden Sie COALESCE, um die Handynummer auszugeben. Verwenden Sie die Nummer '07986 444 2266', wenn keine Nummer angegeben ist. Zeigen Sie den Namen der lehrenden Person und die Handynummer oder '07986 444 2266' an.`,
     defaultQuery: ``,
-    solution:
-      `SELECT id
-      FROM movie
-      WHERE title = 'Casablanca';`,
+    solution: `SELECT
+      name,
+      COALESCE(mobile, '07986 444 2266') as mobile
+    FROM teacher;`,
   },
   {
-    description:
-      `6. Obtain the cast list for 'Casablanca'.
-
-      what is a cast list?
-      Use movieid=11768, (or whatever value you got from the previous question)`,
+    description: `6. Verwenden Sie die Funktion COALESCE und einen LEFT JOIN, um den Namen der lehrenden Person und den Namen der Abteilung zu drucken. Verwenden Sie den String 'None', wenn es keine Abteilung gibt.`,
     defaultQuery: "",
-    solution: `SELECT actor.name AS casablanca_cast_list
-    FROM movie
-    INNER JOIN casting
-    ON movie.id = casting.movieid
-    INNER JOIN actor
-    ON casting.actorid = actor.id
-    WHERE casting.movieid = (
-      SELECT id
-      FROM movie
-      WHERE title = 'Casablanca'
-      );`,
+    solution: `SELECT
+    teacher.name,
+    COALESCE(dept.name, 'None') as dept
+  FROM teacher
+  LEFT JOIN dept
+  ON teacher.dept = dept.id;`,
   },
   {
-    description:
-     `7. Obtain the cast list for the film 'Alien'`,
+    description: `7.Mutzen Sie COUNT, um die Anzahl der lehrenden Personen und die Anzahl von Mobiltelefonen (mobile) auszugeben.`,
     defaultQuery: "",
-    solution:
-      `SELECT actor.name AS alien_cast_list
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      WHERE casting.movieid = (
-        SELECT id
-        FROM movie
-        WHERE title = 'Alien'
-        );`,
+    solution: `SELECT Count(name), Count(mobile)
+      FROM teacher;`,
   },
   {
-    description:
-      `8. List the films in which 'Harrison Ford' has appeared`,
+    description: `8. Verwenden Sie COUNT und GROUP BY dept.name, um jede Abteilung und die Anzahl der Mitarbeiter anzuzeigen. Verwenden Sie einen RIGHT JOIN, um sicherzustellen, dass die Abteilung Engineering aufgeführt ist.`,
     defaultQuery: ``,
-    solution:
-      `SELECT movie.title
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      WHERE casting.actorid = (
-        SELECT id
-        FROM actor
-        WHERE name = 'Harrison Ford'
-        );`,
+    solution: `SELECT dept.name, COUNT(teacher.name) as number_of_teacher
+      FROM teacher
+      RIGHT JOIN dept
+      ON teacher.dept = dept.id
+      GROUP BY dept.name;`,
   },
   {
-    description:
-      `9. List the films where 'Harrison Ford' has appeared - but not in the starring role. [Note: the ord field of casting gives the position of the actor. If ord=1 then this actor is in the starring role]`,
+    description: `9. Verwenden Sie CASE, um den Namen jedes Lehrers anzuzeigen, gefolgt von 'Sci', wenn der Lehrer in Abteilung 1 oder 2 ist, und 'Art' andernfalls.`,
     defaultQuery: ``,
-    solution:
-      `SELECT movie.title
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      WHERE casting.actorid = (
-        SELECT id
-        FROM actor
-        WHERE name = 'Harrison Ford'
-        )
-        AND casting.ord <> 1;`,
+    solution: `SELECT
+      name,
+      (CASE WHEN dept IN (1, 2) THEN 'Sci' ELSE 'Art' END)
+    FROM teacher;`,
   },
   {
-    description:
-      `10. List the films together with the leading star for all 1962 films.`,
+    description: `10. Verwenden Sie CASE, um den Namen jedes Lehrers anzuzeigen, gefolgt von 'Sci', wenn der Lehrer in Abteilung 1 oder 2 ist, zeigen Sie 'Art', wenn die Abteilung des Lehrers 3 ist und 'None' sonst.`,
     defaultQuery: ``,
-    solution:
-      `SELECT
-      movie.title,
-      (CASE WHEN casting.ord = 1 THEN actor.name END) AS name
-    FROM movie
-    INNER JOIN casting
-    ON movie.id = casting.movieid
-    INNER JOIN actor
-    ON casting.actorid = actor.id
-    WHERE movie.yr = 1962
-     AND (CASE WHEN casting.ord = 1 THEN actor.name END) IS NOT NULL;`,
+    solution: `SELECT
+      name,
+      (CASE WHEN dept IN (1, 2) THEN 'Sci'
+            WHEN dept = 3 THEN 'Art'
+            ELSE 'None' END)
+    FROM teacher;`,
   },
-  {
-    description:
-      `11. Which were the busiest years for 'Rock Hudson', show the year and the number of movies he made each year for any year in which he made more than 2 movies.`,
-    defaultQuery: `SELECT yr,COUNT(title) FROM
-    movie JOIN casting ON movie.id=movieid
-          JOIN actor   ON actorid=actor.id
-  WHERE name='Doris Day'
-  GROUP BY yr
-  HAVING COUNT(title) > 1`,
-    solution:
-      `SELECT yr, COUNT(movie.title)
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      WHERE actor.name = 'Rock Hudson'
-      GROUP BY movie.yr
-      HAVING COUNT(movie.title) > 2;`,
-  },
-  {
-    description:
-      `12. List the film title and the leading actor for all of the films 'Julie Andrews' played in.`,
-    defaultQuery: `SELECT movieid FROM casting
-    WHERE actorid IN (
-      SELECT id FROM actor
-      WHERE name='Julie Andrews')
-    `,
-    solution:
-      `SELECT
-      movie.title,
-      (CASE WHEN casting.ord = 1 THEN actor.name END) as leading_actor
-    FROM movie
-    INNER JOIN casting
-    ON movie.id = casting.movieid
-    INNER JOIN actor
-    ON casting.actorid = actor.id
-    WHERE (CASE WHEN casting.ord = 1 THEN actor.name END) IS NOT NULL
-      AND casting.movieid IN (
-        SELECT casting.movieid
-        FROM casting
-        INNER JOIN actor
-        ON casting.actorid = actor.id
-        WHERE actor.name = 'Julie Andrews'
-      );`,
-  },
-  {
-    description:
-    `13. Obtain a list, in alphabetical order, of actors who've had at least 15 starring roles.`,
-    defaultQuery: `
-  `,
-    solution:
-      `SELECT actor.name
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      GROUP BY actor.name
-      HAVING SUM(CASE WHEN casting.ord = 1 THEN 1 ELSE 0 END) >= 15;`,
-  },
-  {
-    description:
-    `14. List the films released in the year 1978 ordered by the number of actors in the cast, then by title.`,
-    defaultQuery: `
-  `,
-    solution:
-      `SELECT movie.title, COUNT(actor.id) as actors
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      WHERE movie.yr = 1978
-      GROUP BY movie.title
-      ORDER BY actors DESC, movie.title;`,
-  },
-  {
-    description:
-    `15. List all the people who have worked with 'Art Garfunkel'.`,
-    defaultQuery: `
-  `,
-    solution:
-      `SELECT DISTINCT actor.name
-      FROM movie
-      INNER JOIN casting
-      ON movie.id = casting.movieid
-      INNER JOIN actor
-      ON casting.actorid = actor.id
-      WHERE casting.movieid IN (
-        SELECT casting.movieid
-        FROM casting
-        INNER JOIN actor
-        ON casting.actorid = actor.id
-        WHERE actor.name = 'Art Garfunkel'
-      )
-        AND actor.name <> 'Art Garfunkel';`,
-  },
-]; */
+];
 
 
 //Quizzes
@@ -3247,507 +2924,7 @@ export const sumandcountquizQuestions = [
     correctAnswer: 4,
   },
 ];
-/* export const joinquizQuestions = [
-  {
-    id: 1,
-    question:
-      "You want to find the stadium where player 'Dimitris Salpingidis' scored. Select the JOIN condition to use:",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `eteam JOIN game ON (id=team1)`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: `  eteam JOIN game ON (id=team2)`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `eteam JOIN goal ON (teamid=id)`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `game  JOIN goal ON (id=matchid)`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `game  JOIN goal ON (team1=teamid OR team2=teamid)`,
-        imageUrl:
-          "",
-      },
-    ],
-    correctAnswer: 4,
-  },
-  {
-    id: 2,
-    question:
-      "You JOIN the tables goal and eteam in an SQL statement. Indicate the list of column names that may be used in the SELECT line:",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: ` gtime, mdate, stadium, matchid`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: ` mdate, stadium, id`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `matchid, teamid, player, gtime, id, teamname, coach`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: ` matchid, teamid, player, gtime, mdate, stadium, team1`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `stadium, team1, team2`,
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 3,
-  },
-  {
-    id: 3,
-    question:
-      "Select the code which shows players, their team and the amount of goals they scored against Greece(GRE).",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `SELECT player, teamid, COUNT(*)
-        FROM game JOIN goal ON matchid = id
-       WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid <> 'GRE'
-       GROUP BY player, teamid`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: `SELECT player, teamid, COUNT(*)
-        FROM game JOIN goal ON matchid = id
-       WHERE (team1 = "GRE") AND teamid <> 'GRE'
-       GROUP BY player, teamid`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `SELECT player, teamid, COUNT(*)
-        FROM game JOIN goal ON matchid = id
-       WHERE (team1 = "POL" OR team2 = "POL")
-         AND teamid <> 'POL'
-       GROUP BY player, teamid`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `SELECT player, teamid, COUNT(*)
-        FROM game JOIN goal WITH matchid = id
-       WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid <> 'GRE'
-       GROUP BY player, teamid`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `SELECT player, teamid
-        FROM game JOIN goal ON matchid = id
-       WHERE (team1 = "GRE" OR team2 = "GRE")
-         AND teamid <> 'GRE'
-       GROUP BY player, teamid`,
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 1,
-  },
-  {
-    id: 4,
-    question:
-      "Select the result that would be obtained from this code:",
-    imageUrl:
-      `SELECT DISTINCT teamid, mdate
-      FROM goal JOIN game on (matchid=id)
-     WHERE mdate = '9 June 2012'`,
-    options: [
-      {
-        id: 1,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>DEN</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>GER</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>DEN</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>GER</td>
-                
-              </tr>
-              
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>DEN</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>DEN</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>POL</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>RUS </td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>GRE</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>CZE</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>POL</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>RUS </td>
-                
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>RUS</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>GRE</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>RUS</td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>CZE </td>
-                <td style={{ border: "1px solid black" }}>9 June 2012</td>
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 1,
-  },
-  {
-    id: 5,
-    question:
-      "Select the code which would show the player and their team for those who have scored against Poland(POL) in National Stadium, Warsaw.",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `SELECT DISTINCT player, teamid 
-        FROM game JOIN goal ON matchid = id 
-        WHERE stadium = 'National Stadium, Warsaw' 
-       AND (team1 = 'GER' OR team2 = 'GER')
-         AND teamid <> 'GER'`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: ` SELECT DISTINCT player, teamid 
-        FROM game JOIN goal ON matchid = id 
-       WHERE stadium = 'National Stadium, Warsaw' 
-      AND (team1 = 'POL' OR team2 = 'POL')
-        AND teamid <> 'POL'`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `SELECT DISTINCT player, teamid 
-        FROM game JOIN goal ON matchid = id 
-       WHERE stadium = 'National Stadium, Warsaw' AND teamid <> 'POL'`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `SELECT DISTINCT player, teamid 
-        FROM game JOIN goal ON matchid = id 
-       WHERE stadium = 'Stadion Miejski (Wroclaw)' 
-      AND (team1 = 'POL' OR team2 = 'POL')
-       AND teamid <> 'POL'`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `SELECT DISTINCT stadium, mdate 
-        FROM game JOIN goal ON matchid = id 
-       WHERE stadium = 'National Stadium, Warsaw' 
-      AND (team1 = 'POL' OR team2 = 'POL')
-       AND teamid <> 'POL'`,
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 2,
-  },
-  {
-    id: 6,
-    question:
-      "Select the code which shows the player, their team and the time they scored, for players who have played in Stadion Miejski (Wroclaw) but not against Italy(ITA).",
-    imageUrl: "",
-    options: [
-      {
-        id: 1,
-        text: `SELECT DISTINCT player, teamid, gtime
-        FROM game JOIN goal ON matchid = id
-       WHERE stadium = 'National Stadium, Warsaw'
-         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: `SELECT DISTINCT player, teamid, gtime
-        FROM game JOIN goal ON matchid = id
-       WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 <> 'ESP') OR ( teamid = team1 AND team2 <> 'ESP'))`,
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: `SELECT DISTINCT player, teamid, gtime
-        FROM game JOIN goal ON matchid = id
-       WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text: `SELECT DISTINCT teamid, gtime
-        FROM game JOIN goal ON matchid = id
-       WHERE stadium = 'Stadion Miejski (Wroclaw)'
-         AND (( teamid = team2 AND team1 <> 'ITA') OR ( teamid = team1 AND team2 <> 'ITA'))`,
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: `SELECT DISTINCT player, teamid, gtime
-        FROM game JOIN goal ON matchid = id
-       WHERE team1 <> 'ITA' AND team2 <>'ITA'`,
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 3,
-  },
-  {
-    id: 7,
-    question:
-      "Select the result that would be obtained from this code:",
-    imageUrl: `SELECT teamname, COUNT(*)
-    FROM eteam JOIN goal ON teamid = id
-   GROUP BY teamname
-  HAVING COUNT(*) < 3`,
-    options: [
-      {
-        id: 1,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>2</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>2</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>1</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>2 </td>
-                
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 2,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>Netherlands</td>
-                <td style={{ border: "1px solid black" }}>2</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Poland</td>
-                <td style={{ border: "1px solid black" }}>2</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Republic of Ireland</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Ukraine </td>
-                <td style={{ border: "1px solid black" }}>2</td>
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 3,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>Netherlands</td>
-               
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Poland</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Republic of Ireland</td>
-                
-              </tr>
-              <tr>
-                <td style={{ border: "1px solid black" }}>Ukraine </td>
-                
-              </tr>
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 4,
-        text:(
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>Poland</td>
-                <td style={{ border: "1px solid black" }}>76</td>
-              </tr>
-             
-            
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-      {
-        id: 5,
-        text: (
-          <div>
-            <table
-              style={{ borderCollapse: "collapse", border: "1px solid black" }}
-            >
-              <tr>
-                <td style={{ border: "1px solid black" }}>Republic of Ireland</td>
-                <td style={{ border: "1px solid black" }}>1</td>
-              </tr>
-              
-            </table>
-          </div>
-        ),
-        imageUrl: "",
-      },
-    ],
-    correctAnswer: 2,
-  },
-  
-]; */
+
 export const joinquizQuestions = [
   {
     id: 1,
@@ -4249,4 +3426,1520 @@ export const joinquizQuestions = [
   },
   
 ];
+export const joinquiz2Questions = [
+  {
+    id: 1,
+    question:
+      "Wählen Sie die Aussage, die die unglücklichen Regisseure der Filme auflistet, die finanzielle Verluste verursacht haben (gross < budget)",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT JOIN(name FROM actor, movie
+          ON actor.id:director WHERE gross < budget)
+    GROUP BY name`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT name
+        FROM actor INNER JOIN movie BY actor.id = director
+        HAVING gross < budget`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT name
+        FROM actor INNER JOIN movie ON actor.id = director
+       WHERE gross < budget`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT name
+        FROM actor INNER JOIN movie ON actor.id:director
+       WHERE gross < budget`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT name
+        FROM director INNER JOIN movie ON movie.id = director.id
+       WHERE gross < budget`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 2,
+    question:
+      " Wählen Sie das korrekte Beispiel, um drei Tabellen zu vereinigen.",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT * 
+        FROM actor JOIN casting BY actor.id = actorid
+       JOIN movie BY movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT *
+        FROM actor JOIN casting ON actor.id = actorid
+         AND JOIN movie ON movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT *
+        FROM actor JOIN casting
+        JOIN movie ON actor.id = actorid
+         AND movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT *
+        FROM actor JOIN casting ON actor.id = actorid
+         AND movie ON movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT *
+        FROM actor JOIN casting ON actor.id = actorid
+        JOIN movie ON movie.id = movieid`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 5,
+  },
+  {
+    id: 3,
+    question:
+      "Wählen Sie die Aussage aus, die die Liste der Schauspieler mit dem Namen „John“ in der Reihenfolge der Anzahl der Filme, in denen sie mitgespielt haben, anzeigt.",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT name, COUNT(movieid)
+        FROM actor JOIN casting ON actorid=actor.id
+       WHERE name IN 'John %'
+       GROUP BY name ORDER BY 2`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT name, COUNT(movieid)
+        FROM actor JOIN casting ON actorid=actor.id
+       WHERE name LIKE 'J%'
+       GROUP BY name ORDER BY 2 DESC`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT name, COUNT(movieid)
+        FROM casting JOIN actor ON actorid=actor.id
+       WHERE name LIKE 'John %'
+       GROUP BY name ORDER BY 2 DESC`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT name, COUNT(movieid)
+        FROM casting JOIN actor
+       WHERE (actorid ON actor.id)
+         AND name LIKE 'John %'
+       GROUP BY name ORDER BY 2 DESC`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT name, COUNT(movieid)
+        FROM casting JOIN actor
+       WHERE name LIKE 'John %'
+       GROUP BY name ORDER BY COUNT(movieid) DESC`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 4,
+    question:
+      "Wählen Sie das Ergebnis aus, welches die folgende Aussage erzeugen würde:",
+    imageUrl: ` SELECT title 
+      FROM movie JOIN casting ON (movieid=movie.id)
+                 JOIN actor   ON (actorid=actor.id)
+     WHERE name='Paul Hogan' AND ord = 1`,
+    options: [
+      {
+        id: 1,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  "Crocodile" Dundee
+                </td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Crocodile Dundee in Los Angeles
+                </td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  "Crocodile" Dundee
+                </td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Crocodile Dundee in Los Angeles
+                </td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  "Crocodile" Dundee
+                </td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  "Crocodile" Dundee
+                </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Crocodile Dundee in Los Angeles
+                </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan </td>
+                <td style={{ border: "1px solid black" }}>1 </td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  "Crocodile" Dundee
+                </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Crocodile Dundee in Los Angeles
+                </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan </td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 2,
+  },
+  {
+    id: 5,
+    question:
+      "Wählen Sie die Aussage, die alle Schauspieler auflistet, die in Filmen unter der Regie von Ridley Scott (der id 351 hat) mitgewirkt haben.",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT name
+        FROM movie JOIN casting
+         AND actor ON movie.id = movieid
+         AND actor.id = actorid
+       WHERE ord = 1
+        AND actor = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT name
+        FROM movie JOIN casting
+        JOIN actor ON movie.id = movieid
+          OR actor.id = actorid
+       WHERE ord = 1 AND director = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT name
+        FROM movie JOIN casting ON movie.id = movieid
+        JOIN actor ON actor.id = actorid
+       WHERE ord = 1 AND actorid = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT name
+        FROM movie JOIN casting ON movie.id = movieid
+        JOIN actor ON actor.id = actorid
+      WHERE ord = 1 AND director = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT name
+        FROM movie JOIN casting ON movie.id = actorid
+        JOIN actor ON actor.id = movieid
+       WHERE director = 351`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 4,
+  },
+  {
+    id: 6,
+    question:
+      "Es gibt zwei sinnvolle Möglichkeiten, Film und Schauspieler zu verbinden. Wählen sie die zwei sinnvollen Möglichkeiten aus den folgenden aus:",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: (
+          <ul>
+            <li>
+              link the director column in movies with the id column in actor
+            </li>
+            <li>join casting to itself</li>
+          </ul>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: (
+          <ul>
+            <li>
+              link the actor column in movies with the primary key in actor
+            </li>
+            <li>
+              connect the primary keys of movie and actor via the casting table
+            </li>
+          </ul>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: (
+          <ul>
+            <li>
+              link the director column in movies with the primary key in actor
+            </li>
+            <li>
+              connect the primary keys of movie and actor via the casting table
+            </li>
+          </ul>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: (
+          <ul>
+            <li>
+              link the director column in movies with the primary key in actor
+            </li>
+            <li>
+              connect the primary keys of movie and casting via the actor table
+            </li>
+          </ul>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: (
+          <ul>
+            <li>
+              link the movie column in actor with the director column in actor
+            </li>
+            <li>connect movie and actor via the casting table</li>
+          </ul>
+        ),
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 7,
+    question:
+      "Wählen sie das Ergebnis, welches folgende Aussage erzeugen würde:",
+    imageUrl: `SELECT title, yr 
+    FROM movie, casting, actor 
+   WHERE name='Robert De Niro' AND movieid=movie.id AND actorid=actor.id AND ord = 3`,
+    options: [
+      {
+        id: 1,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+                <td style={{ border: "1px solid black" }}>1993</td>
+                <td style={{ border: "1px solid black" }}>3</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Bang the Drum Slowly
+                </td>
+                <td style={{ border: "1px solid black" }}>1973</td>
+                <td style={{ border: "1px solid black" }}>3</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                <td style={{ border: "1px solid black" }}>2011</td>
+                <td style={{ border: "1px solid black" }}>3</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+                <td style={{ border: "1px solid black" }}>1993</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Bang the Drum Slowly
+                </td>
+                <td style={{ border: "1px solid black" }}>1973</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                <td style={{ border: "1px solid black" }}>2011</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
 
+                <td style={{ border: "1px solid black" }}>3</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Bang the Drum Slowly
+                </td>
+
+                <td style={{ border: "1px solid black" }}>3</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+
+                <td style={{ border: "1px solid black" }}>3</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Bang the Drum Slowly
+                </td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+
+                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
+                <td style={{ border: "1px solid black" }}>1993</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>
+                  Bang the Drum Slowly
+                </td>
+                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
+
+                <td style={{ border: "1px solid black" }}>1973</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
+
+                <td style={{ border: "1px solid black" }}>2011</td>
+              </tr>
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 2,
+  },
+];
+
+/* export const joinquiz2Questions = [
+  {
+    id: 1,
+    question:
+      "Select the statement which lists the unfortunate directors of the movies which have caused financial loses (gross < budget)",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT JOIN(name FROM actor, movie
+          ON actor.id:director WHERE gross < budget)
+    GROUP BY name`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT name
+        FROM actor INNER JOIN movie BY actor.id = director
+        HAVING gross < budget`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT name
+        FROM actor INNER JOIN movie ON actor.id = director
+       WHERE gross < budget`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT name
+        FROM actor INNER JOIN movie ON actor.id:director
+       WHERE gross < budget`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT name
+        FROM director INNER JOIN movie ON movie.id = director.id
+       WHERE gross < budget`,
+        imageUrl:
+          "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 2,
+    question:
+      "Select the correct example of JOINing three tables",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT * 
+        FROM actor JOIN casting BY actor.id = actorid
+       JOIN movie BY movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT *
+        FROM actor JOIN casting ON actor.id = actorid
+         AND JOIN movie ON movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT *
+        FROM actor JOIN casting
+        JOIN movie ON actor.id = actorid
+         AND movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT *
+        FROM actor JOIN casting ON actor.id = actorid
+         AND movie ON movie.id = movieid`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT *
+        FROM actor JOIN casting ON actor.id = actorid
+        JOIN movie ON movie.id = movieid`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 5,
+  },
+  {
+    id: 3,
+    question:
+      "Select the statement that shows the list of actors called 'John' by order of number of movies in which they acted",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT name, COUNT(movieid)
+        FROM actor JOIN casting ON actorid=actor.id
+       WHERE name IN 'John %'
+       GROUP BY name ORDER BY 2`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT name, COUNT(movieid)
+        FROM actor JOIN casting ON actorid=actor.id
+       WHERE name LIKE 'J%'
+       GROUP BY name ORDER BY 2 DESC`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT name, COUNT(movieid)
+        FROM casting JOIN actor ON actorid=actor.id
+       WHERE name LIKE 'John %'
+       GROUP BY name ORDER BY 2 DESC`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT name, COUNT(movieid)
+        FROM casting JOIN actor
+       WHERE (actorid ON actor.id)
+         AND name LIKE 'John %'
+       GROUP BY name ORDER BY 2 DESC`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT name, COUNT(movieid)
+        FROM casting JOIN actor
+       WHERE name LIKE 'John %'
+       GROUP BY name ORDER BY COUNT(movieid) DESC`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 4,
+    question:
+      "Select the result that would be obtained from the following code:",
+    imageUrl:
+      ` SELECT title 
+      FROM movie JOIN casting ON (movieid=movie.id)
+                 JOIN actor   ON (actorid=actor.id)
+     WHERE name='Paul Hogan' AND ord = 1`,
+    options: [
+      {
+        id: 1,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack</td>
+                
+              </tr>
+              
+            
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>1</td>
+               
+              </tr>
+            
+            
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan </td>
+                <td style={{ border: "1px solid black" }}>1 </td>
+                
+              </tr>
+            
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: (
+          <div>
+                <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>"Crocodile" Dundee</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Crocodile Dundee in Los Angeles</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+                
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Flipper</td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan</td>
+               
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Lightning Jack </td>
+                <td style={{ border: "1px solid black" }}>Paul Hogan </td>
+                
+                
+              </tr>
+            
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 2,
+  },
+  {
+    id: 5,
+    question:
+      "Select the statement that lists all the actors that starred in movies directed by Ridley Scott who has id 351",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT name
+        FROM movie JOIN casting
+         AND actor ON movie.id = movieid
+         AND actor.id = actorid
+       WHERE ord = 1
+        AND actor = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT name
+        FROM movie JOIN casting
+        JOIN actor ON movie.id = movieid
+          OR actor.id = actorid
+       WHERE ord = 1 AND director = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT name
+        FROM movie JOIN casting ON movie.id = movieid
+        JOIN actor ON actor.id = actorid
+       WHERE ord = 1 AND actorid = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT name
+        FROM movie JOIN casting ON movie.id = movieid
+        JOIN actor ON actor.id = actorid
+      WHERE ord = 1 AND director = 351`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT name
+        FROM movie JOIN casting ON movie.id = actorid
+        JOIN actor ON actor.id = movieid
+       WHERE director = 351`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 4,
+  },
+  {
+    id: 6,
+    question:
+      " There are two sensible ways to connect movie and actor. They are:",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: (<ul>
+          <li>link the director column in movies with the id column in actor</li>
+          <li>join casting to itself</li>
+        </ul>),
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: (<ul>
+          <li>link the actor column in movies with the primary key in actor</li>
+          <li>connect the primary keys of movie and actor via the casting table</li>
+        </ul>),
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: (<ul>
+          <li>link the director column in movies with the primary key in actor</li>
+          <li>connect the primary keys of movie and actor via the casting table</li>
+        </ul>),
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: (<ul>
+          <li>link the director column in movies with the primary key in actor</li>
+          <li>connect the primary keys of movie and casting via the actor table</li>
+        </ul>),
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: (<ul>
+          <li>link the movie column in actor with the director column in actor</li>
+          <li>connect movie and actor via the casting table</li>
+        </ul>),
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 7,
+    question:
+      "Select the result that would be obtained from the following code:",
+    imageUrl: `SELECT title, yr 
+    FROM movie, casting, actor 
+   WHERE name='Robert De Niro' AND movieid=movie.id AND actorid=actor.id AND ord = 3`,
+    options: [
+      {
+        id: 1,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+                <td style={{ border: "1px solid black" }}>1993</td>
+                <td style={{ border: "1px solid black" }}>3</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
+                <td style={{ border: "1px solid black" }}>1973</td>
+                <td style={{ border: "1px solid black" }}>3</td>
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                <td style={{ border: "1px solid black" }}>2011</td>
+                <td style={{ border: "1px solid black" }}>3</td>
+                
+              </tr>
+              
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: (
+          <div>
+             <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+                <td style={{ border: "1px solid black" }}>1993</td>
+               
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
+                <td style={{ border: "1px solid black" }}>1973</td>
+               
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                <td style={{ border: "1px solid black" }}>2011</td>
+               
+                
+              </tr>
+              
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: (
+          <div>
+                  <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+                
+                <td style={{ border: "1px solid black" }}>3</td>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
+               
+                <td style={{ border: "1px solid black" }}>3</td>
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                
+                <td style={{ border: "1px solid black" }}>3</td>
+                
+              </tr>
+              
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text:(
+          <div>
+                 <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+                
+                
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
+               
+               
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                
+               
+                
+              </tr>
+              
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: (
+          <div>
+                 <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>A Bronx Tale</td>
+                
+                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
+                <td style={{ border: "1px solid black" }}>1993</td>
+               
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Bang the Drum Slowly</td>
+                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
+               
+                <td style={{ border: "1px solid black" }}>1973</td>
+               
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Limitless</td>
+                <td style={{ border: "1px solid black" }}>Robert De Niro</td>
+                
+                <td style={{ border: "1px solid black" }}>2011</td>
+                
+              </tr>
+              
+            </table>
+          </div>
+        ),
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 2,
+  },
+  
+];
+
+ */
+export const usingnullquizQuestions = [
+  {
+    id: 1,
+    question: "Wählen Sie die Aussage, die den outer join korrekt nutzt.",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: ` SELECT teacher.name, dept.name FROM teacher JOIN dept ON (dept = id)`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `SELECT teacher.name, dept.name FROM teacher, dept INNER JOIN ON (teacher.dept = dept.id)`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT teacher.name, dept.name FROM teacher, dept JOIN WHERE(teacher.dept = dept.id)`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `SELECT teacher.name, dept.name FROM teacher OUTER JOIN dept ON dept.id`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `SELECT teacher.name, dept.name FROM teacher LEFT OUTER JOIN dept ON (teacher.dept = dept.id)`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 5,
+  },
+  {
+    id: 2,
+    question:
+      " Wählen Sie die richtige Aussage aus, die den Namen der Abteilung angibt, in der Cutflower beschäftigt ist.",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: ` SELECT dept.name FROM teacher JOIN dept ON (dept.id = (SELECT dept FROM teacher WHERE name = 'Cutflower'))`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: ` SELECT dept.name FROM teacher JOIN dept ON (dept.id = teacher.dept) WHERE dept.id = (SELECT dept FROM teacher HAVING name = 'Cutflower')`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: ` SELECT dept.name FROM teacher JOIN dept ON (dept.id = teacher.dept) WHERE teacher.name = 'Cutflower'`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: ` SELECT dept.name FROM teacher JOIN dept WHERE dept.id = (SELECT dept FROM teacher WHERE name = 'Cutflower')`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: ` SELECT name FROM teacher JOIN dept ON (id = dept) WHERE id = (SELECT dept FROM teacher WHERE name = 'Cutflower')`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 3,
+  },
+  {
+    id: 3,
+    question:
+      "Wählen Sie die Aussage, die einen JOIN verwendet, um eine Liste aller Abteilungen und der Anzahl der beschäftigten Lehrer anzuzeigen.",
+    imageUrl: "",
+    options: [
+      {
+        id: 1,
+        text: `SELECT dept.name, COUNT(*) FROM teacher LEFT JOIN dept ON dept.id = teacher.dept`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: ` SELECT dept.name, COUNT(teacher.name) FROM teacher, dept JOIN ON dept.id = teacher.dept GROUP BY dept.name`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `SELECT dept.name, COUNT(teacher.name) FROM teacher JOIN dept ON dept.id = teacher.dept GROUP BY dept.name`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: ` SELECT dept.name, COUNT(teacher.name) FROM teacher LEFT OUTER JOIN dept ON dept.id = teacher.dept GROUP BY dept.name`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: ` SELECT dept.name, COUNT(teacher.name) FROM teacher RIGHT JOIN dept ON dept.id = teacher.dept GROUP BY dept.name`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 5,
+  },
+  {
+    id: 4,
+    question: `Das Nutzen von 'SELECT name, dept, COALESCE(dept, 0) AS result FROM teacher' wird:`,
+    imageUrl: ``,
+    options: [
+      {
+        id: 1,
+        text: `in der Ergebnisspalte für alle Lehrer*innen 0 anzeigen`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: ` 0 in der Ergebnisspalte anzeigen für alle Lehrer*innen ohne Abteilung`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `nichts tun, da die Aussage falsch ist`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `Abteilungswert für alle Lehrer*innen auf 0 setzen`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `den Wert der Abteilung aller Lehrer*innen ohne Abteilung auf 0 setzen`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 2,
+  },
+  {
+    id: 5,
+    question:
+      "Welches der folgenden 'digit' werden bei folgender Aussage gezeigt:",
+    imageUrl: `SELECT name,
+       CASE WHEN phone = 2752 THEN 'two'
+            WHEN phone = 2753 THEN 'three'
+            WHEN phone = 2754 THEN 'four'
+            END AS digit
+  FROM teacher`,
+    options: [
+      {
+        id: 1,
+        text: `'four' for Throd`,
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: `NULL for all teachers`,
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: `NULL for Shrivell`,
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: `'two' for Cutflower`,
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: `'two' for Deadyawn`,
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 1,
+  },
+   {
+    id: 6,
+    question:
+      "Wählen Sie das Ergebnis, dass man durch folgende Aussage erhält:",
+    imageUrl: `SELECT name, 
+      CASE 
+       WHEN dept 
+        IN (1) 
+        THEN 'Computing' 
+       ELSE 'Other' 
+      END 
+  FROM teacher`,
+    options: [
+      {
+        id: 1,
+        text: (
+          <div>
+             <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>Shrivell</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Throd</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Splint</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Spiregrain</td>
+                <td style={{ border: "1px solid black" }}>Other</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Cutflower</td>
+                <td style={{ border: "1px solid black" }}>Other</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Deadyawn</td>
+                <td style={{ border: "1px solid black" }}>Other</td>
+              </tr>
+            </table> 
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 2,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>Shrivell</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Throd</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Splint</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Spiregrain</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Cutflower</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Deadyawn</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+            </table> 
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 3,
+        text: (
+          <div>
+              <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>Shrivell</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Throd</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Splint</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+            </table>  
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 4,
+        text: (
+          <div>
+             <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>Spiregrain</td>
+                <td style={{ border: "1px solid black" }}>Other</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Cutflower</td>
+                <td style={{ border: "1px solid black" }}>Other</td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>Deadyawn</td>
+                <td style={{ border: "1px solid black" }}>Other</td>
+              </tr>
+            </table> 
+          </div>
+        ),
+        imageUrl: "",
+      },
+      {
+        id: 5,
+        text: (
+          <div>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <td style={{ border: "1px solid black" }}>Shrivell</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Throd</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Splint</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Spiregrain</td>
+                <td style={{ border: "1px solid black" }}>0</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Cutflower</td>
+                <td style={{ border: "1px solid black" }}>0</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>Deadyawn</td>
+                <td style={{ border: "1px solid black" }}>0</td>
+              </tr>
+            </table> 
+          </div>
+        ),
+        imageUrl: "",
+      },
+    ],
+    correctAnswer: 1,
+  }, 
+];
