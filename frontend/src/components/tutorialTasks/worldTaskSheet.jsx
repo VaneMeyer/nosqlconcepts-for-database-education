@@ -121,7 +121,7 @@ const WorldTaskSheet = ({ title, tasks }) => {
           <Button>Zurück zur Themenübersicht</Button>
         </Link>
         <hr></hr>
-        {title !== "joinoperation" && title !== "morejoinoperations" && (
+        {title !== "joinoperation" && title !== "morejoinoperations" && title !== "usingnull" && (
           <div>
             <p>Tabelle world </p>
             <table
@@ -340,6 +340,98 @@ const WorldTaskSheet = ({ title, tasks }) => {
                 <th style={{ border: "1px solid black" }}>ord</th>
               </tr>
             </table>
+          </div>
+        )}
+        {title === "usingnull" && (
+          <div>
+            <p>teacher </p>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <th style={{ border: "1px solid black" }}>id</th>
+                <th style={{ border: "1px solid black" }}>dept</th>
+                <th style={{ border: "1px solid black" }}>name</th>
+                <th style={{ border: "1px solid black" }}>phone</th>
+                <th style={{ border: "1px solid black" }}>mobile</th>
+                
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>101</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Shrivell</td>
+                <td style={{ border: "1px solid black" }}>2753</td>
+                <td style={{ border: "1px solid black" }}>07986 555 1234</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>102</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Throd</td>
+                <td style={{ border: "1px solid black" }}>2754</td>
+                <td style={{ border: "1px solid black" }}>07122 555 1920</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>103</td>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Splint</td>
+                <td style={{ border: "1px solid black" }}>2293</td>
+                <td style={{ border: "1px solid black" }}></td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>104</td>
+                <td style={{ border: "1px solid black" }}></td>
+                <td style={{ border: "1px solid black" }}>Spiregrain</td>
+                <td style={{ border: "1px solid black" }}>3287</td>
+                <td style={{ border: "1px solid black" }}></td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>105</td>
+                <td style={{ border: "1px solid black" }}>2</td>
+                <td style={{ border: "1px solid black" }}>Cutflower</td>
+                <td style={{ border: "1px solid black" }}>3212</td>
+                <td style={{ border: "1px solid black" }}>07996 555 6574</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>106</td>
+                <td style={{ border: "1px solid black" }}></td>
+                <td style={{ border: "1px solid black" }}>Deadyawn</td>
+                <td style={{ border: "1px solid black" }}>3345</td>
+                <td style={{ border: "1px solid black" }}></td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>...</td>
+                <td style={{ border: "1px solid black" }}>...</td>
+                <td style={{ border: "1px solid black" }}>...</td>
+                <td style={{ border: "1px solid black" }}>...</td>
+                <td style={{ border: "1px solid black" }}>... </td>
+              </tr>
+            </table>
+            <p>dept </p>
+            <table
+              style={{ borderCollapse: "collapse", border: "1px solid black" }}
+            >
+              <tr>
+                <th style={{ border: "1px solid black" }}>id</th>
+                <th style={{ border: "1px solid black" }}>name</th>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>1</td>
+                <td style={{ border: "1px solid black" }}>Computing</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>2</td>
+                <td style={{ border: "1px solid black" }}>Design</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>3</td>
+                <td style={{ border: "1px solid black" }}>Engineering</td>
+              </tr>
+              <tr>
+                <td style={{ border: "1px solid black" }}>...</td>
+                <td style={{ border: "1px solid black" }}>...</td>
+              </tr>
+            </table>
+            
           </div>
         )}
 
