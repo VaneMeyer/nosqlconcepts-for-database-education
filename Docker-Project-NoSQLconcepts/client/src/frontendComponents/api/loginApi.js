@@ -1,19 +1,31 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = '/api';
+const API_URL = "/api";
 
-export const handleLogin = async (username, password, setIsLoggedIn, setUser, setRole, navigate, setErrorMessage) => {
+export const handleLogin = async (
+  username,
+  password,
+  setIsLoggedIn,
+  setUser,
+  setRole,
+  navigate,
+  setErrorMessage
+) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, {
-      username,
-      password,
-    }, { withCredentials: true }); 
+    const response = await axios.post(
+      `${API_URL}/login`,
+      {
+        username,
+        password,
+      },
+      { withCredentials: true }
+    );
 
     setIsLoggedIn(true);
     setUser(response.data.user_name);
     setRole(response.data.role);
 
-    navigate("/"); 
+    navigate("/");
     window.location.reload();
   } catch (error) {
     console.log(error);
@@ -23,10 +35,24 @@ export const handleLogin = async (username, password, setIsLoggedIn, setUser, se
     );
   }
 };
+export const handleStudentLogin = async (navigate, setErrorMessage) => {
+  try {
+    navigate("/");
+    window.location.reload();
+  } catch (error) {
+    console.log(error);
+
+    setErrorMessage(
+      "Connection failed. Please check your username and password again or ask your tutors for help."
+    );
+  }
+};
 
 export const handleLogout = async () => {
   try {
-    const response = await axios.get(`${API_URL}/logout`, { withCredentials: true }); // Cookies mit Anfragen senden
+    const response = await axios.get(`${API_URL}/logout`, {
+      withCredentials: true,
+    }); // Cookies mit Anfragen senden
     if (response.status === 200) {
       return true;
     } else {
@@ -39,12 +65,12 @@ export const handleLogout = async () => {
   }
 };
 
-
 export const checkAuth = async () => {
   try {
-    const response = await axios.get(`${API_URL}/check-auth`, { withCredentials: true }); // Cookies mit Anfragen senden
+    const response = await axios.get(`${API_URL}/check-auth`, {
+      withCredentials: true,
+    }); // Cookies mit Anfragen senden
     if (response.status === 200) {
-     
       return response.data;
     } else {
       return null;
@@ -54,7 +80,6 @@ export const checkAuth = async () => {
     return null;
   }
 };
-
 
 /* import axios from 'axios';
 

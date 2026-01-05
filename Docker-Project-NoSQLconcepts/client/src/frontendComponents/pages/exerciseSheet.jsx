@@ -194,6 +194,7 @@ useEffect(() => {
 
     const fetchUser = async () => {
       getTasks(area_id);
+      
     };
 
     fetchUser();
@@ -279,7 +280,7 @@ useEffect(() => {
                 {" "}
                 <Box>
                   <InputLabel id="task-number-label">
-                    Select another task you want to jump to:
+                    Aufgabe auswählen
                   </InputLabel>
 
                   <TextField
@@ -319,23 +320,20 @@ useEffect(() => {
                   {hasStarted ? (
                     <form>
                       <Box>
-                        <InputLabel id="query-input-label">
-                          Type and run your query if you think this task is
-                          solvable with a query.
-                        </InputLabel>
+                       
 
                         <AceEditor
                           id="query-input-label"
                           name="query"
                           mode={syntaxMode}
                           onChange={handleEditorChange}
-                          value={formData.query_text}
+                          value={formData.query_text || task.default_query || ""}
                           editorProps={{ $blockScrolling: true }}
                           style={{ width: "100%", height: "400px" }}
                           setOptions={{ fontSize: "16px" }}
                         />
                         <Button onClick={executeQuery}>
-                          Run query
+                          Ausführen
                           <PlayCircleFilledWhiteIcon></PlayCircleFilledWhiteIcon>
                         </Button>
                         {feedback_on && (
@@ -348,8 +346,7 @@ useEffect(() => {
                           <ImportantMsg
                             message={
                               <div>
-                                <CheckIcon></CheckIcon> Query was executed
-                                successfully!
+                                <CheckIcon></CheckIcon> Erfolgreich ausgeführt!
                               </div>
                             }
                             type="success"
@@ -386,7 +383,7 @@ useEffect(() => {
                             border: "black",
                           }}
                         >
-                          {<p>Result Size: {formData.resultSize}</p>}
+                          {<p>Anzahl Zeilen: {formData.resultSize}</p>}
                         </Box>
                       </Box>
                       <hr></hr>
@@ -399,7 +396,7 @@ useEffect(() => {
                               onChange={handleChange}
                             />
                           }
-                          label="Check if you finished this exercise to see your progress on the dashboard assignment card"
+                          label="Ich bin mit dieser Aufgabe fertig. (Fortschritt wird auf der Dashboard-Karte dieser Übung angezeigt.)"
                         />
                       </FormGroup>
                       <br />
@@ -412,7 +409,7 @@ useEffect(() => {
                               aria-label="Save current entries and navigate to previous task"
                               onClick={handlePrevTask}
                             >
-                              Back <NavigateBeforeIcon></NavigateBeforeIcon>
+                              Zurück <NavigateBeforeIcon></NavigateBeforeIcon>
                             </Button>
                           )}{" "}
                         
@@ -426,7 +423,7 @@ useEffect(() => {
                               aria-label="Save current entries of the task and navigate to previous task"
                               onClick={handlePrevTask}
                             >
-                              Back <NavigateBeforeIcon></NavigateBeforeIcon>
+                              Zurück <NavigateBeforeIcon></NavigateBeforeIcon>
                             </Button>
                           )}
 
@@ -434,7 +431,7 @@ useEffect(() => {
                             aria-label="Save current entries of this task and navigate to next task"
                             onClick={handleNextTask}
                           >
-                            Next <NavigateNextIcon></NavigateNextIcon>
+                            Nächste Aufgabe <NavigateNextIcon></NavigateNextIcon>
                           </Button>
                         </div>
                       )}{" "}
@@ -445,7 +442,7 @@ useEffect(() => {
                         aria-label="Start the task to open all task fields"
                         onClick={startTask}
                       >
-                        Start task
+                        Starten
                         <HourglassEmptyIcon></HourglassEmptyIcon>
                       </Button>
                       <p>{""}</p>

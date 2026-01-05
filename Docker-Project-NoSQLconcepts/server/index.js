@@ -257,6 +257,7 @@ app.post("/api/add-exercise", async (req, res) => {
       formValues.statement_id,
       formValues.area_id,
       formValues.statement_text,
+      formValues.default_query,
       formValues.solution_query,
       formValues.topic,
       formValues.subtasknumber,
@@ -282,6 +283,7 @@ app.post("/api/update-exercises", async (req, res) => {
       formValues.tasknumber,
       formValues.statement_id,
       formValues.area_id,
+      formValues.default_query,
     ],
     res
   );

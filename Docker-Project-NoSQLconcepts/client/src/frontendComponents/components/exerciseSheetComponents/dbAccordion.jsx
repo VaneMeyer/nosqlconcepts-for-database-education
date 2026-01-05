@@ -52,7 +52,7 @@ function DbAccordion({ endpoint }) {
         aria-label="Open database structure accordion elements"
         onClick={fetchStructureData}
       >
-        Inspect and Update Database Structure
+        Zeige Datenbank 
       </Button>
       {showDbStructure && (
         <Grid container spacing={2}>

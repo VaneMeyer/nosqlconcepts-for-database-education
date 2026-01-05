@@ -47,6 +47,7 @@ const ManageExercises = () => {
     statement_id: 0,
     area_id: "",
     statement_text: "",
+    default_query: "",
     solution_query: "",
     topic: "",
     subtasknumber: "",
@@ -68,13 +69,7 @@ const ManageExercises = () => {
 
       const response2 = await fetchAreaNames();
       setAreaNames(response2);
-      /*  const filteredStatementIds = response.filter(
-        (exercise) => exercise.area_id === selectedArea
-      );
-     
-      let idArray = filteredStatementIds.map((item) => item.statement_id);
-      let maxId = Math.max(...idArray) + 1;
-      setMaxId(maxId); */
+   
     } catch (error) {
       console.error("Error:", error);
     }
@@ -86,6 +81,7 @@ const ManageExercises = () => {
       statement_id: 0,
       area_id: "",
       statement_text: "",
+      default_query: "",
       solution_query: "",
       topic: "",
       subtasknumber: "",
@@ -121,6 +117,7 @@ const ManageExercises = () => {
       statement_id: 0,
       area_id: "",
       statement_text: "",
+      default_query: "",
       solution_query: "",
       topic: "",
       subtasknumber: "",
@@ -356,15 +353,7 @@ if (filteredStatementIds.length > 0) {
               style={{ marginBottom: "10px", marginTop: "5px" }}
             />
           )}
-          {/*   <TextField
-            fullWidth
-            variant="outlined"
-            label="Area ID - Assignment which the exercise belongs to"
-            name="area_id"
-            value={formValues.area_id}
-            onChange={handleFormInputChange}
-            style={{ marginBottom: "10px" }}
-          /> */}
+        
 
           <TextField
             fullWidth
@@ -414,6 +403,17 @@ if (filteredStatementIds.length > 0) {
             label="Hint"
             name="hint"
             value={formValues.hint}
+            onChange={handleFormInputChange}
+            style={{ marginBottom: "10px" }}
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            multiline
+            rows={4}
+            label="Default Query "
+            name="default_query"
+            value={formValues.default_query}
             onChange={handleFormInputChange}
             style={{ marginBottom: "10px" }}
           />

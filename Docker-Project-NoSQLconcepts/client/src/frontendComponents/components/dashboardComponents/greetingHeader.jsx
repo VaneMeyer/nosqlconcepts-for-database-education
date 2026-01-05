@@ -6,11 +6,11 @@ const GreetingHeader = () => {
   let greeting;
 
   if (currentHour < 12) {
-    greeting = 'Good morning';
+    greeting = 'Guten Morgen';
   } else if (currentHour < 18) {
-    greeting = 'Hello';
+    greeting = 'Guten Tag';
   } else {
-    greeting = 'Good evening';
+    greeting = 'Guten Abend';
   }
 
   return (

@@ -90,7 +90,7 @@ class ErrorBoundary extends React.Component {
 // Routes component
 const AppRoutes = ({ assignments }) => {
   const routes = [
-    { path: "/", element: <ProtectedRoute element={<NewDashboard />} /> },
+    { path: "/", element: <NewDashboard /> },
 
     {
       path: "/manage-users",
@@ -103,7 +103,7 @@ const AppRoutes = ({ assignments }) => {
     },
     {
       path: "/information",
-      element: <ProtectedRoute element={<NewInformationC />} />,
+      element: <NewInformationC />,
     },
     { path: "/sign-in", element: <SignIn /> },
     { path: "/conditions", element: <Conditions /> },
@@ -116,16 +116,13 @@ const AppRoutes = ({ assignments }) => {
     .forEach((assignment) => {
       routes.push({
         path: assignment.link,
+
         element: (
-          <ProtectedRoute
-            element={
-              <ExerciseSheetC
-                area_id={assignment.area_id}
-                area_name={assignment.area_name}
-                endpoint={assignment.endpoint}
-                feedback_on={assignment.feedback_on}
-              />
-            }
+          <ExerciseSheetC
+            area_id={assignment.area_id}
+            area_name={assignment.area_name}
+            endpoint={assignment.endpoint}
+            feedback_on={assignment.feedback_on}
           />
         ),
       });

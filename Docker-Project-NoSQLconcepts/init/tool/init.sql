@@ -50,8 +50,8 @@ INSERT INTO tool.task_areas
     feedback_on
 )
 VALUES
-(1,  'SELECT basics',           NULL, 'basics',            'PostgreSQL', true, false),
-(2,  'SELECT names',            NULL, 'names',             'PostgreSQL', true, false),
+(1,  'SELECT basics',           'Daten: World', 'basics',            'PostgreSQL', true, false),
+(2,  'SELECT names',            'Daten: World', 'names',             'PostgreSQL', true, false),
 (3,  'SELECT Quiz',             NULL, 'selectquiz',        'PostgreSQL', true, false),
 (4,  'SELECT from World',       NULL, 'selectfromworld',   'PostgreSQL', true, false),
 (5,  'BBC Quiz',                NULL, 'bbcquiz',           'PostgreSQL', true, false),
@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS tool.task_statements
     statement_id integer NOT NULL,
     area_id integer NOT NULL,
     statement_text text COLLATE pg_catalog."default" NOT NULL,
+    default_query text COLLATE pg_catalog."default",
     solution_query text COLLATE pg_catalog."default",
     topic text COLLATE pg_catalog."default",
     subtasknumber text COLLATE pg_catalog."default",
@@ -92,134 +93,117 @@ CREATE TABLE IF NOT EXISTS tool.task_statements
         ON DELETE NO ACTION
 );
 
+
+
 INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
+(statement_id, area_id, statement_text, default_query, solution_query, subtasknumber, tasknumber)
 VALUES
 (1, 1,
- 'Ändern Sie das SQL-Statement, um die Bevölkerung Deutschlands anzuzeigen.',
+ 'Das Beispiel verwendet eine WHERE-Klausel, um die Bevölkerung (population) von Frankreich (France) anzuzeigen. Beachten Sie, dass Zeichenfolgen in einfachen Anführungszeichen stehen sollten. Ändern Sie das folgende SQL Statement, um die Bevölkerung Deutschlands (Germany) anzuzeigen',
+ 'SELECT population FROM world WHERE name = ''France'';',
  'SELECT population FROM world WHERE name = ''Germany'';',
+ 'Aufgabe 1',
  '1'),
 (2, 1,
- 'Zeigen Sie den Namen und die Bevölkerung für Schweden, Norwegen und Dänemark an.',
+ 'Überprüfung einer Liste: Das Wort IN ermöglicht es uns zu überprüfen, ob ein Element in einer Liste vorhanden ist. Das folgende Beispiel zeigt den Namen (name) und die Bevölkerung (population) für die Länder Brasilien (Brazil), Russland (Russia), Indien (India) und China. Zeigen Sie den Namen und die Bevölkerung für Schweden (Sweden), Norwegen (Norway) und Dänemark (Denmark) an.',
+ 'SELECT name, population FROM world WHERE name IN (''Brazil'', ''Russia'', ''India'', ''China'');',
  'SELECT name, population FROM world WHERE name IN (''Sweden'', ''Norway'', ''Denmark'');',
+ 'Aufgabe 2',
  '2'),
 (3, 1,
- 'Zeigen Sie das Land und die Fläche für Länder mit einer Fläche zwischen 200.000 und 250.000.',
+ 'Welche Länder sind weder zu klein noch zu groß? Mittels BETWEEN lässt sich Bereichsprüfung durchführen (der angegebene Bereich schließt die Grenzwerte mit ein). Das folgende Beispiel zeigt Länder mit einer Fläche (area) von 250.000-300.000 km². Passen Sie es an, um das Land und die Fläche für Länder mit einer Fläche zwischen 200.000 und 250.000 zu zeigen.',
+ 'SELECT name, area FROM world WHERE area BETWEEN 250000 AND 300000;',
  'SELECT name, area FROM world WHERE area BETWEEN 200000 AND 250000;',
- '3');
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
+ 'Aufgabe 3',
+ '3'),
 (1, 2,
- 'Finde das Land, das mit Y beginnt.',
+ 'Du kannst WHERE name LIKE ''B%'' verwenden, um die Länder zu finden, die mit ''B'' beginnen. Das % ist ein Platzhalter, der zu beliebigen Zeichen passen kann. Finde das Land, das mit Y beginnt.',
+ 'SELECT name FROM world WHERE name LIKE ''F%''',
  'SELECT name FROM world WHERE name LIKE ''Y%'';',
- '1'),
+ 'Aufgabe 1',
+ '1'), 
 (2, 2,
  'Finde die Länder, die mit Y enden.',
+ 'SELECT name FROM world WHERE name LIKE ''T%'' ',
  'SELECT name FROM world WHERE name LIKE ''%Y'';',
- '2'),
+ 'Aufgabe 2',
+ '2'), 
 (3, 2,
- 'Liste die Länder auf, die den Buchstaben x enthalten.',
+ 'Luxemburg hat ein x im Namen - ebenso wie ein anderes Land. Liste beide auf. Finde die Länder, die den Buchstaben x enthalten. ',
+ 'SELECT name FROM world WHERE name LIKE ''T%'' ',
  'SELECT name FROM world WHERE name LIKE ''%x%'';',
- '3'),
+ 'Aufgabe 3',
+ '3'), 
 (4, 2,
- 'Finde die Länder, die mit land enden.',
+ 'Iceland, Switzerland enden mit ''land'' - aber gibt es noch andere? Finde die Länder, die mit ''land'' enden. ',
+ 'SELECT name FROM world WHERE name LIKE ''T%'' ',
  'SELECT name FROM world WHERE name LIKE ''%land'';',
- '4');
-
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
-(1, 4,
- 'Zeigen Sie den Namen, den Kontinent und die Bevölkerung aller Länder an.',
- 'SELECT name, continent, population FROM world;',
- '1'),
-(2, 4,
- 'Zeigen Sie die Länder mit mindestens 200 Millionen Einwohnern.',
- 'SELECT name FROM world WHERE population >= 200000000;',
- '2'),
-(3, 4,
- 'Zeigen Sie Name und Pro-Kopf-BIP für Länder mit mindestens 200 Millionen Einwohnern.',
- 'SELECT name, (gdp / population) FROM world WHERE population >= 200000000;',
- '3');
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
-(1, 6,
- 'Zeigen Sie Länder mit einer Bevölkerung größer als die von Russland.',
- 'SELECT name FROM world WHERE population > (SELECT population FROM world WHERE name = ''Russia'');',
- '1'),
-(2, 6,
- 'Zeigen Sie europäische Länder mit höherem Pro-Kopf-BIP als das Vereinigte Königreich.',
- 'SELECT name FROM world WHERE continent = ''Europe'' AND (gdp / population) > (SELECT gdp / population FROM world WHERE name = ''United Kingdom'');',
- '2');
-
-
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
-(1, 8,
- 'Zeigen Sie die Gesamtbevölkerungsanzahl der Welt an.',
- 'SELECT SUM(population) FROM world;',
- '1'),
-(2, 8,
- 'Listen Sie alle Kontinente auf – jeweils nur einmal.',
- 'SELECT DISTINCT continent FROM world;',
- '2'),
-(3, 8,
- 'Geben Sie das gesamte GDP Afrikas an.',
- 'SELECT SUM(gdp) FROM world WHERE continent = ''Africa'';',
- '3');
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
-(1, 10,
- 'Zeigen Sie matchid und Spielernamen für alle Tore von Deutschland.',
- 'SELECT matchid, player FROM goal WHERE teamid = ''GER'';',
- '1'),
-(2, 10,
- 'Zeigen Sie Stadion und Teams für Spiel 1012.',
- 'SELECT id, stadium, team1, team2 FROM game WHERE id = 1012;',
- '2');
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
-(1, 12,
- 'Listen Sie Filme aus dem Jahr 1962 auf.',
- 'SELECT id, title FROM movie WHERE yr = 1962;',
- '1'),
-(2, 12,
- 'Geben Sie das Erscheinungsjahr von Citizen Kane aus.',
- 'SELECT yr FROM movie WHERE title = ''Citizen Kane'';',
- '2');
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
-(1, 14,
- 'Listen Sie Lehrende ohne Abteilung auf.',
- 'SELECT name FROM teacher WHERE dept IS NULL;',
- '1'),
-(2, 14,
- 'Zeigen Sie alle Lehrenden inklusive Abteilungen (LEFT JOIN).',
- 'SELECT teacher.name, dept.name FROM teacher LEFT JOIN dept ON teacher.dept = dept.id;',
- '2');
-
-INSERT INTO tool.task_statements
-(statement_id, area_id, statement_text, solution_query, tasknumber)
-VALUES
-(1, 16,
- 'Wie viele Stops sind in der Datenbank?',
- 'SELECT COUNT(*) FROM stops;',
- '1'),
-(2, 16,
- 'Finde die ID für den Stop Craiglockhart.',
- 'SELECT id FROM stops WHERE name = ''Craiglockhart'';',
- '2');
+ 'Aufgabe 4',
+ '4'), 
+(5, 2,
+ 'Columbia beginnt mit einem C und endet mit ia - es gibt zwei weitere Länder wie dieses. Finde die Länder, die mit C beginnen und mit ia enden. ',
+ 'SELECT name FROM world WHERE name LIKE ''T%'' ',
+ 'SELECT name FROM world WHERE name LIKE ''C%ia'';',
+ 'Aufgabe 5',
+ '5'), 
+(6, 2,
+ 'Greece hat ein doppeltes e - wer hat ein doppeltes o? Finde das Land, das oo im Namen hat. ',
+ 'SELECT name FROM world WHERE name LIKE ''%ee%'' ',
+ 'SELECT name FROM world WHERE name LIKE ''%oo%'';',
+ 'Aufgabe 6',
+ '6'), 
+(7, 2,
+ 'Die Bahamas haben drei a - wer noch? Finde die Länder, die drei oder mehr a im Namen haben. ',
+ 'SELECT name FROM world WHERE name LIKE ''T%'' ',
+ 'SELECT name FROM world WHERE name LIKE ''%a%a%a%'';',
+ 'Aufgabe 7',
+ '7'), 
+(8, 2,
+ 'India und Angola haben ein ''n'' als zweiten Buchstaben. Du kannst den Unterstrich als Platzhalter für ein einzelnes Zeichen verwenden. Gebe nun die Länder aus, deren zweiter Buchstabe ''t'' ist.',
+ 'SELECT name FROM world WHERE name LIKE ''_n%'' ORDER BY name ',
+ 'SELECT name FROM world WHERE name LIKE ''_t%'' ORDER BY name;',
+ 'Aufgabe 8',
+ '8'), 
+(9, 2,
+ 'Lesotho und Moldowa haben beide zwei ''o'' im Namen, die von zwei anderen Zeichen getrennt sind. Finde die Länder, die zwei ''o'' im Namen haben, die von zwei anderen Zeichen getrennt sind. ',
+ 'SELECT name FROM world WHERE name LIKE ''_n%''',
+ 'SELECT name FROM world WHERE name LIKE ''%o__o%'';',
+ 'Aufgabe 9',
+ '9'), 
+(10, 2,
+ 'Kuba und Togo haben Namen mit vier Buchstaben. Finde die Länder, die genau vier Buchstaben im Namen haben. ',
+ 'SELECT name FROM world WHERE name LIKE ''Cu%''',
+ 'SELECT name FROM world WHERE name LIKE ''____'';',
+ 'Aufgabe 10',
+ '10'), 
+(11, 2,
+ 'Die Hauptstadt von Luxemburg ist Luxemburg. Finde alle Länder, in denen der Name der Hauptstadt (capital) dem Namen des Landes (name) entspricht. ',
+ 'SELECT name, capital, continent FROM world WHERE name LIKE ''%x%''',
+ 'SELECT name FROM world WHERE name = capital;',
+ 'Aufgabe 11',
+ '11'), 
+(12, 2,
+ 'Die Hauptstadt von Mexiko ist Mexiko City. Finde alle Länder, in denen die Hauptstadt (capital) den Namen des Landes zusammen mit ''City'' enthält. ',
+ 'SELECT name, concat(name, ''town'') FROM world WHERE name LIKE ''%ina%'' ',
+ 'SELECT name FROM world WHERE capital = CONCAT(name, '' City'');',
+ 'Aufgabe 12',
+ '12'), 
+(13, 2,
+ 'Finde die Hauptstadt und den Namen, bei denen die Hauptstadt den Namen des Landes enthält. ',
+ '',
+ 'SELECT capital, name FROM world WHERE capital LIKE CONCAT(''%'', name, ''%'');',
+ 'Aufgabe 13',
+ '13'), 
+(14, 2,
+ 'Finde die Hauptstadt und den Namen, bei denen die Hauptstadt eine Erweiterung des Landesnamens ist. Du solltest Mexico City einschließen, da es länger ist als Mexico. Du solltest Luxemburg nicht einschließen, da die Hauptstadt denselben Namen wie das Land hat. ',
+ '',
+ 'SELECT capital, name FROM world WHERE capital LIKE CONCAT(name, ''%'') AND capital <> name;',
+ 'Aufgabe 14',
+ '14'), 
+(15, 2,
+ 'Die Hauptstadt von Monaco ist Monaco-Ville: Dies ist der Name Monaco mit der Erweiterung ''-Ville''. Zeige den Namen und die Erweiterung, bei denen die Hauptstadt eine richtige (nicht leere) Erweiterung des Landesnamens ist. Du kannst die SQL-Funktion REPLACE verwenden. ',
+ '',
+ 'SELECT name, SUBSTRING(capital, LENGTH(name) + 1, LENGTH(capital)) as ext FROM world WHERE capital LIKE CONCAT(name, ''%'') AND capital <> name;',
+ 'Aufgabe 15',
+ '15');
 

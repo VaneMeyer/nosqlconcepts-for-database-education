@@ -14,6 +14,7 @@ import {
   Toolbar,
   Typography,
   Tooltip,
+  Button,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -58,7 +59,7 @@ function TopBar() {
 
   const tabs = [
     { label: "Dashboard", to: "/", icon: <DashboardIcon />, visible: true },
-    
+
     {
       label: "Info",
       to: "/information",
@@ -77,7 +78,6 @@ function TopBar() {
       icon: <BuildIcon />,
       visible: isAdmin,
     },
-   
   ];
 
   useEffect(() => {
@@ -125,15 +125,27 @@ function TopBar() {
                     {tab.label}
                   </MenuItem>
                 ))}
+              {!username && (
+                <>
+                  <Divider />
+
+                  <MenuItem onClick={handleMenuClose}>
+                    <ListItemIcon>
+                      <Link to="/sign-in" replace style={{ textDecoration: "none" }}>
+                        <Button aria-label="login">Anmelden</Button>
+                      </Link>
+                    </ListItemIcon>
+                  </MenuItem>
+                </>
+              )}
               {username && (
                 <>
                   <Divider />
 
                   <MenuItem onClick={handleMenuClose}>
                     <ListItemIcon>
-                       <LogOut />
+                      <LogOut />
                     </ListItemIcon>
-                  
                   </MenuItem>
                 </>
               )}
@@ -175,6 +187,22 @@ function TopBar() {
                 ))}
             </Tabs>
 
+            {!username && (
+              <Tooltip title="Login">
+                <Box
+                  sx={{
+                    ml: 2,
+                    flexShrink: 0,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Link to="/sign-in" replace style={{ textDecoration: "none" }}>
+                    <Button aria-label="login">Anmelden</Button>
+                  </Link>
+                </Box>
+              </Tooltip>
+            )}
             {username && (
               <Tooltip title="Logout">
                 <Box
@@ -185,7 +213,6 @@ function TopBar() {
                     alignItems: "center",
                   }}
                 >
-               
                   <LogOut />
                 </Box>
               </Tooltip>

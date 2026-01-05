@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useNavigate } from "react-router-dom";
-import { handleLogin } from "../api/loginApi";
+import { handleLogin, handleStudentLogin } from "../api/loginApi";
 
 function Copyright(props) {
   return (
@@ -96,6 +96,17 @@ export default function SignIn() {
      // alert("Please accept the terms and conditions before logging in.");
     }
   };
+  const handleStudentSubmit = (event) => {
+    event.preventDefault();
+    if (isChecked) {
+      handleStudentLogin(
+       
+        navigate,
+        setErrorMessage
+      );
+      
+  };
+}
 
   const openTermsAndConditions = () => {
     window.open("/conditions", "_blank", "noopener,noreferrer");
@@ -190,21 +201,20 @@ export default function SignIn() {
           >
             Sign In
           </Button>
-          {/* <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2" aria-label="Forgot password?">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2" aria-label="Sign up">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid> */}
+          <Button
+            onClick={handleStudentSubmit}
+            disabled={!isChecked}
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            aria-label="Sign in"
+          >
+            Ohne Anmeldung fortfahren
+          </Button>
+       
         </Box>
       </Box>
-      {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
+      
     </Container>
   );
 }

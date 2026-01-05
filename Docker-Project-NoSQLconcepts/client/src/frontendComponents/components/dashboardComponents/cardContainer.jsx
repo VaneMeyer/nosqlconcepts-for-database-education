@@ -189,10 +189,11 @@ export default function CardContainer() {
     setFormValues({ ...formValues, [name]: value });
   };
  const endpointColors = {
-    PostgreSQL: "rgba(8, 15, 86, 1)",
-    Cassandra: "#043a5eff",
+    PostgreSQL: "rgba(8, 15, 86, 1)", //world
+    Cassandra: "#043a5eff", //andere db
     Neo4J: "#2f0361ff",
     MongoDB: "#032729ff",
+    Quiz: "#032729ff", //Todo
   };
   return (
     <Box
