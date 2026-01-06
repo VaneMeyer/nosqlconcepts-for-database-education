@@ -3,10 +3,9 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import { useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
-import CircularProgress from "@mui/material/CircularProgress";
+//import CircularProgress from "@mui/material/CircularProgress";
 import {
   Box,
   Button,
@@ -43,44 +42,41 @@ const Item = styled(Paper)(({ theme }) => ({
   overflow: "auto",
 }));
 function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
-  const navigate = useNavigate();
   const getInitialFormData = (taskNumber) => {
-  try {
-    const stored = localStorage.getItem(`formdata_${area_id}_${taskNumber}`);
-    return stored
-      ? JSON.parse(stored)
-      : {
-          query_text: "",
-          isExecutable: "No",
-          resultSize: 0,
-          isFinished: false,
-        };
-  } catch {
-    return {
-      query_text: "",
-      isExecutable: "No",
-      resultSize: 0,
-      isFinished: false,
-    };
-  }
-};
+    try {
+      const stored = localStorage.getItem(`formdata_${area_id}_${taskNumber}`);
+      return stored
+        ? JSON.parse(stored)
+        : {
+            query_text: "",
+            isExecutable: "No",
+            resultSize: 0,
+            isFinished: false,
+          };
+    } catch {
+      return {
+        query_text: "",
+        isExecutable: "No",
+        resultSize: 0,
+        isFinished: false,
+      };
+    }
+  };
   const [task, setTask] = useState("");
   const [hasStarted, setHasStarted] = useState(false);
   const [taskNumber, setTaskNumber] = useState(1);
   const [tasksArray, setTasksArray] = useState([]);
 
   const [formData, setFormData] = useState(() =>
-  getInitialFormData(taskNumber)
-);
+    getInitialFormData(taskNumber)
+  );
 
   const [queryResult, setQueryResult] = useState("");
   const [syntaxMode, setSyntaxMode] = useState("");
-  const [solutionResult, setSolutionResult] = useState("");
+  //const [solutionResult, setSolutionResult] = useState("");
   const [feedback, setFeedback] = useState("");
   const [feedbackType, setFeedbackType] = useState("error");
   const [error, setError] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [confirmCallback, setConfirmCallback] = useState(null);
 
   const handleF5 = (event) => {
     if (event.key === "F5") {
@@ -89,9 +85,6 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       alert("F5 is not used as a shortcut to execute queries.");
     }
   };
-
-
-
 
   const getTasks = async (areaId) => {
     try {
@@ -105,19 +98,13 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     }
   };
 
-
-
   const executeQuery = async () => {
     setQueryResult("");
     const execQuery = formData.query_text;
-    let apiRoute = "";
-    if (endpoint === "PostgreSQL") {
-      apiRoute = "/execute-sql";
-    }
 
     try {
       const response = await sendToExecute(
-        apiRoute,
+        endpoint,
         execQuery,
         taskNumber,
         area_id
@@ -128,7 +115,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       } else {
         setQueryResult(response.data.userQueryResult);
       }
-      setSolutionResult(response.data.expectedResult);
+      //setSolutionResult(response.data.expectedResult);
 
       if (typeof response.data.userQueryResult === "string") {
         setFormData((prev) => ({
@@ -176,30 +163,24 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   };
   //###########
   useEffect(() => {
-  setFormData(getInitialFormData(taskNumber));
-}, [taskNumber]);
-
-useEffect(() => {
-  localStorage.setItem(
-    `formdata_${area_id}_${taskNumber}`,
-    JSON.stringify(formData)
-  );
-}, [formData, taskNumber]);
-
+    setFormData(getInitialFormData(taskNumber));
+  }, [taskNumber]);
 
   useEffect(() => {
-    if (endpoint === "PostgreSQL") {
-      setSyntaxMode("pgsql");
-    }
+    localStorage.setItem(
+      `formdata_${area_id}_${taskNumber}`,
+      JSON.stringify(formData)
+    );
+  }, [formData, taskNumber]);
+
+  useEffect(() => {
+    setSyntaxMode("pgsql");
 
     const fetchUser = async () => {
       getTasks(area_id);
-      
     };
 
     fetchUser();
-
-
 
     window.addEventListener("keydown", handleF5);
     return () => {
@@ -209,16 +190,13 @@ useEffect(() => {
 
   const startTask = () => {
     setHasStarted(true);
-   
-    
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
     setFormData((prev) => ({ ...prev, [name]: value }));
-   
-    
+
     if (name === "is-finished-checkbox") {
       setFormData((prev) => ({ ...prev, isFinished: event.target.checked }));
     }
@@ -233,38 +211,28 @@ useEffect(() => {
     setHasStarted(false);
   };
   const handleNextTask = () => {
-    
-      if (taskNumber === tasksArray.length) {
-        alert("This is the last task");
-      } else {
-        updateTaskAndFormData(taskNumber + 1);
-      }
-    
+    if (taskNumber === tasksArray.length) {
+      alert("This is the last task");
+    } else {
+      updateTaskAndFormData(taskNumber + 1);
+    }
   };
 
   const handlePrevTask = () => {
-    
-      if (taskNumber > 1) {
-        updateTaskAndFormData(taskNumber - 1);
-      }
-    
+    if (taskNumber > 1) {
+      updateTaskAndFormData(taskNumber - 1);
+    }
   };
 
   const handleTaskChange = (event) => {
     const { value } = event.target;
-    
-      updateTaskAndFormData(value);
-    
-  };
 
-  
+    updateTaskAndFormData(value);
+  };
 
   const handleEditorChange = (newContent) => {
     setFormData({ ...formData, query_text: newContent });
-    
   };
-
-
 
   return (
     <Container>
@@ -274,7 +242,6 @@ useEffect(() => {
       {task && (
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-     
             <Grid item xs={12} md={12}>
               <Item /* sx={{ bgcolor: "rgb(247, 250, 250)" }} */>
                 {" "}
@@ -320,14 +287,14 @@ useEffect(() => {
                   {hasStarted ? (
                     <form>
                       <Box>
-                       
-
                         <AceEditor
                           id="query-input-label"
                           name="query"
                           mode={syntaxMode}
                           onChange={handleEditorChange}
-                          value={formData.query_text || task.default_query || ""}
+                          value={
+                            formData.query_text || task.default_query || ""
+                          }
                           editorProps={{ $blockScrolling: true }}
                           style={{ width: "100%", height: "400px" }}
                           setOptions={{ fontSize: "16px" }}
@@ -412,7 +379,6 @@ useEffect(() => {
                               Zurück <NavigateBeforeIcon></NavigateBeforeIcon>
                             </Button>
                           )}{" "}
-                        
                         </div>
                       ) : (
                         <div>
@@ -431,7 +397,8 @@ useEffect(() => {
                             aria-label="Save current entries of this task and navigate to next task"
                             onClick={handleNextTask}
                           >
-                            Nächste Aufgabe <NavigateNextIcon></NavigateNextIcon>
+                            Nächste Aufgabe{" "}
+                            <NavigateNextIcon></NavigateNextIcon>
                           </Button>
                         </div>
                       )}{" "}
@@ -458,7 +425,6 @@ useEffect(() => {
           </Grid>
         </Box>
       )}
-      
     </Container>
   );
 }

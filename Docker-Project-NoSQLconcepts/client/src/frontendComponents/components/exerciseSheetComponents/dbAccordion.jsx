@@ -1,6 +1,5 @@
 import { Box, Button, Grid } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import DbStructureTable from "./DbStructureTable";
+import React, { useState } from "react";
 import DbStructureTablePostgres from "./db_structures/postgres_structure";
 import { fetchDbStructure } from "../../api/mainApi";
 
@@ -8,38 +7,20 @@ import { fetchDbStructure } from "../../api/mainApi";
 function DbAccordion({ endpoint }) {
  
   const [dbTable, setDbTable] = useState(null);
-  const [dbendpoint, setDbEndpoint] = useState(null);
+  
 
   const [showDbStructure, setShowDbStructure] = useState(false);
-  useEffect(() => {
-    
-    if (endpoint === "PostgreSQL") {
-      setDbEndpoint("/getPostgreSQLStructure");
-      
-    }
-    
-  }, []);
+
   const fetchStructureData = async () => {
     try {
-      let response = await fetchDbStructure(dbendpoint);
+      let response = await fetchDbStructure(endpoint);
       response = response.data;
       
-      let newDbTable;
-      switch (endpoint) {
-        case "PostgreSQL":
-          newDbTable = DbStructureTablePostgres(
+      let newDbTable = DbStructureTablePostgres(
             response["tables"],
             response["columns"]
           );
-          break;
-       
-        default:
-          newDbTable = DbStructureTable(
-            response["tables"],
-            response["columns"]
-          );
-          break;
-      }
+  
       setDbTable(newDbTable);
       setShowDbStructure((prevShowDbStructure) => !prevShowDbStructure);
     } catch (error) {

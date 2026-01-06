@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Grid,
   Card,
@@ -14,7 +14,8 @@ import {
   CardActions,
 } from "@mui/material";
 
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import QuizIcon from "@mui/icons-material/Quiz";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -39,7 +40,6 @@ import {
 import { checkAuth } from "../../api/loginApi";
 import CircularProgressC from "./circularProgressC";
 export default function CardContainer() {
-  const navigate = useNavigate();
   const [assignments, setAssignments] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -188,12 +188,21 @@ export default function CardContainer() {
     const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
   };
- const endpointColors = {
-    PostgreSQL: "rgba(8, 15, 86, 1)", //world
-    Cassandra: "#043a5eff", //andere db
-    Neo4J: "#2f0361ff",
-    MongoDB: "#032729ff",
-    Quiz: "#032729ff", //Todo
+  const endpointColors = {
+    Euro: "rgba(8, 15, 86, 1)", 
+    Movie: "#043a5eff", 
+    Buses: "#1f4704ff",
+    Teachers: "#385603ff",
+    Quiz: "#032729ff", 
+    World: "#2f0361ff",
+  };
+  const endpointIcons = {  
+   Euro: <AssignmentIcon />, 
+    Movie: <AssignmentIcon />, 
+    Buses: <AssignmentIcon />,
+    Teachers: <AssignmentIcon />,
+    Quiz: <QuizIcon />, 
+    World: <AssignmentIcon />,
   };
   return (
     <Box
@@ -227,9 +236,9 @@ export default function CardContainer() {
                 <Box
                   sx={{
                     height: 150,
-                  backgroundColor:
+                    backgroundColor:
                       endpointColors[assignment.endpoint] ||
-                      "rgba(52, 105, 184, 1)", 
+                      "rgba(52, 105, 184, 1)",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     position: "relative",
@@ -241,8 +250,8 @@ export default function CardContainer() {
                       content: '""',
                       position: "absolute",
                       inset: 0,
-                     /*  background:
-                        "linear-gradient(to top, rgba(234, 229, 229, 0.6), rgba(239, 228, 228, 0))", */
+                      background:
+                        "linear-gradient(to top, rgba(234, 229, 229, 0.6), rgba(239, 228, 228, 0))",
                       zIndex: 1,
                     },
                   }}
@@ -299,7 +308,7 @@ export default function CardContainer() {
 
                   {/* Circular Progress Overlay */}
                   <CardActions>
-                    <CircularProgressC areaId={assignment.area_id}/> 
+                    <CircularProgressC areaId={assignment.area_id} />
                   </CardActions>
 
                   <CardContent
@@ -311,7 +320,9 @@ export default function CardContainer() {
                     }}
                   >
                     <Typography variant="h6" fontWeight="bold">
-                      <AssignmentIcon /> {assignment.area_name}
+                     
+                      {endpointIcons[assignment.endpoint]}
+                      {assignment.area_name}
                     </Typography>
                     <Typography>{assignment.descr}</Typography>
                   </CardContent>
@@ -414,8 +425,12 @@ export default function CardContainer() {
                 onChange={handleFormInputChange}
                 label="Database Endpoint"
               >
-                <MenuItem value="PostgreSQL">PostgreSQL</MenuItem>
-             
+                <MenuItem value="World">World</MenuItem>
+                <MenuItem value="Euro">Euro</MenuItem>
+                <MenuItem value="Movie">Movie</MenuItem>
+                <MenuItem value="Teachers">Teachers</MenuItem>
+                <MenuItem value="Buses">Buses</MenuItem>
+                {/*  <MenuItem value="PostgreSQL">PostgreSQL</MenuItem> */}
               </Select>
             </FormControl>
 

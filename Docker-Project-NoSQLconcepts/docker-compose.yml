@@ -28,6 +28,19 @@ services:
     volumes:
       - pgdata2:/var/lib/postgresql/data
       - ./init/tool:/docker-entrypoint-initdb.d
+  postgres3:
+    image: postgres:15
+    restart: always
+    container_name: postgres3
+    environment:
+      POSTGRES_USER: ${PG_USER3}
+      POSTGRES_PASSWORD: ${PG_PASSWORD3}
+      POSTGRES_DB: ${PG_DATABASE3}
+    ports:
+      - "5434:5432" 
+    volumes:
+      - pgdata3:/var/lib/postgresql/data
+      - ./init/movie:/docker-entrypoint-initdb.d
 
 
 
@@ -38,6 +51,7 @@ services:
     depends_on:
       - postgres
       - postgres2
+      - postgres3
   
     env_file:
       - .env
@@ -54,4 +68,5 @@ services:
 volumes:
   pgdata:
   pgdata2:
+  pgdata3:
 

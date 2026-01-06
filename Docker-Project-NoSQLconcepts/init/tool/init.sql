@@ -50,23 +50,23 @@ INSERT INTO tool.task_areas
     feedback_on
 )
 VALUES
-(1,  'SELECT basics',           'Daten: World', 'basics',            'PostgreSQL', true, false),
-(2,  'SELECT names',            'Daten: World', 'names',             'PostgreSQL', true, false),
-(3,  'SELECT Quiz',             NULL, 'selectquiz',        'PostgreSQL', true, false),
-(4,  'SELECT from World',       NULL, 'selectfromworld',   'PostgreSQL', true, false),
-(5,  'BBC Quiz',                NULL, 'bbcquiz',           'PostgreSQL', true, false),
-(6,  'SELECT within SELECT',    NULL, 'selectwithinselect','PostgreSQL', true, false),
-(7,  'Nested SELECT Quiz',      NULL, 'nestedselectquiz',  'PostgreSQL', true, false),
-(8,  'SUM and COUNT',           NULL, 'sumandcount',       'PostgreSQL', true, false),
-(9,  'SUM and COUNT Quiz',      NULL, 'sumandcountquiz',   'PostgreSQL', true, false),
-(10, 'The JOIN operation',      NULL, 'joinoperation',     'PostgreSQL', true, false),
-(11, 'JOIN Quiz',               NULL, 'joinquiz',          'PostgreSQL', true, false),
-(12, 'More JOIN operations',    NULL, 'morejoinoperations','PostgreSQL', true, false),
-(13, 'JOIN Quiz 2',             NULL, 'joinquiz2',         'PostgreSQL', true, false),
-(14, 'Using Null',              NULL, 'usingnull',         'PostgreSQL', true, false),
-(15, 'Using Null Quiz',         NULL, 'usingnullquiz',     'PostgreSQL', true, false),
-(16, 'Self join',               NULL, 'selfjoin',          'PostgreSQL', true, false),
-(17, 'Self join Quiz',          NULL, 'selfjoinquiz',      'PostgreSQL', true, false)
+(1,  'SELECT basics',           'Daten: World', 'basics',            'World', true, false),
+(2,  'SELECT names',            'Daten: World', 'names',             'World', true, false),
+(3,  'SELECT Quiz',             NULL, 'selectquiz',        'Quiz', true, false),
+(4,  'SELECT from World',       'Daten: World', 'selectfromworld',   'World', true, false),
+(5,  'BBC Quiz',                NULL, 'bbcquiz',           'Quiz', true, false),
+(6,  'SELECT within SELECT',    'Daten: World', 'selectwithinselect','World', true, false),
+(7,  'Nested SELECT Quiz',      NULL, 'nestedselectquiz',  'Quiz', true, false),
+(8,  'SUM and COUNT',           'Daten: World', 'sumandcount',       'World', true, false),
+(9,  'SUM and COUNT Quiz',      NULL, 'sumandcountquiz',   'Quiz', true, false),
+(10, 'The JOIN operation',      'Daten: Euro 2012', 'joinoperation',     'Euro', true, false),
+(11, 'JOIN Quiz',               NULL, 'joinquiz',          'Quiz', true, false),
+(12, 'More JOIN operations',    'Daten: Movie', 'morejoinoperations','Movie', true, false),
+(13, 'JOIN Quiz 2',             NULL, 'joinquiz2',         'Quiz', true, false),
+(14, 'Using Null',              'Daten: Teachers and Departments', 'usingnull',         'Teachers', true, false),
+(15, 'Using Null Quiz',         NULL, 'usingnullquiz',     'Quiz', true, false),
+(16, 'Self join',               'Daten: Edinburgh Buses', 'selfjoin',          'Buses', true, false),
+(17, 'Self join Quiz',          NULL, 'selfjoinquiz',      'Quiz', true, false)
 
 ON CONFLICT (area_id) DO NOTHING;
 

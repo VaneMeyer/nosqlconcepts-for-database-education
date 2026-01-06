@@ -98,6 +98,13 @@ const pool2 = new Pool({
   password: process.env.PG_PASSWORD2,
   port: process.env.PG_PORT2,
 });
+const pool3 = new Pool({
+  user: process.env.PG_USER3,
+  host: process.env.PG_HOST3,
+  database: process.env.PG_DATABASE3,
+  password: process.env.PG_PASSWORD3,
+  port: process.env.PG_PORT3,
+});
 
 //################# Login and Logout ######################################################
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -393,9 +400,10 @@ app.post("/api/update-status", async (req, res) => {
 // Queryfunction for the structure of the PostgreSQL-DB.
 const { getPgStructureQuery } = mainQueries;
 
-app.get("/api/getPostgreSQLStructure", async (req, res) => {
+app.post("/api/getPostgreSQLStructure", async (req, res) => {
+   const { endpoint } = req.body;
   try {
-    const postgreSQL_query = () => pool.query(getPgStructureQuery);
+    const postgreSQL_query = () => (endpoint === "World" && pool.query(getPgStructureQuery) || endpoint === "Movie" && pool3.query(getPgStructureQuery) );
     let result = await executeQueryWithTimeout(postgreSQL_query, 50000);
 
     tables_set = new Set();
@@ -465,16 +473,20 @@ const executeQueryWithTimeout = (queryFunction, timeout) => {
 // Execute SQL queries
 // check if query is equal to the expected solution
 app.post("/api/execute-sql", async (req, res) => {
-  const { execQuery, taskNumber, taskAreaId } = req.body;
+  const { endpoint, execQuery, taskNumber, taskAreaId } = req.body;
 
   try {
     // Execute user's SQL query
     let userQueryResult = [{}];
     if (!execQuery.includes("private") && !execQuery.includes("tool")) {
-      userQueryResult = await executeQueryWithTimeout(
-        () => pool.query(execQuery),
-        50000
-      );
+      
+            userQueryResult = await executeQueryWithTimeout(
+          () => (endpoint === "World" && pool.query(execQuery) || endpoint === "Movie" && pool3.query(execQuery)),
+          50000);
+        
+    
+
+      
       try {
         // Check if the user's query matches the expected solution
         const { getSolutionQuery } = mainQueries;

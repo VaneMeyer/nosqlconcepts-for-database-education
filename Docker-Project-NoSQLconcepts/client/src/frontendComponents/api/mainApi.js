@@ -31,9 +31,9 @@ export const fetchTasksData = async (areaId) => {
 };
 
 
-export const fetchDbStructure = async (dbendpoint) => {
+export const fetchDbStructure = async (endpoint) => {
   try {
-    const response = await axios.get(`${API_URL}${dbendpoint}`);
+    const response = await axios.post(`${API_URL}/getPostgreSQLStructure`, {endpoint});
     return response;
   } catch (error) {
     console.error("Error fetching area names:", error);
