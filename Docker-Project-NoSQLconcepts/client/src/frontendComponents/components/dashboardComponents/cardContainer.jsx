@@ -190,11 +190,11 @@ export default function CardContainer() {
   };
   const endpointColors = {
     Euro: "rgba(8, 15, 86, 1)", 
-    Movie: "#043a5eff", 
-    Buses: "#1f4704ff",
-    Teachers: "#385603ff",
-    Quiz: "#032729ff", 
-    World: "#2f0361ff",
+    Movie: "rgba(8, 15, 86, 1)", //"#043a5eff", 
+    Buses: "rgba(8, 15, 86, 1)", //"#1f4704ff",
+    Teachers: "rgba(8, 15, 86, 1)", //"#385603ff",
+    Quiz: "#043a5eff",//"#032729ff", 
+    World: "rgba(8, 15, 86, 1)", //"#2f0361ff",
   };
   const endpointIcons = {  
    Euro: <AssignmentIcon />, 
@@ -319,7 +319,7 @@ export default function CardContainer() {
                       width: "100%",
                     }}
                   >
-                    <Typography variant="h6" fontWeight="bold">
+                    <Typography variant="h6" /* variant="h6" fontWeight="bold" */>
                      
                       {endpointIcons[assignment.endpoint]}
                       {assignment.area_name}

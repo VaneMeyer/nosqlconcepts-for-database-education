@@ -41,6 +41,45 @@ services:
     volumes:
       - pgdata3:/var/lib/postgresql/data
       - ./init/movie:/docker-entrypoint-initdb.d
+  postgres4:
+    image: postgres:15
+    restart: always
+    container_name: postgres4
+    environment:
+      POSTGRES_USER: ${PG_USER4}
+      POSTGRES_PASSWORD: ${PG_PASSWORD4}
+      POSTGRES_DB: ${PG_DATABASE4}
+    ports:
+      - "5435:5432" 
+    volumes:
+      - pgdata4:/var/lib/postgresql/data
+      - ./init/euro:/docker-entrypoint-initdb.d
+  postgres5:
+    image: postgres:15
+    restart: always
+    container_name: postgres5
+    environment:
+      POSTGRES_USER: ${PG_USER5}
+      POSTGRES_PASSWORD: ${PG_PASSWORD5}
+      POSTGRES_DB: ${PG_DATABASE5}
+    ports:
+      - "5436:5432" 
+    volumes:
+      - pgdata5:/var/lib/postgresql/data
+      - ./init/teachers:/docker-entrypoint-initdb.d
+  postgres6:
+    image: postgres:15
+    restart: always
+    container_name: postgres6
+    environment:
+      POSTGRES_USER: ${PG_USER6}
+      POSTGRES_PASSWORD: ${PG_PASSWORD6}
+      POSTGRES_DB: ${PG_DATABASE6}
+    ports:
+      - "5437:5432" 
+    volumes:
+      - pgdata6:/var/lib/postgresql/data
+      - ./init/buses:/docker-entrypoint-initdb.d
 
 
 
@@ -52,6 +91,9 @@ services:
       - postgres
       - postgres2
       - postgres3
+      - postgres4
+      - postgres5
+      - postgres6
   
     env_file:
       - .env
@@ -69,4 +111,7 @@ volumes:
   pgdata:
   pgdata2:
   pgdata3:
+  pgdata4:
+  pgdata5:
+  pgdata6:
 

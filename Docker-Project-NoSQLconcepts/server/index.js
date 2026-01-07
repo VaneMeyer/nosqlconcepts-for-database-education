@@ -105,6 +105,27 @@ const pool3 = new Pool({
   password: process.env.PG_PASSWORD3,
   port: process.env.PG_PORT3,
 });
+const pool4 = new Pool({
+  user: process.env.PG_USER4,
+  host: process.env.PG_HOST4,
+  database: process.env.PG_DATABASE4,
+  password: process.env.PG_PASSWORD4,
+  port: process.env.PG_PORT4,
+});
+const pool5 = new Pool({
+  user: process.env.PG_USER5,
+  host: process.env.PG_HOST5,
+  database: process.env.PG_DATABASE5,
+  password: process.env.PG_PASSWORD5,
+  port: process.env.PG_PORT5,
+});
+const pool6 = new Pool({
+  user: process.env.PG_USER6,
+  host: process.env.PG_HOST6,
+  database: process.env.PG_DATABASE6,
+  password: process.env.PG_PASSWORD6,
+  port: process.env.PG_PORT6,
+});
 
 //################# Login and Logout ######################################################
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -403,7 +424,7 @@ const { getPgStructureQuery } = mainQueries;
 app.post("/api/getPostgreSQLStructure", async (req, res) => {
    const { endpoint } = req.body;
   try {
-    const postgreSQL_query = () => (endpoint === "World" && pool.query(getPgStructureQuery) || endpoint === "Movie" && pool3.query(getPgStructureQuery) );
+    const postgreSQL_query = () => (endpoint === "World" && pool.query(getPgStructureQuery) || endpoint === "Movie" && pool3.query(getPgStructureQuery) || endpoint === "Euro" && pool4.query(getPgStructureQuery) || endpoint === "Teachers" && pool5.query(getPgStructureQuery) || endpoint === "Buses" && pool6.query(getPgStructureQuery) );
     let result = await executeQueryWithTimeout(postgreSQL_query, 50000);
 
     tables_set = new Set();
@@ -481,7 +502,7 @@ app.post("/api/execute-sql", async (req, res) => {
     if (!execQuery.includes("private") && !execQuery.includes("tool")) {
       
             userQueryResult = await executeQueryWithTimeout(
-          () => (endpoint === "World" && pool.query(execQuery) || endpoint === "Movie" && pool3.query(execQuery)),
+          () => (endpoint === "World" && pool.query(execQuery) || endpoint === "Movie" && pool3.query(execQuery) || endpoint === "Euro" && pool4.query(execQuery) || endpoint === "Teachers" && pool5.query(execQuery) || endpoint === "Buses" && pool6.query(execQuery)),
           50000);
         
     
