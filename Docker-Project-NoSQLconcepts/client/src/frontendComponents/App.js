@@ -23,6 +23,8 @@ import ExerciseSheetC from "./pages/exerciseSheet.jsx";
 import NewDashboard from "./pages/dashboard.jsx";
 import AdminPage from "./pages/adminPage.jsx";
 import NewInformationC from "./pages/information.jsx";
+import QuizTaskSheet from "./pages/quizSheet.jsx";
+import { BBCquizQuestions, joinquiz2Questions, joinquizQuestions, nestedselectquizQuestions, selectquizQuestions, selfjoinquizQuestions, sumandcountquizQuestions, usingnullquizQuestions } from "./data/quizData";
 
 const AuthContext = createContext();
 
@@ -107,6 +109,14 @@ const AppRoutes = ({ assignments }) => {
     },
     { path: "/sign-in", element: <SignIn /> },
     { path: "/conditions", element: <Conditions /> },
+    { path: "/selectquiz", element: <QuizTaskSheet title="selectquiz" tasks={selectquizQuestions} /> },
+    { path: "/bbcquiz", element: <QuizTaskSheet title="bbcquiz" tasks={BBCquizQuestions} /> },
+    { path: "/nestedselectquiz", element: <QuizTaskSheet title="nestedselectquiz" tasks={nestedselectquizQuestions} /> },
+    { path: "/sumandcountquiz", element: <QuizTaskSheet title="sumandcountquiz" tasks={sumandcountquizQuestions} /> },
+    { path: "/joinquiz", element: <QuizTaskSheet title="joinquiz" tasks={joinquizQuestions} /> },
+    { path: "/joinquiz2", element: <QuizTaskSheet title="joinquiz2" tasks={joinquiz2Questions} /> },
+    { path: "/usingnullquiz", element: <QuizTaskSheet title="usingnullquiz" tasks={usingnullquizQuestions} /> },
+    { path: "/selfjoinquiz", element: <QuizTaskSheet title="selfjoinquiz" tasks={selfjoinquizQuestions} /> },
 
     { path: "*", element: <Navigate to="/" /> },
   ];

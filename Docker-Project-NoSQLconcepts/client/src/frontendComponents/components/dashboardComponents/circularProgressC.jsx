@@ -75,7 +75,8 @@ export default function CircularProgressC({ areaId }) {
     >
       <CircularProgress
         variant="determinate"
-        value={percentValue}
+        value={95}
+        /* value={percentValue} */
         size={48}
         thickness={5}
         sx={{
@@ -91,7 +92,8 @@ export default function CircularProgressC({ areaId }) {
         color="white"
         sx={{ mt: 0.5, fontWeight: "bold" }}
       >
-        {percentValue}%
+        95%
+       {/*  {percentValue}% */}
       </Typography>
     </Box>
   );

@@ -39,6 +39,7 @@ import {
 } from "@mui/material";
 import { checkAuth } from "../../api/loginApi";
 import CircularProgressC from "./circularProgressC";
+import ProgressWithLabel from "./progressWithLabel";
 export default function CardContainer() {
   const [assignments, setAssignments] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -189,19 +190,19 @@ export default function CardContainer() {
     setFormValues({ ...formValues, [name]: value });
   };
   const endpointColors = {
-    Euro: "rgba(8, 15, 86, 1)", 
-    Movie: "rgba(8, 15, 86, 1)", //"#043a5eff", 
+    Euro: "rgba(8, 15, 86, 1)",
+    Movie: "rgba(8, 15, 86, 1)", //"#043a5eff",
     Buses: "rgba(8, 15, 86, 1)", //"#1f4704ff",
     Teachers: "rgba(8, 15, 86, 1)", //"#385603ff",
-    Quiz: "#043a5eff",//"#032729ff", 
+    Quiz: "#043a5eff", //"#032729ff",
     World: "rgba(8, 15, 86, 1)", //"#2f0361ff",
   };
-  const endpointIcons = {  
-   Euro: <AssignmentIcon />, 
-    Movie: <AssignmentIcon />, 
+  const endpointIcons = {
+    Euro: <AssignmentIcon />,
+    Movie: <AssignmentIcon />,
     Buses: <AssignmentIcon />,
     Teachers: <AssignmentIcon />,
-    Quiz: <QuizIcon />, 
+    Quiz: <QuizIcon />,
     World: <AssignmentIcon />,
   };
   return (
@@ -216,6 +217,436 @@ export default function CardContainer() {
         {assignments.map((assignment, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <Card
+              sx={{
+                borderRadius: 4,
+                overflow: "hidden",
+                position: "relative",
+                background:
+                  "linear-gradient(270deg, #0f2027, #203a43, #2c5364)",
+                backgroundSize: "600% 600%",
+                animation: "gradientMove 12s ease infinite",
+                boxShadow: "0 12px 32px rgba(0,0,0,0.35)",
+                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                opacity: assignment.is_active ? 1 : 0.45,
+                filter: assignment.is_active ? "none" : "grayscale(0.3)",
+                /*  pointerEvents: assignment.is_active ? "auto" : "none", */
+                "&:hover": {
+                  transform: "translateY(-8px) scale(1.02)",
+                  boxShadow: "0 24px 60px rgba(0,0,0,0.55)",
+                },
+                "@keyframes gradientMove": {
+                  "0%": { backgroundPosition: "0% 50%" },
+                  "50%": { backgroundPosition: "100% 50%" },
+                  "100%": { backgroundPosition: "0% 50%" },
+                },
+              }}
+            >
+              <CardActionArea
+                component={assignment.is_active ? Link : "div"}
+                to={assignment.is_active ? assignment.link : undefined}
+                sx={{
+                  height: "100%",
+                  cursor: assignment.is_active ? "pointer" : "default",
+                }}
+              >
+                <Box
+                  sx={{
+                    p: 2.5,
+                    minHeight: 170,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    position: "relative",
+                  }}
+                >
+                  {/* ---------- HOVER OVERLAY CTA ---------- */}
+                  {/*  <Box
+        className="hover-overlay"
+        sx={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(0,0,0,0.45)",
+          backdropFilter: "blur(4px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: 0,
+          transition: "opacity 0.3s ease",
+          zIndex: 5,
+          pointerEvents: "none",
+          ".MuiCard-root:hover &": {
+            opacity: 1,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            px: 3,
+            py: 1.2,
+            borderRadius: 999,
+            background: "linear-gradient(135deg, #00c6ff, #0072ff)",
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: 14,
+            boxShadow: "0 6px 18px rgba(0,0,0,0.35)",
+          }}
+        >
+          Zum Quiz →
+        </Box>
+      </Box> */}
+
+                  {/* ---------- HEADER ---------- */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 2,
+                      zIndex: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                    >
+                      {/* Icon Box */}
+                      <Box
+                        sx={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 2,
+                          background: "rgba(255,255,255,0.15)",
+                          backdropFilter: "blur(8px)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 22,
+                          color: "#fff",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {endpointIcons[assignment.endpoint]}
+                      </Box>
+
+                      {/* Title + Sub */}
+                      <Box>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: "#fff",
+                            fontWeight: 800,
+                            lineHeight: 1.2,
+                            letterSpacing: 0.3,
+                          }}
+                        >
+                          {assignment.area_name}
+                        </Typography>
+
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "rgba(255,255,255,0.7)",
+                          }}
+                        >
+                          {assignment.descr}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Admin */}
+                    {isAdmin && (
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <Tooltip title="Bearbeiten">
+                          <IconButton
+                            size="small"
+                            sx={{
+                              background: "rgba(255,255,255,0.15)",
+                              color: "#fff",
+                              backdropFilter: "blur(6px)",
+                              "&:hover": {
+                                background: "rgba(255,255,255,0.35)",
+                              },
+                            }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleEdit(assignment);
+                            }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Löschen">
+                          <IconButton
+                            size="small"
+                            sx={{
+                              background: "rgba(255,255,255,0.15)",
+                              color: "#fff",
+                              backdropFilter: "blur(6px)",
+                              "&:hover": { background: "rgba(255,80,80,0.6)" },
+                            }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleDelete(assignment);
+                            }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    )}
+                  </Box>
+
+                  {/* ---------- DESCRIPTION ---------- */}
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      mt: 2,
+                      color: "rgba(255,255,255,0.88)",
+                      lineHeight: 1.5,
+                      zIndex: 2,
+                    }}
+                  >
+                    {assignment.long_descr}
+                  </Typography>
+
+                  {/* ---------- FOOTER ---------- */}
+                  <Box
+                    sx={{
+                      mt: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      zIndex: 2,
+                    }}
+                  >
+                    {!assignment.is_active && (
+                      <Box
+                        sx={{
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: 999,
+                          fontSize: 12,
+                          fontWeight: 700,
+                          background: "rgba(0,0,0,0.6)",
+                          color: "#fff",
+                        }}
+                      >
+                        Inaktiv
+                      </Box>
+                    )}
+
+                    {/* Progress */}
+                    <Box
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.25)",
+                        backdropFilter: "blur(10px)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.35)",
+                      }}
+                    >
+                      <ProgressWithLabel value={assignment.progress ?? 5} />
+                    </Box>
+                  </Box>
+                </Box>
+              </CardActionArea>
+            </Card>
+
+            {/*          <Card
+  sx={{
+    borderRadius: 4,
+    overflow: "hidden",
+    position: "relative",
+    background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+    boxShadow: "0 12px 32px rgba(0,0,0,0.35)",
+    transition: "all 0.35s ease",
+    opacity: assignment.is_active ? 1 : 0.45,
+    pointerEvents: assignment.is_active ? "auto" : "none",
+    "&:hover": {
+      transform: "translateY(-6px) scale(1.02)",
+      boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+    },
+  }}
+>
+  <CardActionArea
+    component={Link}
+    to={assignment.link}
+    sx={{ height: "100%" }}
+  >
+    <Box
+      sx={{
+        p: 2.5,
+        minHeight: 160,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        position: "relative",
+      }}
+    >
+      
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 2,
+        }}
+      >
+        
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Box
+            sx={{
+              width: 42,
+              height: 42,
+              borderRadius: 2,
+              background: "rgba(255,255,255,0.15)",
+              backdropFilter: "blur(6px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 22,
+              color: "#fff",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+              flexShrink: 0,
+            }}
+          >
+            {endpointIcons[assignment.endpoint]}
+          </Box>
+
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#fff",
+                fontWeight: 700,
+                lineHeight: 1.2,
+              }}
+            >
+              {assignment.area_name}
+            </Typography>
+
+            <Typography
+              variant="caption"
+              sx={{
+                color: "rgba(255,255,255,0.7)",
+              }}
+            >
+               {assignment.descr}
+            </Typography>
+          </Box>
+        </Box>
+
+      
+        {isAdmin && (
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Tooltip title="Bearbeiten">
+              <IconButton
+                size="small"
+                sx={{
+                  background: "rgba(255,255,255,0.15)",
+                  color: "#fff",
+                  backdropFilter: "blur(6px)",
+                  "&:hover": { background: "rgba(255,255,255,0.3)" },
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleEdit(assignment);
+                }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Löschen">
+              <IconButton
+                size="small"
+                sx={{
+                  background: "rgba(255,255,255,0.15)",
+                  color: "#fff",
+                  backdropFilter: "blur(6px)",
+                  "&:hover": { background: "rgba(255,80,80,0.6)" },
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDelete(assignment);
+                }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )}
+      </Box>
+
+      
+      <Typography
+        variant="body2"
+        sx={{
+          mt: 2,
+          color: "rgba(255,255,255,0.85)",
+          lineHeight: 1.5,
+        }}
+      >
+        {assignment.long_descr}
+      </Typography>
+
+      
+      <Box
+        sx={{
+          mt: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        
+        {!assignment.is_active && (
+          <Box
+            sx={{
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 999,
+              fontSize: 12,
+              fontWeight: 600,
+              background: "rgba(0,0,0,0.6)",
+              color: "#fff",
+            }}
+          >
+            Inaktiv
+          </Box>
+        )}
+
+        
+        <Box
+          sx={{
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.2)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+          }}
+        >
+          <CircularProgressC areaId={assignment.area_id} />
+        </Box>
+      </Box>
+    </Box>
+  </CardActionArea>
+</Card> */}
+
+            {/*      <Card
               sx={{
                 borderRadius: 2,
                 boxShadow: 2,
@@ -256,7 +687,7 @@ export default function CardContainer() {
                     },
                   }}
                 >
-                  {/* Edit/Delete Buttons */}
+                  
                   {isAdmin && (
                     <Box
                       sx={{
@@ -306,7 +737,7 @@ export default function CardContainer() {
                     </Box>
                   )}
 
-                  {/* Circular Progress Overlay */}
+                  
                   <CardActions>
                     <CircularProgressC areaId={assignment.area_id} />
                   </CardActions>
@@ -319,7 +750,7 @@ export default function CardContainer() {
                       width: "100%",
                     }}
                   >
-                    <Typography variant="h6" /* variant="h6" fontWeight="bold" */>
+                    <Typography variant="h6" >
                      
                       {endpointIcons[assignment.endpoint]}
                       {assignment.area_name}
@@ -328,7 +759,7 @@ export default function CardContainer() {
                   </CardContent>
                 </Box>
               </CardActionArea>
-            </Card>
+            </Card> */}
           </Grid>
         ))}
         {isAdmin && (

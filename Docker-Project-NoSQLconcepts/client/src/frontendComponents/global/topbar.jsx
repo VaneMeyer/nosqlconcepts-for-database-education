@@ -89,6 +89,7 @@ function TopBar() {
     <AppBar
       position="static"
       color="default" /* sx={{ backgroundColor: "rgb(255, 255, 255)" }} */
+      
     >
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -159,6 +160,7 @@ function TopBar() {
               justifyContent: "flex-end",
               width: "100%",
               overflow: "hidden",
+              
             }}
           >
             <Tabs

@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
+import QuizIcon from "@mui/icons-material/Quiz";
 //import CircularProgress from "@mui/material/CircularProgress";
 import {
   Box,
@@ -32,6 +33,9 @@ import ResultTable from "../components/exerciseSheetComponents/ResultTable.jsx";
 import { fetchTasksData } from "../api/mainApi.js";
 import DbAccordion from "../components/exerciseSheetComponents/dbAccordion.jsx";
 import { sendToExecute } from "../api/queryApi.js";
+import { Link } from "react-router-dom";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { Fab } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundCoor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -63,7 +67,6 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     }
   };
   const [task, setTask] = useState("");
-  const [hasStarted, setHasStarted] = useState(false);
   const [taskNumber, setTaskNumber] = useState(1);
   const [tasksArray, setTasksArray] = useState([]);
 
@@ -188,9 +191,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     };
   }, [taskNumber]);
 
-  const startTask = () => {
-    setHasStarted(true);
-  };
+ 
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -208,7 +209,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     setTaskNumber(newTaskNumber);
     setQueryResult("");
     setError("");
-    setHasStarted(false);
+    /* setHasStarted(false); */
   };
   const handleNextTask = () => {
     if (taskNumber === tasksArray.length) {
@@ -234,11 +235,39 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     setFormData({ ...formData, query_text: newContent });
   };
 
+  const quizNav = {
+    2: "/selectquiz",
+    3: "/bbcquiz",
+    4: "/nestedselectquiz",
+    5: "/sumandcountquiz",
+    6: "/joinquiz",
+    7: "/joinquiz2",
+    8: "/usingnullquiz",
+    9: "/selfjoinquiz",
+  };
   return (
     <Container>
       <Typography variant="h4" sx={{ p: 2 }}>
         {area_name}
       </Typography>
+
+      {area_id !== 1 && (
+        <Button
+          component={Link}
+          to={quizNav[area_id]}
+          /* color="primary" */
+          sx={{
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+            borderRadius: 5,
+            padding: 5,
+          }}
+        >
+          <QuizIcon /> Quiz starten
+        </Button>
+      )}
       {task && (
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
@@ -284,7 +313,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                   <Typography>{task.hint}</Typography>
                 </Box>
                 <Box p={0} aria-labelledby="Input Elements to solve the task">
-                  {hasStarted ? (
+                  
                     <form>
                       <Box>
                         <AceEditor
@@ -403,18 +432,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                         </div>
                       )}{" "}
                     </form>
-                  ) : (
-                    <div>
-                      <Button
-                        aria-label="Start the task to open all task fields"
-                        onClick={startTask}
-                      >
-                        Starten
-                        <HourglassEmptyIcon></HourglassEmptyIcon>
-                      </Button>
-                      <p>{""}</p>
-                    </div>
-                  )}
+               
                 </Box>{" "}
               </Item>
             </Grid>
