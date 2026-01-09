@@ -452,7 +452,7 @@ export default function CardContainer() {
                         boxShadow: "0 4px 12px rgba(0,0,0,0.35)",
                       }}
                     >
-                      <ProgressWithLabel value={assignment.progress ?? 5} />
+                      <ProgressWithLabel area_id={assignment.area_id}/* value={assignment.progress ?? 5} */ />
                     </Box>
                   </Box>
                 </Box>

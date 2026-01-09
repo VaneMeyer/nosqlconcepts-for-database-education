@@ -1,26 +1,34 @@
-
 import { Toolbar, Typography } from '@mui/material';
+import { useMemo } from 'react';
 
 const GreetingHeader = () => {
-  const currentHour = new Date().getHours();
-  let greeting;
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
 
-  if (currentHour < 12) {
-    greeting = 'Guten Morgen';
-  } else if (currentHour < 18) {
-    greeting = 'Guten Tag';
-  } else {
-    greeting = 'Guten Abend';
-  }
+    if (hour < 12) return 'Guten Morgen ☀️';
+    if (hour < 18) return 'Guten Tag 👋';
+    return 'Guten Abend 🌙';
+  }, []);
 
   return (
-  
-      <Toolbar>
-        <Typography variant="h6">
-          {`${greeting}!`}
-        </Typography>
-      </Toolbar>
-    
+    <Toolbar
+      sx={{
+        minHeight: 64,
+        px: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <Typography
+        variant="h5"
+        fontWeight={600}
+        sx={{
+          letterSpacing: 0.3,
+        }}
+      >
+        {greeting}
+      </Typography>
+    </Toolbar>
   );
 };
 
