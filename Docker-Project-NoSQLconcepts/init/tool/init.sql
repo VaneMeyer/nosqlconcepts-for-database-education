@@ -200,29 +200,361 @@ VALUES
  'Aufgabe 15',
  '15'),
 (1, 3,
- 'Testaufgabe',
- '',
- '',
+ 'Schauen Sie sich das Ergebnis nach Ausführung dieses SQL-Befehls an, um den Namen, den Kontinent und die Bevölkerung aller Länder anzuzeigen. (Es wird keine Änderung der Abfrage erwartet.)',
+ 'SELECT name, continent, population FROM world',
+ 'SELECT name, continent, population FROM world',
  'Aufgabe 1',
  '1'), 
+(2, 3,
+ 'Zeigen Sie den Namen der Länder an, die eine Bevölkerung von mindestens 200 Millionen haben. 200 Millionen sind 200000000 (8 Nullen).',
+ 'SELECT name FROM world WHERE population = 64105700',
+ 'SELECT name FROM world WHERE population >= 200000000;',
+ 'Aufgabe 2',
+ '2'), 
+(3, 3,
+ 'Geben Sie den Namen und das Pro-Kopf-BIP (per capita GDP) der Länder mit einer Bevölkerung von mindestens 200 Millionen an.',
+ '',
+ 'SELECT name, (gdp / population) FROM world WHERE population >= 200000000',
+ 'Aufgabe 3',
+ '3'), 
+(4, 3,
+ 'Zeigt den Namen und die Bevölkerungszahl in Millionen für die Länder des Kontinents „South America“ an. Teilen Sie die Bevölkerung durch 1000000, um die Bevölkerung in Millionen zu erhalten.',
+ '',
+ 'SELECT name, (population / 1000000) FROM world WHERE continent = ''South America'';',
+ 'Aufgabe 4',
+ '4'), 
+(5, 3,
+ 'Zeigen Sie den Namen und die Bevölkerungsanzahl für Frankreich, Deutschland und Italien (France, Germany, Italy) an.',
+ '',
+ 'SELECT name, population FROM world WHERE name in (''France'', ''Germany'', ''Italy'')',
+ 'Aufgabe 5',
+ '5'), 
+(6, 3,
+ 'Zeigen Sie die Länder an, deren Namen das Wort „United“ enthalten.',
+ '',
+ 'SELECT name FROM world WHERE name LIKE ''United%'';',
+ 'Aufgabe 6',
+ '6'), 
+(7, 3,
+ 'Ein Land ist groß, wenn es eine Fläche von mehr als 3 Millionen Quadratkilometern hat oder eine Bevölkerung von mehr als 250 Millionen hat. Zeigen Sie die Länder an, die flächenmäßig oder bevölkerungsmäßig groß sind. Gebe Name, Bevölkerungsanzahl und Gebiet (area) aus.',
+ '',
+ 'SELECT name, population, area FROM world WHERE area > 3000000 OR population > 250000000;',
+ 'Aufgabe 7',
+ '7'), 
+(8, 3,
+ 'Exklusives ODER (XOR nicht unterstützt in PostgreSQL). Zeigen Sie die Länder an, die flächenmäßig groß (mehr als 3 Millionen) oder bevölkerungsreich (mehr als 250 Millionen) sind, aber nicht beides. Gebe Name, Bevölkerungsanzahl und Gebiet (area) aus.',
+ '',
+ 'SELECT name, population, area FROM world WHERE (area > 3000000 AND population <= 250000000) OR (area <= 3000000 AND population > 250000000);',
+ 'Aufgabe 8',
+ '8'), 
+(9, 3,
+ 'Zeigen Sie den Namen und die Bevölkerung in Millionen sowie das GDP in Milliarden für die Länder des Kontinents „South America“ an. Verwenden Sie die ROUND-Funktion, um die Werte mit zwei Dezimalstellen anzuzeigen.',
+ '',
+ 'SELECT name, ROUND(population / 1000000, 2), ROUND(gdp / 1000000000, 2) FROM world WHERE continent = ''South America'';',
+ 'Aufgabe 9',
+ '9'), 
+(10, 3,
+ 'Zeigen Sie den Namen und das GDP der Länder mit einem GDP von mindestens einer Billion (1000000000000; das sind 12 Nullen) an. Runden Sie diesen Wert auf die nächste 1000.',
+ '',
+ 'SELECT name, ROUND(gdp / population, -3) as per_capita_gdp FROM world WHERE gdp >= 1000000000000;',
+ 'Aufgabe 10',
+ '10'), 
+(11, 3,
+ 'Griechenland (Greece) hat die Hauptstadt Athen (Athens). Jede der Zeichenfolgen „Greece“ und „Athens“ besteht aus 6 Zeichen. Zeigen Sie den Namen und die Hauptstadt an, wenn der Name und die Hauptstadt die gleiche Anzahl an Zeichen haben. Mit der LENGTH-Funktion können Sie die Anzahl der Zeichen in einer Zeichenfolge ermitteln.',
+ '',
+ 'SELECT name, capital FROM world WHERE LENGTH(name) = LENGTH(capital);',
+ 'Aufgabe 11',
+ '11'), 
+(12, 3,
+ 'Die Hauptstadt Schwedens ist Stockholm. Beide Wörter beginnen mit dem Buchstaben „S“. Zeigen Sie den Namen und die Hauptstadt an, wobei die Anfangsbuchstaben jedes Eintrags übereinstimmen. Schließen Sie keine Länder ein, in denen Name und Hauptstadt dasselbe Wort sind. Mit der Funktion LEFT können Sie das erste Zeichen isolieren. Sie können <> als NOT EQUALS-Operator verwenden.',
+ '',
+ 'SELECT name, capital FROM world WHERE LEFT(name, 1) = LEFT(capital, 1) AND name <> capital;',
+ 'Aufgabe 12',
+ '12'), 
+(13, 3,
+ 'Equatorial Guinea und Dominican Republic haben alle Vokale (a e i o u) im Namen. Sie zählen nicht, weil ihr Name mehr als ein Wort enthält. Finden Sie das Land, dessen Name alle Vokale und keine Leerzeichen enthält. Sie können die Phrase name NOT LIKE ''%a%'' verwenden, um Zeichen aus Ihren Ergebnissen auszuschließen. In der angezeigten Default Abfrage werden Länder wie die Bahamas und Belarus nicht berücksichtigt, da sie mindestens ein „a“ enthalten.',
+ 'SELECT name FROM world WHERE name LIKE ''B%'' AND name NOT LIKE ''%a%''',
+ 'SELECT name FROM world WHERE name LIKE ''%a%'' AND name LIKE ''%e%'' AND name LIKE ''%i%'' AND name LIKE ''%o%'' AND name LIKE ''%u%'' AND name NOT LIKE ''% %'';',
+ 'Aufgabe 13',
+ '13'), 
 (1, 4,
- 'Testaufgabe',
- '',
- '',
+ 'Listen Sie jeden Ländernamen auf, dessen Bevölkerung größer ist als die von „Russia“.',
+ 'SELECT name FROM world WHERE population > (SELECT population FROM world WHERE name=''Romania'')',
+ 'SELECT name FROM world WHERE population > (SELECT population from world WHERE name = ''Russia'');',
  'Aufgabe 1',
  '1'), 
+(2, 4,
+ 'Zeigen Sie die Länder in Europa an, deren GDP pro Kopf größer ist als das vom „United Kingdom“.',
+ '',
+ 'SELECT name FROM world WHERE continent = ''Europe'' AND (gdp / population) > (SELECT (gdp / population) from world WHERE name = ''United Kingdom'');',
+ 'Aufgabe 2',
+ '2'), 
+(3, 4,
+ 'Listen Sie den Namen und den Kontinent aller Länder auf, deren Kontinent entweder Argentina oder Australia als Land enthält. Sortierung alphabetisch nach Ländernamen.',
+ '',
+ 'SELECT name, continent FROM world WHERE continent IN (SELECT continent FROM world WHERE name = ''Argentina'' OR name = ''Australia'') ORDER BY name;',
+ 'Aufgabe 3',
+ '3'), 
+(4, 4,
+ 'Welches Land hat mehr Einwohner als Canada, aber weniger als Poland? Zeigen Sie den Namen und die Bevölkerungsanzahl an.',
+ '',
+ 'SELECT name, population FROM world WHERE population > ( SELECT population FROM world WHERE name = ''Canada'') AND population < ( SELECT population FROM world WHERE name = ''Poland'');',
+ 'Aufgabe 4',
+ '4'), 
+(5, 4,
+ 'Deutschland (80 Millionen Einwohner) ist das bevölkerungsreichste Land Europas. In Österreich (8,5 Millionen Einwohner) leben 11 % der Bevölkerung Deutschlands. Zeigen Sie den Namen und die Bevölkerung jedes Landes in Europa (Europe) an. Zeigen Sie die Bevölkerung als Prozentsatz der Bevölkerung Deutschlands an.',
+ '',
+ 'SELECT name, CONCAT(ROUND((population / (SELECT population FROM world WHERE name = ''Germany'') * 100)), ''%'') FROM world WHERE continent = ''Europe'';',
+ 'Aufgabe 5',
+ '5'), 
+(6, 4,
+ 'Welche Länder haben ein höheres GDP als jedes europäische Land? [Geben Sie nur den Namen an.] (Achtung: Einige Länder haben möglicherweise NULL-Werte für GDP.)',
+ '',
+ 'SELECT name FROM world WHERE gdp > ALL(SELECT gdp FROM world WHERE (continent = ''Europe'') AND (gdp > 0));',
+ 'Aufgabe 6',
+ '6'), 
+(7, 4,
+ 'Finden Sie das flächenmäßig größte Land auf jedem Kontinent und zeigen Sie den Kontinent, den Namen und die Fläche an: Das Beispiel wird als korrelierte oder synchronisierte Unterabfrage bezeichnet.',
+ 'SELECT continent, name, population FROM world x WHERE population >= ALL (SELECT population FROM world y WHERE y.continent=x.continent AND population>0)',
+ 'SELECT continent, name, area FROM world AS x WHERE area >= ALL (SELECT area FROM world AS y WHERE y.continent = x.continent AND area > 0);',
+ 'Aufgabe 7',
+ '7'), 
+(8, 4,
+ 'Listen Sie jeden Kontinent und den Namen des Landes auf, das für diesen Kontinent alphabetisch an erster Stelle steht.',
+ '',
+ 'SELECT continent, MIN(name) FROM world GROUP BY continent;',
+ 'Aufgabe 8',
+ '8'), 
+(9, 4,
+ 'Suchen Sie die Kontinente, auf denen alle Länder eine Bevölkerung von <= 25000000 haben. Suchen Sie dann die Namen der Länder, die diesen Kontinenten zugeordnet sind. Geben Sie Name, Kontinent und Bevölkerung aus.',
+ '',
+ 'SELECT name, continent, population FROM world AS x WHERE 25000000 > ALL ( SELECT population FROM world AS y WHERE y.continent = x.continent AND population > 0);',
+ 'Aufgabe 9',
+ '9'), 
+(10, 4,
+ 'In manchen Ländern leben mehr als dreimal so viele Menschen wie in allen Nachbarländern (auf demselben Kontinent). Geben Sie die Länder und Kontinente an.',
+ '',
+ 'SELECT name, continent FROM world AS x WHERE population > ALL ( SELECT population * 3 FROM world as y WHERE y.continent = x.continent AND y.name <> x.name);',
+ 'Aufgabe 10',
+ '10'), 
 (1, 5,
- 'Testaufgabe',
+ 'Zeigen Sie die Gesamtbevölkerungsanzahl der Welt an.',
  '',
- '',
+ 'SELECT SUM(population) FROM world;',
  'Aufgabe 1',
  '1'), 
+(2, 5,
+ 'Listen Sie alle Kontinente auf – jeweils nur einmal.',
+ '',
+ 'SELECT DISTINCT continent FROM world;',
+ 'Aufgabe 2',
+ '2'), 
+(3, 5,
+ 'Geben Sie das gesamte GDP Afrikas an.',
+ '',
+ 'SELECT SUM(gdp) FROM world WHERE continent = ''Africa'';',
+ 'Aufgabe 3',
+ '3'), 
+(4, 5,
+ 'Wie viele Länder haben eine Fläche von mindestens 1.000.000?',
+ '',
+ 'SELECT COUNT(area) FROM world WHERE area >= 1000000;',
+ 'Aufgabe 4',
+ '4'), 
+(5, 5,
+ 'Wie groß ist die Gesamtbevölkerung von (''Estonia'', ''Latvia'', ''Lithuania'')?',
+ '',
+ 'SELECT SUM(population) FROM world WHERE name IN (''Estonia'', ''Latvia'', ''Lithuania'');',
+ 'Aufgabe 5',
+ '5'), 
+(6, 5,
+ 'Zeigen Sie für jeden Kontinent den Kontinent und die Anzahl der Länder des Kontinents an.',
+ '',
+ 'SELECT continent, COUNT(name) FROM world GROUP BY continent;',
+ 'Aufgabe 6',
+ '6'), 
+(7, 5,
+ 'Geben Sie für jeden Kontinent den Kontinent und die Anzahl der Länder mit einer Bevölkerung von mindestens 10 Millionen an.',
+ '',
+ 'SELECT continent, COUNT(name) FROM world WHERE population > 10000000 GROUP BY continent;',
+ 'Aufgabe 7',
+ '7'), 
+(8, 5,
+ 'Listen Sie die Kontinente auf, die eine Gesamtbevölkerung von mindestens 100 Millionen haben.',
+ '',
+ 'SELECT continent FROM world GROUP BY continent HAVING SUM(population) >= 100000000;',
+ 'Aufgabe 8',
+ '8'), 
 (1, 6,
- 'Testaufgabe',
- '',
- '',
+ 'Das erste Beispiel zeigt ein Tor, das von einem Spieler mit dem Nachnamen ''Bender'' erzielt wurde. Das * bedeutet, dass alle Spalten in der Tabelle aufgelistet werden sollen - eine kürzere Möglichkeit, matchid, teamid, player, gtime zu sagen.
+
+      Ändere es so, dass die matchid und der Spielername für alle Tore, die von Deutschland erzielt wurden, angezeigt werden. Um deutsche Spieler zu identifizieren, prüfe: teamid = ''GER''',
+ 'SELECT * FROM goal 
+    WHERE player LIKE ''%Bender''',
+ 'SELECT matchid, player
+    FROM goal
+    WHERE teamid = ''GER'';',
  'Aufgabe 1',
  '1'),
+(2, 6,
+ 'Aus der vorherigen Abfrage kannst du sehen, dass Lars Bender in Spiel 1012 ein Tor erzielt hat. Jetzt wollen wir wissen, welche Teams in diesem Spiel gespielt haben.
+
+      Beachte, dass die Spalte matchid in der goal-Tabelle der Spalte id in der game-Tabelle entspricht. Wir können Informationen über Spiel 1012 finden, indem wir diese Zeile in der game-Tabelle suchen.
+      
+      Zeige id, stadium, team1, team2 nur für Spiel 1012',
+ 'SELECT id,stadium,team1,team2
+    FROM game',
+ 'SELECT id,stadium,team1,team2
+    FROM game
+    WHERE id = 1012;',
+ 'Aufgabe 2',
+ '2'),
+(3, 6,
+ 'Du kannst die beiden Schritte in einer einzigen Abfrage mit einem JOIN kombinieren.
+
+   
+    Die FROM-Klausel sagt, dass Daten aus der goal-Tabelle mit denen aus der game-Tabelle zusammengeführt werden sollen. Die ON-Bedingung gibt an, wie man herausfindet, welche Zeilen in game zu welchen Zeilen in goal gehören - die matchid aus goal muss mit der id aus game übereinstimmen. (Wenn wir klarer/spezifischer sein wollten, könnten wir sagen
+    ON (game.id=goal.matchid)
+    
+    Der untenstehende Code zeigt den Spieler (aus goal) und den Stadionnamen (aus der game-Tabelle) für jedes erzielte Tor.
+    
+    Ändere es so, dass der Spieler, teamid, stadium und mdate für jedes deutsche Tor angezeigt werden.',
+ 'SELECT player,stadium
+    FROM game JOIN goal ON (id=matchid)',
+ 'SELECT goal.player, goal.teamid, game.stadium, game.mdate
+    FROM game
+    INNER JOIN goal
+    ON game.id = goal.matchid
+    WHERE goal.teamid = ''GER'';',
+ 'Aufgabe 3',
+ '3'),
+(4, 6,
+ ' Verwende das gleiche JOIN wie in der vorherigen Frage.
+
+      Zeige team1, team2 und player für jedes Tor, das von einem Spieler namens Mario erzielt wurde (player LIKE ''Mario%'')',
+ '',
+ 'SELECT game.team1, game.team2, goal.player
+    FROM game
+    INNER JOIN goal
+    ON game.id = goal.matchid
+    WHERE goal.player LIKE ''Mario%'';',
+ 'Aufgabe 4',
+ '4'),
+(5, 6,
+ 'Die Tabelle eteam gibt Details zu jedem Nationalteam, einschließlich des Trainers. Du kannst goal mit eteam verbinden, indem du den Ausdruck goal JOIN eteam on teamid=id verwendest.
+
+      Zeige player, teamid, coach, gtime für alle Tore, die in den ersten 10 Minuten erzielt wurden (gtime<=10)',
+ 'SELECT player, teamid, gtime
+    FROM goal 
+   WHERE gtime<=10',
+ 'SELECT goal.player, goal.teamid, eteam.coach, goal.gtime
+      FROM goal
+      INNER JOIN eteam
+      ON goal.teamid = eteam.id
+      WHERE goal.gtime <= 10;',
+ 'Aufgabe 5',
+ '5'),
+(6, 6,
+ 'Um game mit eteam zu verbinden, könntest du entweder
+      game JOIN eteam ON (team1=eteam.id) oder game JOIN eteam ON (team2=eteam.id) verwenden.
+      
+      Beachte, dass, weil id sowohl in game als auch in eteam eine Spalte ist, du eteam.id anstelle von nur id angeben musst.
+      
+      Liste die Daten der Spiele und den Namen des Teams auf, bei dem ''Fernando Santos'' der Trainer von team1 war.',
+ '',
+ 'SELECT game.mdate, eteam.teamname
+    FROM game
+    INNER JOIN eteam
+    ON game.team1 = eteam.id
+    WHERE eteam.coach = ''Fernando Santos'';',
+ 'Aufgabe 6',
+ '6'),
+(7, 6,
+ 'Liste die Spieler für jedes Tor auf, das in einem Spiel erzielt wurde, bei dem das Stadion ''National Stadium, Warsaw'' war.',
+ '',
+ 'SELECT goal.player
+      FROM game
+      INNER JOIN goal
+      ON goal.matchid = game.id
+      WHERE game.stadium = ''National Stadium, Warsaw'';',
+ 'Aufgabe 7',
+ '7'),
+(8, 6,
+ 'Die Beispielabfrage zeigt alle Tore, die im Viertelfinale Deutschland-Griechenland erzielt wurden.
+      Zeige stattdessen die Namen aller Spieler, die über das ganze Turnier hinweg ein Tor gegen Deutschland 
+      erzielt haben.',
+ 'SELECT player, gtime
+    FROM game JOIN goal ON matchid = id 
+      WHERE (team1=''GER'' AND team2=''GRE'')',
+ 'SELECT DISTINCT goal.player
+      FROM game
+      INNER JOIN goal
+      ON goal.matchid = game.id
+      WHERE goal.teamid <> ''GER''
+        AND (game.team1 = ''GER'' OR game.team2 = ''GER'');',
+ 'Aufgabe 8',
+ '8'),
+(9, 6,
+ 'Zeige die Namen der Teams und die Gesamtzahl der erzielten Tore für das jeweilige Team. 
+      (Teams ohne Tore werden nicht berücksichtigt)',
+ 'SELECT teamname, player
+    FROM eteam JOIN goal ON id=teamid
+   ORDER BY teamname',
+ 'SELECT eteam.teamname, COUNT(goal.teamid)
+      FROM goal
+      INNER JOIN eteam
+      ON eteam.id = goal.teamid
+      GROUP BY eteam.teamname;',
+ 'Aufgabe 9',
+ '9'),
+(10, 6,
+ 'Zeige das Stadion und die Anzahl der im jeweiligen Stadion erzielten Tore.',
+ '',
+ 'SELECT game.stadium, COUNT(goal.matchid)
+      FROM game
+      INNER JOIN goal
+      ON game.id = goal.matchid
+      GROUP BY game.stadium;',
+ 'Aufgabe 10',
+ '10'),
+(11, 6,
+ 'Für jedes Spiel, an dem Polen (Teamid ''POL'') beteiligt war, zeige die matchid, das Datum und die Anzahl
+       der erzielten Tore (soll total_goals im Ergebnis heißen).',
+ 'SELECT matchid,mdate, team1, team2,teamid
+    FROM game JOIN goal ON matchid = id 
+   WHERE (team1 = ''POL'' OR team2 = ''POL'')',
+ 'SELECT
+      goal.matchid,
+      game.mdate,
+      COUNT(goal.matchid) AS total_goals
+    FROM game
+    INNER JOIN goal ON goal.matchid = game.id
+    WHERE game.team1 = ''POL'' OR game.team2 = ''POL''
+    GROUP BY goal.matchid, game.mdate;',
+ 'Aufgabe 11',
+ '11'),
+(12, 6,
+ 'Für jedes Spiel, in dem ''GER'' ein Tor erzielt hat, zeige matchid, Spieldatum und die Anzahl der von 
+      ''GER'' erzielten Tore (soll german_goals im Ergebnis heißen). 
+      (Spiele ohne deutsche Tore werden nicht berücksichtigt)',
+ '',
+ 'SELECT
+      goal.matchid,
+      game.mdate,
+      COUNT(goal.matchid) AS german_goals
+    FROM game
+    INNER JOIN goal
+    ON game.id = goal.matchid
+    WHERE goal.teamid = ''GER''
+    GROUP BY goal.matchid, game.mdate;',
+ 'Aufgabe 12',
+ '12'),
+(13, 6,
+ '',
+ '',
+ '',
+ 'Aufgabe 13',
+ '13'),
 (1, 7,
  'Testaufgabe',
  '',
