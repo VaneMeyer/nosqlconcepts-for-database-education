@@ -550,27 +550,470 @@ VALUES
  'Aufgabe 12',
  '12'),
 (13, 6,
- '',
- '',
- '',
+ 'Liste jedes Spiel mit den Toren auf, die von jedem Team erzielt
+          wurden. Dies wird "CASE WHEN" verwenden, das in den vorherigen Übungen
+          nicht erklärt wurde. Beachte, dass in der angegebenen Abfrage jedes Tor aufgelistet ist.
+          Wenn es ein team1-Tor war, erscheint eine 1 in score1, andernfalls
+          eine 0. Du könntest diese Spalte summieren, um eine Zählung der von
+          team1 erzielten Tore zu erhalten. Sortiere dein Ergebnis nach mdate,
+          team1 und team2.',
+ 'SELECT mdate,
+    team1,
+    CASE WHEN teamid=team1 THEN 1 ELSE 0 END score1
+    FROM game JOIN goal ON matchid = id',
+ 'SELECT
+      game.mdate,
+      game.team1,
+      SUM(CASE WHEN goal.teamid = game.team1 THEN 1 ELSE 0 END) AS score1,
+      game.team2,
+      SUM(CASE WHEN goal.teamid = game.team2 THEN 1 ELSE 0 END) AS score2
+    FROM game
+    LEFT JOIN goal
+    ON game.id = goal.matchid
+    GROUP BY game.id, game.mdate, game.team1, game.team2
+    ORDER BY game.mdate, game.team1, game.team2;',
  'Aufgabe 13',
  '13'),
 (1, 7,
- 'Testaufgabe',
+ 'Liste die Filme auf, bei denen das Jahr (yr) 1962 ist [Zeige id, title].',
  '',
- '',
+ 'SELECT id, title
+    FROM movie
+    WHERE yr = 1962;',
  'Aufgabe 1',
  '1'), 
+(2, 7,
+ 'Gebe das Jahr (yr) von ''Citizen Kane'' aus.',
+ '',
+ 'SELECT yr
+    FROM movie
+    WHERE title = ''Citizen Kane'';',
+ 'Aufgabe 2',
+ '2'), 
+(3, 7,
+ 'Liste alle Star Trek-Filme auf, einschließlich id, title und yr 
+    (alle diese Filme enthalten die Wörter "Star Trek" im Titel). Ordne die Ergebnisse nach Jahr (yr).',
+ '',
+ 'SELECT id, title, yr
+    FROM movie
+    WHERE title LIKE ''%Star Trek%''
+    ORDER BY yr;',
+ 'Aufgabe 3',
+ '3'), 
+(4, 7,
+ 'Welche id hat der Schauspieler Glenn Close?',
+ '',
+ 'SELECT id
+    FROM actor
+    WHERE name = ''Glenn Close'';',
+ 'Aufgabe 4',
+ '4'), 
+(5, 7,
+ 'Was ist die id des Films Casablanca?',
+ '',
+ 'SELECT id
+      FROM movie
+      WHERE title = ''Casablanca'';',
+ 'Aufgabe 5',
+ '5'), 
+(6, 7,
+ 'Gib die Liste der Namen aller Schauspieler*innen vom Film Casablanca aus.
+      Die Ergebnisspalte soll casablanca_cast_list heißen.
+      Nutze movieid=11768 (oder den Ausgabewert aus vorheriger Frage).',
+ '',
+ 'SELECT actor.name AS casablanca_cast_list
+    FROM movie
+    INNER JOIN casting
+    ON movie.id = casting.movieid
+    INNER JOIN actor
+    ON casting.actorid = actor.id
+    WHERE casting.movieid = (
+      SELECT id
+      FROM movie
+      WHERE title = ''Casablanca''
+      );',
+ 'Aufgabe 6',
+ '6'), 
+(7, 7,
+ 'Gib die Castliste (alien_cast_list) des Films Alien aus.',
+ '',
+ 'SELECT actor.name AS alien_cast_list
+      FROM movie
+      INNER JOIN casting
+      ON movie.id = casting.movieid
+      INNER JOIN actor
+      ON casting.actorid = actor.id
+      WHERE casting.movieid = (
+        SELECT id
+        FROM movie
+        WHERE title = ''Alien''
+        );',
+ 'Aufgabe 7',
+ '7'), 
+(8, 7,
+ 'Liste die Filmtitel auf, in denen Harrison Ford mitspielt.',
+ '',
+ 'SELECT movie.title
+      FROM movie
+      INNER JOIN casting
+      ON movie.id = casting.movieid
+      WHERE casting.actorid = (
+        SELECT id
+        FROM actor
+        WHERE name = ''Harrison Ford''
+        );',
+ 'Aufgabe 8',
+ '8'), 
+(9, 7,
+ 'Liste die Filmtitel auf, in denen Harrison Ford mitgespielt hat - jedoch nicht in der Hauptrolle. 
+      [Hinweis: Das Feld "ord" in der Besetzung gibt die Position des Schauspielers an. Wenn ord=1, dann ist 
+      dieser Schauspieler in der Hauptrolle.]',
+ '',
+ 'SELECT movie.title
+      FROM movie
+      INNER JOIN casting
+      ON movie.id = casting.movieid
+      WHERE casting.actorid = (
+        SELECT id
+        FROM actor
+        WHERE name = ''Harrison Ford''
+        )
+        AND casting.ord <> 1;',
+ 'Aufgabe 9',
+ '9'), 
+(10, 7,
+ 'Liste die Filmtitel zusammen mit dem Name des/r Hauptdarsteller*in für alle Filme des Jahres 1962 auf.',
+ '',
+ 'SELECT movie.title, actor.name
+    FROM movie
+    INNER JOIN casting
+    ON movie.id = casting.movieid
+    INNER JOIN actor
+    ON casting.actorid = actor.id
+    WHERE movie.yr = 1962
+     AND casting.ord = 1;',
+ 'Aufgabe 10',
+ '10'), 
+(11, 7,
+ 'Welche waren die geschäftigsten Jahre für den Schauspieler Rock Hudson? Zeige das Jahr und die Anzahl 
+      der Filme, die er in dem jeweiligen Jahr gemacht, wenn er mehr als 2 Filme in dem Jahr gedreht hat.',
+ 'SELECT yr,COUNT(title) FROM
+    movie JOIN casting ON movie.id=movieid
+          JOIN actor   ON actorid=actor.id
+  WHERE name=''Doris Day''
+  GROUP BY yr
+  HAVING COUNT(title) > 1',
+ 'SELECT yr, COUNT(movie.title)
+      FROM movie
+      INNER JOIN casting
+      ON movie.id = casting.movieid
+      INNER JOIN actor
+      ON casting.actorid = actor.id
+      WHERE actor.name = ''Rock Hudson''
+      GROUP BY movie.yr
+      HAVING COUNT(movie.title) > 2;',
+ 'Aufgabe 11',
+ '11'), 
+(12, 7,
+ 'Liste den Filmtitel und den/die Hauptdarsteller*in für alle Filme auf, in denen 
+      Julie Andrews mitgespielt hat.',
+ 'SELECT movieid FROM casting
+    WHERE actorid IN (
+      SELECT id FROM actor
+      WHERE name=''Julie Andrews'')',
+ 'SELECT title, actor.name
+       FROM movie, casting, actor
+       WHERE movie.id = casting.movieid
+         AND casting.actorid = actor.id
+         AND movie.id IN (
+            SELECT casting.movieid
+            FROM actor, casting
+            WHERE name=''Julie Andrews''
+         AND actor.id = casting.actorid)
+         AND casting.ord = 1',
+ 'Aufgabe 12',
+ '12'), 
+(13, 7,
+ 'Erhalte eine Liste der Schauspieler*innen in alphabetischer Reihenfolge, die mindestens 15 Hauptrollen hatten.',
+ '',
+ 'SELECT actor.name
+      FROM casting INNER JOIN actor ON casting.actorid = actor.id
+      WHERE casting.ord = 1
+      GROUP BY actor.id
+      HAVING COUNT(*) >= 15
+      ORDER BY actor.name;',
+ 'Aufgabe 13',
+ '13'), 
+(14, 7,
+ 'Liste die Filme aus 1978 mit der Anzahl der Schauspieler*innen in der Besetzung auf (Ergebnisspalte actors). 
+    Ordne die Liste nach der Anzahl (meiste zuerst) und nach dem Titel (alphabetisch).',
+ '',
+ 'SELECT movie.title, COUNT(casting.actorid) as actors
+        FROM movie
+        INNER JOIN casting ON movie.id = casting.movieid
+        WHERE movie.yr = 1978
+        GROUP BY movie.id
+        ORDER BY actors DESC, movie.title ASC;',
+ 'Aufgabe 14',
+ '14'), 
+(15, 7,
+ 'Liste alle Schauspieler*innen auf, die mit Art Garfunkel zusammen gedreht haben.',
+ '',
+ 'SELECT DISTINCT actor.name
+      FROM movie
+      INNER JOIN casting
+      ON movie.id = casting.movieid
+      INNER JOIN actor
+      ON casting.actorid = actor.id
+      WHERE actor.name <> ''Art Garfunkel''
+      AND casting.movieid IN (
+        SELECT casting.movieid
+        FROM casting
+        INNER JOIN actor
+        ON casting.actorid = actor.id
+        WHERE actor.name = ''Art Garfunkel''
+      );',
+ 'Aufgabe 15',
+ '15'), 
 (1, 8,
- 'Testaufgabe',
+ 'Listen Sie die Lehrenden auf, deren Abteilung NULL entspricht.',
  '',
- '',
+ 'SELECT name
+    FROM teacher
+    WHERE dept IS NULL;',
  'Aufgabe 1',
  '1'), 
+(2, 8,
+ 'Beachten Sie bei der default Aussage, dass der INNER JOIN die Lehrenden ohne Abteilung und die Abteilungen ohne Lehrende auslässt. Schauen Sie sich das Ergebnis an. (Hier muss keine neue Query gefunden werden.)',
+ 'SELECT teacher.name, dept.name
+    FROM teacher INNER JOIN dept
+              ON (teacher.dept=dept.id)',
+ 'SELECT teacher.name, dept.name
+    FROM teacher
+    INNER JOIN dept
+    ON teacher.dept = dept.id;',
+ 'Aufgabe 2',
+ '2'), 
+(3, 8,
+ 'Nutzen Sie nun eine andere JOIN Variante als zuvor, damit alle Namen der Lehrenden aufgelistet werden.',
+ '',
+ 'SELECT teacher.name, dept.name
+    FROM teacher
+    LEFT JOIN dept
+    ON teacher.dept = dept.id;',
+ 'Aufgabe 3',
+ '3'), 
+(4, 8,
+ 'Nutzen Sie nun eine andere JOIN Variante als zuvor, damit alle Namen der Abteilungen aufgelistet werden.',
+ '',
+ 'SELECT teacher.name, dept.name
+    FROM teacher
+    RIGHT JOIN dept
+    ON teacher.dept = dept.id;',
+ 'Aufgabe 4',
+ '4'), 
+(5, 8,
+ 'Verwenden Sie COALESCE, um die Handynummer auszugeben. Verwenden Sie die Nummer ''07986 444 2266'', wenn keine Nummer angegeben ist. Zeigen Sie den Namen der lehrenden Person und die Handynummer oder ''07986 444 2266'' an.',
+ '',
+ 'SELECT
+      name,
+      COALESCE(mobile, ''07986 444 2266'') as mobile
+    FROM teacher;',
+ 'Aufgabe 5',
+ '5'), 
+(6, 8,
+ 'Verwenden Sie die Funktion COALESCE und einen LEFT JOIN, um den Namen der lehrenden Person und den Namen der Abteilung zu drucken. Verwenden Sie den String ''None'', wenn es keine Abteilung gibt.',
+ '',
+ 'SELECT
+    teacher.name,
+    COALESCE(dept.name, ''None'') as dept
+  FROM teacher
+  LEFT JOIN dept
+  ON teacher.dept = dept.id;',
+ 'Aufgabe 6',
+ '6'), 
+(7, 8,
+ 'Nutzen Sie COUNT, um die Anzahl der lehrenden Personen und die Anzahl von Mobiltelefonen (mobile) auszugeben.',
+ '',
+ 'SELECT Count(name), Count(mobile)
+      FROM teacher;',
+ 'Aufgabe 7',
+ '7'), 
+(8, 8,
+ 'Verwenden Sie COUNT und GROUP BY dept.name, um jede Abteilung und die Anzahl der Mitarbeiter anzuzeigen. Verwenden Sie einen RIGHT JOIN, um sicherzustellen, dass die Abteilung Engineering aufgeführt ist.',
+ '',
+ 'SELECT dept.name, COUNT(teacher.name) as number_of_teacher
+      FROM teacher
+      RIGHT JOIN dept
+      ON teacher.dept = dept.id
+      GROUP BY dept.name;',
+ 'Aufgabe 8',
+ '8'), 
+(9, 8,
+ 'Verwenden Sie CASE, um den Namen jeder lehrenden Person anzuzeigen, gefolgt von ''Sci'', wenn die lehrende Person in Abteilung 1 oder 2 ist, und ''Art'' andernfalls.',
+ '',
+ 'SELECT
+      name,
+      (CASE WHEN dept IN (1, 2) THEN ''Sci'' ELSE ''Art'' END)
+    FROM teacher;',
+ 'Aufgabe 9',
+ '9'), 
+(10, 8,
+ 'Verwenden Sie CASE, um den Namen jeder lehrenden Person anzuzeigen, gefolgt von ''Sci'', wenn der/die Lehrende in Abteilung 1 oder 2 ist, zeigen Sie ''Art'', wenn die Abteilung des/der Lehrenden 3 ist und ''None'' sonst.',
+ '',
+ 'SELECT
+      name,
+      (CASE WHEN dept IN (1, 2) THEN ''Sci''
+            WHEN dept = 3 THEN ''Art''
+            ELSE ''None'' END)
+    FROM teacher;',
+ 'Aufgabe 10',
+ '10'), 
 (1, 9,
- 'Testaufgabe',
+ 'Wie viele stops sind in der Datenbank?',
  '',
- '',
+ 'SELECT COUNT(*)
+FROM stops;',
  'Aufgabe 1',
- '1');
+ '1'),;
+(2, 9,
+ 'Finde die id für stop ''Craiglockhart''',
+ '',
+ 'SELECT id
+FROM stops
+WHERE name = ''Craiglockhart'';',
+ 'Aufgabe 2',
+ '2'),;
+(3, 9,
+ 'Geben die id und name für stops an, die zur Route mit num = ''4'' und company = ''LRT'' gehören.',
+ '',
+ 'SELECT stops.id, stops.name
+FROM stops
+INNER JOIN route
+ON stops.id = route.stop
+WHERE route.num = ''4'' AND route.company = ''LRT''
+ORDER BY route.pos;',
+ 'Aufgabe 3',
+ '3'),;
+(4, 9,
+ 'Die gezeigte Abfrage gibt die Anzahl der Linien aus, die entweder London Road (149) oder Craiglockhart (53) anfahren. Führen Sie die Abfrage aus und bachten Sie, dass die beiden Linien, die diese Haltestellen miteinander verbinden, eine Anzahl von 2 haben. Fügen Sie eine HAVING-Klausel hinzu, um die Ausgabe auf diese beiden Linien zu beschränken.',
+ 'SELECT company, num, COUNT(*)
+FROM route WHERE stop=149 OR stop=53
+GROUP BY company, num',
+ 'SELECT company, num, COUNT(*)
+FROM route
+WHERE stop = 149 OR stop = 53
+GROUP BY company, num
+HAVING COUNT(*) = 2;',
+ 'Aufgabe 4',
+ '4'),;
+(5, 9,
+ 'Führen Sie den gezeigten Self Join aus und beachten Sie, dass b.stop alle Orte anzeigt, die Sie von Craiglockhart aus erreichen können, ohne die Route zu wechseln. Ändern Sie die Abfrage so, dass sie die Verbindungen von Craiglockhart nach London Road anzeigt.',
+ 'SELECT a.company, a.num, a.stop, b.stop
+FROM route a JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+WHERE a.stop=53',
+ 'SELECT a.company, a.num, a.stop, b.stop
+FROM route a
+INNER JOIN route b
+ON (a.company = b.company AND a.num = b.num)
+WHERE a.stop = 53
+  AND b.stop = (
+    SELECT id
+    FROM stops
+    WHERE name = ''London Road''
+  );',
+ 'Aufgabe 5',
+ '5'),;
+(6, 9,
+ 'Die gezeigte Abfrage ähnelt der vorherigen, doch durch die Verknüpfung von zwei Kopien der Tabelle „stops“ können wir auf die Haltestellen nach Namen statt nach Nummern verweisen. Ändern Sie die Abfrage so, dass die Verbindungen zwischen „Craiglockhart“ und „London Road“ angezeigt werden. Wenn Sie dieser Orte überdrüssig sind, versuchen Sie es mit ''Fairmilehead'' gegen ''Tollcross''.',
+ 'SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+WHERE stopa.name=''Craiglockhart''',
+ 'SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a
+INNER JOIN route b
+ON (a.company = b.company AND a.num = b.num)
+INNER JOIN stops stopa
+  ON a.stop = stopa.id
+INNER JOIN stops stopb
+  ON b.stop = stopb.id
+WHERE stopa.name = ''Craiglockhart'' AND stopb.name = ''London Road'';',
+ 'Aufgabe 6',
+ '6'),;
+(7, 9,
+ 'Geben Sie eine Liste aller Linien an, die die Haltestellen 115 und 137 („Haymarket“ und „Leith“) verbinden.',
+ '',
+ 'SELECT DISTINCT a.company, a.num
+FROM route a
+INNER JOIN route b
+ON (a.company = b.company AND a.num = b.num)
+WHERE a.stop = 115 AND b.stop = 137;',
+ 'Aufgabe 7',
+ '7'),;
+(8, 9,
+ 'Geben Sie eine Liste der Dienste an, die die Haltestellen „Craiglockhart“ und „Tollcross“ verbinden',
+ '',
+ 'SELECT a.company, a.num
+FROM route a
+INNER JOIN route b
+  ON (a.company = b.company AND a.num = b.num)
+INNER JOIN stops stopa
+  ON (a.stop = stopa.id)
+INNER JOIN stops stopb
+  ON (b.stop = stopb.id)
+WHERE stopa.name = ''Craiglockhart'' AND stopb.name = ''Tollcross'';',
+ 'Aufgabe 8',
+ '8'),;
+(9, 9,
+ 'Geben Sie eine (distinct) Liste der Haltestellen an, die von „Craiglockhart“ aus mit einem Bus erreicht werden können, einschließlich „Craiglockhart“ selbst, der von der LRT-Gesellschaft angeboten wird. Geben Sie das Unternehmen und die Busnummer der jeweiligen Linie an.',
+ '',
+ 'SELECT DISTINCT stopb.name, a.company, a.num
+FROM route a
+INNER JOIN route b
+  ON (a.company = b.company AND a.num = b.num)
+INNER JOIN stops stopa
+  ON (a.stop = stopa.id)
+INNER JOIN stops stopb
+  ON (b.stop = stopb.id)
+WHERE stopa.name = ''Craiglockhart'' AND a.company = ''LRT'';',
+ 'Aufgabe 9',
+ '9'),;
+(10, 9,
+ 'Finde die Strecken mit zwei Bussen, die von Craiglockhart nach Lochend fahren können.
+Geben Sie die Busnummer und das Unternehmen des ersten Busses an, den Namen der Haltestelle für den Umstieg,
+und die Busnummer und das Unternehmen für den zweiten Bus.',
+ '',
+ 'SELECT DISTINCT a.num, a.company, stops.name, b.num, b.company
+FROM (
+  SELECT x.company, x.num, y.stop
+  FROM route x
+  INNER JOIN route y
+    ON (x.company = y.company AND x.num = y.num)
+  INNER JOIN stops stopx
+    ON (x.stop = stopx.id)
+  INNER JOIN stops stopy
+    ON (y.stop = stopy.id)
+  WHERE stopx.name = ''Craiglockhart''
+) AS a
+INNER JOIN (
+  SELECT x.company, x.num, y.stop
+  FROM route x
+  INNER JOIN route y
+    ON (x.company = y.company AND x.num = y.num)
+  INNER JOIN stops stopx
+    ON (x.stop = stopx.id)
+  INNER JOIN stops stopy
+    ON (y.stop = stopy.id)
+  WHERE stopx.name = ''Lochend''
+) AS b
+ON (a.stop = b.stop)
+INNER JOIN stops
+  ON (a.stop = stops.id)
+ORDER BY a.num, stops.name, b.num',
+ 'Aufgabe 10',
+ '10');
 
