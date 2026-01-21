@@ -1,117 +1,124 @@
 #version: '3.8'
-
+name: pdb-sqlzoo
 services:
-  postgres:
+  pgtool:
     image: postgres:15
+    container_name: pgtool
     restart: always
-    container_name: postgres
     environment:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DATABASE}
     ports:
-      - "5432:5432"
+      - 5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./init/postgres:/docker-entrypoint-initdb.d
+      - pgdatatool:/var/lib/postgresql/data
+      - ./init/tool:/docker-entrypoint-initdb.d
 
-  postgres2:
+  pgworld:
     image: postgres:15
     restart: always
-    container_name: postgres2
+    container_name: pgworld
     environment:
       POSTGRES_USER: ${PG_USER2}
       POSTGRES_PASSWORD: ${PG_PASSWORD2}
       POSTGRES_DB: ${PG_DATABASE2}
     ports:
-      - "5433:5432" 
+      - 5432
     volumes:
-      - pgdata2:/var/lib/postgresql/data
-      - ./init/tool:/docker-entrypoint-initdb.d
-  postgres3:
+#      - pgdata:/var/lib/postgresql/data
+      - ./init/world:/docker-entrypoint-initdb.d
+      
+  pgmovie:
     image: postgres:15
     restart: always
-    container_name: postgres3
+    container_name: pgmovie
     environment:
       POSTGRES_USER: ${PG_USER3}
       POSTGRES_PASSWORD: ${PG_PASSWORD3}
       POSTGRES_DB: ${PG_DATABASE3}
     ports:
-      - "5434:5432" 
+      - 5432
     volumes:
-      - pgdata3:/var/lib/postgresql/data
+#      - pgdatamovie:/var/lib/postgresql/data
       - ./init/movie:/docker-entrypoint-initdb.d
-  postgres4:
+        
+  pgeuro:
     image: postgres:15
     restart: always
-    container_name: postgres4
+    container_name: pgeuro
     environment:
       POSTGRES_USER: ${PG_USER4}
       POSTGRES_PASSWORD: ${PG_PASSWORD4}
       POSTGRES_DB: ${PG_DATABASE4}
     ports:
-      - "5435:5432" 
+      - 5432
     volumes:
-      - pgdata4:/var/lib/postgresql/data
+#      - pgdataeuro:/var/lib/postgresql/data
       - ./init/euro:/docker-entrypoint-initdb.d
-  postgres5:
+        
+  pgteachers:
     image: postgres:15
     restart: always
-    container_name: postgres5
+    container_name: pgteachers
     environment:
       POSTGRES_USER: ${PG_USER5}
       POSTGRES_PASSWORD: ${PG_PASSWORD5}
       POSTGRES_DB: ${PG_DATABASE5}
     ports:
-      - "5436:5432" 
+      - 5432
     volumes:
-      - pgdata5:/var/lib/postgresql/data
+#      - pgdatateachers:/var/lib/postgresql/data
       - ./init/teachers:/docker-entrypoint-initdb.d
-  postgres6:
+        
+  pgbuses:
     image: postgres:15
     restart: always
-    container_name: postgres6
+    container_name: pgbuses
     environment:
       POSTGRES_USER: ${PG_USER6}
       POSTGRES_PASSWORD: ${PG_PASSWORD6}
       POSTGRES_DB: ${PG_DATABASE6}
     ports:
-      - "5437:5432" 
+      - 5432
     volumes:
-      - pgdata6:/var/lib/postgresql/data
+#      - pgdatabuses:/var/lib/postgresql/data
       - ./init/buses:/docker-entrypoint-initdb.d
 
 
 
   server:
     build: ./server
+    container_name: server
+    restart: always
     ports:
-      - "5000:5000"
+      - 5000
     depends_on:
-      - postgres
-      - postgres2
-      - postgres3
-      - postgres4
-      - postgres5
-      - postgres6
-  
+      - pgtool
+      - pgworld
+      - pgeuro
+      - pgmovie
+      - pgteachers
+      - pgbuses
     env_file:
       - .env
 
   client:
     build: ./client
+    container_name: client
+    restart: always
     ports:
-      - "3000:3000"
+      - 3000
     depends_on:
       - server
     stdin_open: true
     tty: true
 
 volumes:
-  pgdata:
-  pgdata2:
-  pgdata3:
-  pgdata4:
-  pgdata5:
-  pgdata6:
+  pgdatatool:
+#  pgdata:
+#  pgdatamovie:
+#  pgdataeuro:
+#  pgdatateachers:
+#  pgdatabuses:
 

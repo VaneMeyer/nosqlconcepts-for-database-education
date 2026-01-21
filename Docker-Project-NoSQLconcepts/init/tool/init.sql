@@ -875,7 +875,7 @@ VALUES
  'SELECT COUNT(*)
 FROM stops;',
  'Aufgabe 1',
- '1'),;
+ '1'),
 (2, 9,
  'Finde die id für stop ''Craiglockhart''',
  '',
@@ -883,7 +883,7 @@ FROM stops;',
 FROM stops
 WHERE name = ''Craiglockhart'';',
  'Aufgabe 2',
- '2'),;
+ '2'),
 (3, 9,
  'Geben die id und name für stops an, die zur Route mit num = ''4'' und company = ''LRT'' gehören.',
  '',
@@ -894,7 +894,7 @@ ON stops.id = route.stop
 WHERE route.num = ''4'' AND route.company = ''LRT''
 ORDER BY route.pos;',
  'Aufgabe 3',
- '3'),;
+ '3'),
 (4, 9,
  'Die gezeigte Abfrage gibt die Anzahl der Linien aus, die entweder London Road (149) oder Craiglockhart (53) anfahren. Führen Sie die Abfrage aus und bachten Sie, dass die beiden Linien, die diese Haltestellen miteinander verbinden, eine Anzahl von 2 haben. Fügen Sie eine HAVING-Klausel hinzu, um die Ausgabe auf diese beiden Linien zu beschränken.',
  'SELECT company, num, COUNT(*)
@@ -906,7 +906,7 @@ WHERE stop = 149 OR stop = 53
 GROUP BY company, num
 HAVING COUNT(*) = 2;',
  'Aufgabe 4',
- '4'),;
+ '4'),
 (5, 9,
  'Führen Sie den gezeigten Self Join aus und beachten Sie, dass b.stop alle Orte anzeigt, die Sie von Craiglockhart aus erreichen können, ohne die Route zu wechseln. Ändern Sie die Abfrage so, dass sie die Verbindungen von Craiglockhart nach London Road anzeigt.',
  'SELECT a.company, a.num, a.stop, b.stop
@@ -924,7 +924,7 @@ WHERE a.stop = 53
     WHERE name = ''London Road''
   );',
  'Aufgabe 5',
- '5'),;
+ '5'),
 (6, 9,
  'Die gezeigte Abfrage ähnelt der vorherigen, doch durch die Verknüpfung von zwei Kopien der Tabelle „stops“ können wir auf die Haltestellen nach Namen statt nach Nummern verweisen. Ändern Sie die Abfrage so, dass die Verbindungen zwischen „Craiglockhart“ und „London Road“ angezeigt werden. Wenn Sie dieser Orte überdrüssig sind, versuchen Sie es mit ''Fairmilehead'' gegen ''Tollcross''.',
  'SELECT a.company, a.num, stopa.name, stopb.name
@@ -943,7 +943,7 @@ INNER JOIN stops stopb
   ON b.stop = stopb.id
 WHERE stopa.name = ''Craiglockhart'' AND stopb.name = ''London Road'';',
  'Aufgabe 6',
- '6'),;
+ '6'),
 (7, 9,
  'Geben Sie eine Liste aller Linien an, die die Haltestellen 115 und 137 („Haymarket“ und „Leith“) verbinden.',
  '',
@@ -953,7 +953,7 @@ INNER JOIN route b
 ON (a.company = b.company AND a.num = b.num)
 WHERE a.stop = 115 AND b.stop = 137;',
  'Aufgabe 7',
- '7'),;
+ '7'),
 (8, 9,
  'Geben Sie eine Liste der Dienste an, die die Haltestellen „Craiglockhart“ und „Tollcross“ verbinden',
  '',
@@ -967,7 +967,7 @@ INNER JOIN stops stopb
   ON (b.stop = stopb.id)
 WHERE stopa.name = ''Craiglockhart'' AND stopb.name = ''Tollcross'';',
  'Aufgabe 8',
- '8'),;
+ '8'),
 (9, 9,
  'Geben Sie eine (distinct) Liste der Haltestellen an, die von „Craiglockhart“ aus mit einem Bus erreicht werden können, einschließlich „Craiglockhart“ selbst, der von der LRT-Gesellschaft angeboten wird. Geben Sie das Unternehmen und die Busnummer der jeweiligen Linie an.',
  '',
@@ -981,7 +981,7 @@ INNER JOIN stops stopb
   ON (b.stop = stopb.id)
 WHERE stopa.name = ''Craiglockhart'' AND a.company = ''LRT'';',
  'Aufgabe 9',
- '9'),;
+ '9'),
 (10, 9,
  'Finde die Strecken mit zwei Bussen, die von Craiglockhart nach Lochend fahren können.
 Geben Sie die Busnummer und das Unternehmen des ersten Busses an, den Namen der Haltestelle für den Umstieg,

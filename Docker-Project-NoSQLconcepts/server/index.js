@@ -135,7 +135,7 @@ app.post("/api/login", async (req, res) => {
 
   try {
     const { loginQuery } = loginQueries;
-    const { rows } = await pool2.query(loginQuery, [username, password]);
+    const { rows } = await pool.query(loginQuery, [username, password]);
 
     if (rows.length === 1) {
       const user = rows[0];
@@ -196,7 +196,7 @@ app.get('/api/admin', authenticateJWT, (req, res) => {
 
 const executeQuery = async (query, params, res) => {
   try {
-    const { rows } = await pool2.query(query, params);
+    const { rows } = await pool.query(query, params);
     res.json(rows);
   } catch (error) {
     console.error(error, res);
@@ -424,7 +424,7 @@ const { getPgStructureQuery } = mainQueries;
 app.post("/api/getPostgreSQLStructure", async (req, res) => {
    const { endpoint } = req.body;
   try {
-    const postgreSQL_query = () => (endpoint === "World" && pool.query(getPgStructureQuery) || endpoint === "Movie" && pool3.query(getPgStructureQuery) || endpoint === "Euro" && pool4.query(getPgStructureQuery) || endpoint === "Teachers" && pool5.query(getPgStructureQuery) || endpoint === "Buses" && pool6.query(getPgStructureQuery) );
+    const postgreSQL_query = () => (endpoint === "World" && pool2.query(getPgStructureQuery) || endpoint === "Movie" && pool3.query(getPgStructureQuery) || endpoint === "Euro" && pool4.query(getPgStructureQuery) || endpoint === "Teachers" && pool5.query(getPgStructureQuery) || endpoint === "Buses" && pool6.query(getPgStructureQuery) );
     let result = await executeQueryWithTimeout(postgreSQL_query, 50000);
 
     tables_set = new Set();
@@ -502,7 +502,7 @@ app.post("/api/execute-sql", async (req, res) => {
     if (!execQuery.includes("private") && !execQuery.includes("tool")) {
       
             userQueryResult = await executeQueryWithTimeout(
-          () => (endpoint === "World" && pool.query(execQuery) || endpoint === "Movie" && pool3.query(execQuery) || endpoint === "Euro" && pool4.query(execQuery) || endpoint === "Teachers" && pool5.query(execQuery) || endpoint === "Buses" && pool6.query(execQuery)),
+          () => (endpoint === "World" && pool2.query(execQuery) || endpoint === "Movie" && pool3.query(execQuery) || endpoint === "Euro" && pool4.query(execQuery) || endpoint === "Teachers" && pool5.query(execQuery) || endpoint === "Buses" && pool6.query(execQuery)),
           50000);
         
     
@@ -512,11 +512,11 @@ app.post("/api/execute-sql", async (req, res) => {
         // Check if the user's query matches the expected solution
         const { getSolutionQuery } = mainQueries;
         const expectedSolutionResult = await executeQueryWithTimeout(
-          () => pool2.query(getSolutionQuery, [taskNumber, taskAreaId]),
+          () => pool.query(getSolutionQuery, [taskNumber, taskAreaId]),
           50000
         );
         const solution = await executeQueryWithTimeout(
-          () => pool.query(expectedSolutionResult.rows[0].solution_query),
+          () => pool2.query(expectedSolutionResult.rows[0].solution_query),
           50000
         );
         // Send both results to the client
@@ -547,7 +547,7 @@ app.post("/api/execute-sql", async (req, res) => {
 // Example route to get data from the database
 app.get('/api/data', async (req, res) => {
   try {
-    const result = await pool2.query('SELECT * FROM tool.user_task_data');
+    const result = await pool.query('SELECT * FROM tool.user_task_data');
     res.json(result.rows); // Send fetched data as JSON response
   } catch (err) {
     console.error(err.message);
@@ -559,7 +559,7 @@ app.get('/api/data', async (req, res) => {
 app.post('/api/task_data', async (req, res) => {
   const {selectedTaskAreaId} = req.body;
   try {
-    const result_task_data = await pool2.query('SELECT * FROM tool.task_statements where area_id = $1 order by statement_id', [selectedTaskAreaId]);
+    const result_task_data = await pool.query('SELECT * FROM tool.task_statements where area_id = $1 order by statement_id', [selectedTaskAreaId]);
     res.json(result_task_data.rows); // Send fetched task data as JSON response
     
   } catch (err) {
@@ -571,7 +571,7 @@ app.post('/api/task_data', async (req, res) => {
 // Route to get user-related data
 app.get('/api/user_data', async (req, res) => {
   try {
-    const result_user_data = await pool2.query('SELECT distinct username FROM tool.user_task_data');
+    const result_user_data = await pool.query('SELECT distinct username FROM tool.user_task_data');
     res.json(result_user_data.rows); // Send fetched user data as JSON response
   } catch (err) {
     console.error(err.message);
@@ -582,7 +582,7 @@ app.get('/api/user_data', async (req, res) => {
 // Route to get area-related data
 app.get('/api/area_data', async (req, res) => {
   try {
-    const result_area_data = await pool2.query('SELECT * FROM tool.task_areas');
+    const result_area_data = await pool.query('SELECT * FROM tool.task_areas');
     res.json(result_area_data.rows); // Send fetched area data as JSON response
   } catch (err) {
     console.error(err.message);
@@ -593,7 +593,7 @@ app.get('/api/area_data', async (req, res) => {
 // Route to get data from the database
 app.get('/api/get-data', async (req, res) => {
   try {
-      const result = await pool2.query('SELECT * FROM private.users');
+      const result = await pool.query('SELECT * FROM private.users');
       term_res = res.json(result.rows);
       //console.log(term_res);
   } catch (err) {
@@ -608,7 +608,7 @@ app.post('/api/add-user', async (req, res) => {
   try {
       const { user_name, password, role } = req.body;
       //console.log(req.body);
-      const newUser = await pool2.query(
+      const newUser = await pool.query(
           'INSERT INTO private.users (user_name, password, role) VALUES ($1, $2, $3) RETURNING *',
           [user_name, password, role]
       );
@@ -624,13 +624,13 @@ app.put('/api/update-user', async (req, res) => {
  // console.log("update-user", req.body)
   try {
       const { user_name, password, role } = req.body;
-      const userCheck = await pool2.query('SELECT * FROM private.users WHERE user_name = $1', [user_name]);
+      const userCheck = await pool.query('SELECT * FROM private.users WHERE user_name = $1', [user_name]);
 
       if (userCheck.rows.length === 0) {
           return res.status(404).send('User not found');
       }
 
-      const updatedUser = await pool2.query(
+      const updatedUser = await pool.query(
           'UPDATE private.users SET password = $2, role = $3 WHERE user_name = $1 RETURNING *',
           [user_name, password, role]
       );
@@ -647,7 +647,7 @@ app.get('/api/get-user-by-username/:username', async (req, res) => {
 
   try {
       const query = 'SELECT * FROM private.users WHERE user_name = $1';
-      const result = await pool2.query(query, [username]);
+      const result = await pool.query(query, [username]);
 
       if (result.rows.length > 0) {
           res.json(result.rows[0]); // return user found
@@ -666,7 +666,7 @@ app.delete('/api/delete-user/:username', async (req, res) => {
 
   try {
       const query = 'DELETE FROM private.users WHERE user_name = $1';
-      await pool2.query(query, [username]);
+      await pool.query(query, [username]);
 
       res.json({ message: 'Benutzer erfolgreich gelöscht' });
   } catch (error) {
