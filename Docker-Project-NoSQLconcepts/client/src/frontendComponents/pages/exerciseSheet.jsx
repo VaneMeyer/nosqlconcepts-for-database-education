@@ -174,7 +174,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       `formdata_${area_id}_${taskNumber}`,
       JSON.stringify(formData)
     );
-  }, [formData, taskNumber]);
+  }, [formData, taskNumber, area_id]);
 
   useEffect(() => {
     setSyntaxMode("pgsql");
@@ -189,7 +189,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     return () => {
       window.removeEventListener("keydown", handleF5);
     };
-  }, [taskNumber]);
+  }, [taskNumber, area_id]);
 
  
 

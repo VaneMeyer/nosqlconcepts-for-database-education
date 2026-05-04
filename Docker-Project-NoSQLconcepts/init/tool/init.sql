@@ -1,13 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS private 
-AUTHORIZATION tooluser;
+AUTHORIZATION postgres;
 
 CREATE SCHEMA IF NOT EXISTS tool 
-AUTHORIZATION tooluser;
+AUTHORIZATION postgres;
 
 
 -- Table: private.users
 
-DROP TABLE IF EXISTS private.users;
+--DROP TABLE IF EXISTS private.users;
 
 CREATE TABLE IF NOT EXISTS private.users
 (
@@ -21,11 +21,11 @@ CREATE TABLE IF NOT EXISTS private.users
 -- first tool admin user: after login create new admin user and login with new admin to delete test admin user
 INSERT INTO private.users( 
  user_name, password, email_id, role) 
- VALUES ('test', '1234', 'example', 'admin'); --TODO env?
+ VALUES ('test6445646', 'fhdhfhfh', 'example', 'admin'); --TODO env?
 
 -- Table: tool.task_areas
 
- DROP TABLE IF EXISTS tool.task_areas;
+ --DROP TABLE IF EXISTS tool.task_areas;
 
 CREATE TABLE IF NOT EXISTS tool.task_areas
 (
@@ -65,7 +65,7 @@ ON CONFLICT (area_id) DO NOTHING;
 
 -- Table: tool.task_statements
 
-DROP TABLE IF EXISTS tool.task_statements;
+--DROP TABLE IF EXISTS tool.task_statements;
 
 CREATE TABLE IF NOT EXISTS tool.task_statements
 (
@@ -116,9 +116,9 @@ VALUES
  'Aufgabe 1',
  '1'), 
 (2, 2,
- 'Finde die Länder, die mit Y enden.',
+ 'Finde die Länder, die mit y enden.',
  'SELECT name FROM world WHERE name LIKE ''T%'' ',
- 'SELECT name FROM world WHERE name LIKE ''%Y'';',
+ 'SELECT name FROM world WHERE name LIKE ''%y'';',
  'Aufgabe 2', 
  '2'), 
 (3, 2,
@@ -196,7 +196,14 @@ VALUES
 (15, 2,
  'Die Hauptstadt von Monaco ist Monaco-Ville: Dies ist der Name Monaco mit der Erweiterung ''-Ville''. Zeige den Namen und die Erweiterung, bei denen die Hauptstadt eine richtige (nicht leere) Erweiterung des Landesnamens ist. Du kannst die SQL-Funktion REPLACE verwenden. ',
  '',
- 'SELECT name, SUBSTRING(capital, LENGTH(name) + 1, LENGTH(capital)) as ext FROM world WHERE capital LIKE CONCAT(name, ''%'') AND capital <> name;',
+ 'SELECT 
+  name,
+  capital,
+  REPLACE(capital, name, '') AS ext
+FROM world
+WHERE capital LIKE CONCAT(name, ''%'')
+AND capital <> name;
+',
  'Aufgabe 15',
  '15'),
 (1, 3,

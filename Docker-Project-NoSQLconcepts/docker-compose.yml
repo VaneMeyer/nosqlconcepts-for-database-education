@@ -10,7 +10,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DATABASE}
     ports:
-      - 5432
+      #- 5432
+      - "5433:5432"
     volumes:
       - pgdatatool:/var/lib/postgresql/data
       - ./init/tool:/docker-entrypoint-initdb.d
@@ -24,7 +25,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD2}
       POSTGRES_DB: ${PG_DATABASE2}
     ports:
-      - 5432
+      #- 5432
+      - "5434:5432"
     volumes:
 #      - pgdata:/var/lib/postgresql/data
       - ./init/world:/docker-entrypoint-initdb.d
@@ -38,7 +40,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD3}
       POSTGRES_DB: ${PG_DATABASE3}
     ports:
-      - 5432
+      #- 5432
+      - "5435:5432"
     volumes:
 #      - pgdatamovie:/var/lib/postgresql/data
       - ./init/movie:/docker-entrypoint-initdb.d
@@ -52,7 +55,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD4}
       POSTGRES_DB: ${PG_DATABASE4}
     ports:
-      - 5432
+      #- 5432
+      - "5436:5432"
     volumes:
 #      - pgdataeuro:/var/lib/postgresql/data
       - ./init/euro:/docker-entrypoint-initdb.d
@@ -66,7 +70,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD5}
       POSTGRES_DB: ${PG_DATABASE5}
     ports:
-      - 5432
+      #- 5432
+      - "5437:5432"
     volumes:
 #      - pgdatateachers:/var/lib/postgresql/data
       - ./init/teachers:/docker-entrypoint-initdb.d
@@ -80,7 +85,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD6}
       POSTGRES_DB: ${PG_DATABASE6}
     ports:
-      - 5432
+      #- 5432
+      - "5438:5432"
     volumes:
 #      - pgdatabuses:/var/lib/postgresql/data
       - ./init/buses:/docker-entrypoint-initdb.d
@@ -92,6 +98,8 @@ services:
     container_name: server
     restart: always
     ports:
+      #- "8000:8000"
+      #- 8000
       - 5000
     depends_on:
       - pgtool
@@ -113,6 +121,10 @@ services:
       - server
     stdin_open: true
     tty: true
+    networks:
+      - proxy_nw
+      - default
+
 
 volumes:
   pgdatatool:
@@ -122,3 +134,10 @@ volumes:
 #  pgdatateachers:
 #  pgdatabuses:
 
+networks:
+  default:
+    name: sqlzoo_nw
+    driver: bridge
+  proxy_nw:
+    external: true
+    name: proxy_nw

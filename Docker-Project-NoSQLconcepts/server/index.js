@@ -51,7 +51,10 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   const dir = "public";
   res.sendFile(path.join(__dirname, dir, "index.html"));
-});
+});  
+/* app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+}); */
 
 app.get('/conditions', (req, res) => {
       res.send(`By using this application, you agree to the following terms regarding the use of cookies and the collection of your data:  This application uses cookies to store your login information. Cookies are small text files stored on your device that
@@ -684,7 +687,7 @@ app.delete('/api/delete-user/:username', async (req, res) => {
 
 
 //################# start server ######################################################
-app.listen(5000, '0.0.0.0', () => {
-  console.log('Server running on port 5000');
+app.listen(8000, '0.0.0.0', () => {
+  console.log('Server running on port 8000');
 });
 
