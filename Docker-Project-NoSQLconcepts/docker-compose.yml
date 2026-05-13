@@ -1,6 +1,16 @@
 #version: '3.8'
 name: pdb-sqlzoo
 services:
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_MODELS=gemma3:12b
+
   pgtool:
     image: postgres:15
     container_name: pgtool
@@ -108,6 +118,7 @@ services:
       - pgmovie
       - pgteachers
       - pgbuses
+      - ollama
     env_file:
       - .env
 
@@ -128,6 +139,7 @@ services:
 
 volumes:
   pgdatatool:
+  ollama_data:
 #  pgdata:
 #  pgdatamovie:
 #  pgdataeuro:

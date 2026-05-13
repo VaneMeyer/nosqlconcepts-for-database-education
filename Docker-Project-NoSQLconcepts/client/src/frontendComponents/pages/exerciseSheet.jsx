@@ -31,6 +31,7 @@ import ImportantMsg from "../components/otherComponents/importantMsg.jsx";
 
 import ResultTable from "../components/exerciseSheetComponents/ResultTable.jsx";
 import { fetchTasksData } from "../api/mainApi.js";
+import { fetchTasksData, fetchLLMFeedback } from "../api/mainApi.js";
 import DbAccordion from "../components/exerciseSheetComponents/dbAccordion.jsx";
 import { sendToExecute } from "../api/queryApi.js";
 import { Link } from "react-router-dom";
@@ -46,6 +47,7 @@ const Item = styled(Paper)(({ theme }) => ({
   overflow: "auto",
 }));
 function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
+  feedback_on = true;
   const getInitialFormData = (taskNumber) => {
     try {
       const stored = localStorage.getItem(`formdata_${area_id}_${taskNumber}`);
@@ -81,6 +83,30 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   const [feedbackType, setFeedbackType] = useState("error");
   const [error, setError] = useState("");
 
+  const [queryFeedback_new, setQueryFeedback_new] = useState("");
+  const [totalDistance, setTotalDistance] = useState("");
+  const [noCalculation, setNoCalculation] = useState("");
+  const [feedbackOutput, setFeedbackOutput] = useState([]);
+  const [collectedEditSteps, setCollectedEditSteps] = useState([]);
+  const [hasSolutionQuery, setHasSolutionQuery] = useState(false);
+  const [pointsHistory, setPointsHistory] = useState([]);
+  const [errorCount, setErrorCount] = useState(0);
+
+  const [maxPoints_SQL, setMaxPoints_SQL] = useState(0);
+
+  const [llmError, setLlmError] = useState("");
+  const [llmTip, setLlmTip] = useState("");
+  const [showLLMTip, setShowLLMTip] = useState(false);
+  const [solutionSQL, setSolutionSQL] = useState("");
+
+  useEffect(() => {
+    const { totalDistance, noCalculation, feedbackOutput, errorCount } = sqlDistanceHandling(queryFeedback_new || "");
+    setTotalDistance(totalDistance);
+    setNoCalculation(noCalculation);
+    setFeedbackOutput(feedbackOutput);
+    setErrorCount(errorCount);
+  }, [queryFeedback_new]);
+
   const handleF5 = (event) => {
     if (event.key === "F5") {
       event.preventDefault();
@@ -95,6 +121,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       setTasksArray(data);
 
       setTask(data[taskNumber - 1]);
+      setMaxPoints_SQL(data[taskNumber - 1]?.maxsql_points || 0);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Error fetching data. Please try again later.");
@@ -103,6 +130,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
 
   const executeQuery = async () => {
     setQueryResult("");
+    setShowLLMTip(false);
     const execQuery = formData.query_text;
 
     try {
@@ -110,8 +138,31 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
         endpoint,
         execQuery,
         taskNumber,
-        area_id
+        area_id,
+        maxPoints_SQL,
       );
+
+
+      //console.log("SQL query of the student: ", execQuery);
+      //console.log("Correct SQL query: ", response.data.solutionQuery);
+      setSolutionSQL(response.data.solutionQuery || "");
+      //console.log("queryFeedback_new: ", response.data.queryFeedback_new);
+
+      setHasSolutionQuery(Boolean(response.data.solutionQuery));
+      setQueryFeedback_new(response.data.queryFeedback_new || "");
+
+      const { feedbackOutput } = sqlDistanceHandling(response.data.queryFeedback_new || "");
+      const isSQLOutputEqual = JSON.stringify(response.data.userQueryResult) === JSON.stringify(response.data.expectedResult);
+      const currentSQLPoints = isSQLOutputEqual ? maxPoints_SQL : calculatedPoints(maxPoints_SQL, feedbackOutput);
+
+      const newSteps = feedbackOutput.map(item => item.editStep).filter(Boolean);
+      const mergedSteps = [...collectedEditSteps, ...newSteps];
+      setCollectedEditSteps(mergedSteps);
+      
+      const nextPoints = [...pointsHistory, currentSQLPoints];
+      setPointsHistory(nextPoints);
+      //sendDataToDb(nextPoints, mergedSteps);
+
 
       if (typeof response.data.userQueryResult === "string") {
         setQueryResult([{ output: response.data.userQueryResult }]);
@@ -207,6 +258,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     let newTaskIndex = newTaskNumber - 1;
     setTask(tasksArray[newTaskIndex]);
     setTaskNumber(newTaskNumber);
+    setMaxPoints_SQL(tasksArray[newTaskIndex]?.maxsql_points || 0);
     setQueryResult("");
     setError("");
     /* setHasStarted(false); */
@@ -234,6 +286,89 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   const handleEditorChange = (newContent) => {
     setFormData({ ...formData, query_text: newContent });
   };
+
+  function sqlDistanceHandling(queryFeedback_new) {
+    let totalDistance = "";
+    let noCalculation = "";
+    let feedbackOutput = [];
+    let errorCount = 0;
+    // console.log("Query Feedback New: ", queryFeedback_new);
+
+    if (/^\s*ERROR:\s*/.test(queryFeedback_new)) {
+      noCalculation = queryFeedback_new.replace(/^\s*ERROR:\s*/, "").trim();
+
+    } else {
+      totalDistance = queryFeedback_new.split("\n")[0].split(":").slice(1).join(":").trim();
+
+      const outputSplitter = queryFeedback_new.split(">>>").map( a => a.trim() ).filter( Boolean ).slice(1);
+
+      feedbackOutput = outputSplitter.map( a => {
+        const lines = a.split("\n");
+        const editStep = (lines.shift() || "").trim();
+        let solution = lines.join("\n").trim();
+        solution = solution.replace(/,{2,}$/gm, m => m.slice(0,1));
+      return { editStep, solution };
+      });
+      errorCount = feedbackOutput.length;
+    }
+
+    return { totalDistance, noCalculation, feedbackOutput, errorCount };
+  }
+
+  function calculatedPoints(maxPoints_SQL, feedbackOutput) {
+    // The scale factor can be adjusted to change the weight of the dedcutions
+    const scaleFactor = 1;
+    let minusPoints = 0;
+    feedbackOutput.forEach( a => {
+      const match = a.editStep.match(/Cost\s*([\d.,]+):/i);
+      if (match) {
+        minusPoints += parseFloat(match[1].replace(",", "."));
+      }
+    });
+    const unscaledPoints = Math.max(0, parseFloat(maxPoints_SQL) - (parseFloat(minusPoints) * scaleFactor));
+    return unscaledPoints;
+  }
+
+  // takes the exersice description, editsteps
+  const llmFeedback = async (feedbackOutput) => {
+    setShowLLMTip(true);
+    setLlmTip("Loading LLM learning tip...");
+    console.log("LLM Feedback Function");
+
+    try {
+      // Task Question Data
+      const questionData = [
+        task.topic ? "Topic: " + task.topic + ", " : "",
+        task.description ? "Description: " + task.description + ", " : "",
+        task.hint ? "Hint: " + task.hint : ""
+      ].filter(Boolean).join(" ");
+      //console.log("questionData: ", questionData);
+
+      // Student Answer Data
+      const studentAnswer = formData.query_text;
+      //console.log("studentAnswer: ", studentAnswer);
+
+      // Correct Answer Data
+      const correctAnswer = solutionSQL;
+      //console.log("correctAnswer: ", correctAnswer);
+
+      // Tool Feedback Data
+      const toolFeedback = feedbackOutput.map((e, i) => `${i + 1}. ${e.editStep}: ${e.solution}`).join('\n');
+      console.log("Tool Feedback: ", toolFeedback);
+
+      // API Call
+      const response = await fetchLLMFeedback(questionData, studentAnswer, correctAnswer, toolFeedback);
+      console.log("Response: ", response);
+      setLlmError("");
+      setLlmTip(response.learning_tips);
+
+    } catch (error) {
+      console.log("llmFeedback error");
+      console.error("Error:", error);
+      setLlmError("Failed to get answer from LLM.");
+      setLlmTip("No LLM Tip available.");
+    }
+  }
 
   const quizNav = {
     2: "/selectquiz",
@@ -382,6 +517,189 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                           {<p>Anzahl Zeilen: {formData.resultSize}</p>}
                         </Box>
                       </Box>
+
+
+                      {feedback_on && queryResult && (
+                        <>
+                          <Typography variant="h6" gutterBottom>
+                            See Your SQL Feedback
+                          </Typography>
+                          {maxPoints_SQL && (
+                            <Typography variant="h7" gutterBottom>
+                              {feedback.includes("Your query output is equal to the expected output")
+                                ? `There are ${maxPoints_SQL} points and you received ${maxPoints_SQL} points.`
+                                : `There are ${maxPoints_SQL} points and you received ${calculatedPoints(maxPoints_SQL, feedbackOutput)} points.`
+                              }
+                            </Typography>
+                          )}
+                          {feedback.includes("Your query output is equal to the expected output") && (
+                                <ImportantMsg
+                                  message={
+                                    <>
+                                      Your query produces the correct output table! Full points are awarded.
+                                      <br />
+                                      Note that structurally different queries with the same output may still result in edit steps with (not weighted) cost
+                                      when compared to the expected solution.
+                                      </>
+                                  }
+                                  type="success"
+                                />
+                              )}
+                          <ImportantMsg
+                                message={
+                                  <>
+                                    You can see an overview of the errors below and click any item to view more details.
+                                    <br />
+                                    If an error has 'Cost: 0' then it's a mathematical or logical transformation that does not change the meaning of the SQL query.
+                                    There are some operator types (like <code>LIKE</code>) that cannot be parsed yet,
+                                    so no detailed feedback is available for them at the moment.
+                                    </>
+                                    }
+                                type="info"
+                          />
+
+                          <Box
+                              sx={ {
+                                padding: "10px",
+                                borderRadius: "5px",
+                                border: "1px solid #cac9c9ff",
+                                minHeight: 150,
+                                whiteSpace: "pre-wrap",
+                              } }
+                            >
+                              {totalDistance
+                                ? "These are the " + errorCount + " suggested changes to your query:"
+                                : ""}
+
+                              {totalDistance === ""
+                                ? (
+                                    <div
+                                      style={{
+                                        minHeight: 150,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        textAlign: "center",
+                                        fontSize: "15.5px",
+                                      }}
+                                    >
+                                      {noCalculation}
+                                    </div>
+                                  )
+                                : 
+                                feedbackOutput.map((entry, i) => (
+                                  <details key={i}
+                                    style={ {
+                                      border: "1px solid #bdbdbdff",
+                                      borderRadius: "5px",
+                                      marginTop: "10px",
+                                      overflow: "hidden"
+                                    } }
+                                  >
+                                    <summary
+                                    style={ {
+                                      justifyContent: "flex-start",
+                                      padding: "10px 15px",
+                                      listStyle: "none",
+                                      display: "flex",
+                                      fontWeight: "bold",
+                                      cursor: "pointer",
+                                    } }
+                                    >
+                                      { entry.editStep }
+                                      </summary>
+                                    <div
+                                    style={ {
+                                      justifyContent: "flex-start",
+                                      padding: "10px 45px",
+                                      listStyle: "none",
+                                      display: "flex",
+                                    } }
+                                    >
+                                    { entry.solution }
+                                    </div>
+                                  </details>
+                                  
+                                ))
+                                }
+                          </Box>
+                        </>
+                      )}
+                      <hr></hr>
+                      {feedback_on && queryResult && (
+                        <>
+                        <Typography variant="h6" gutterBottom>
+                            LLM learning tip
+                          </Typography>
+                          <ImportantMsg
+                                message={
+                                  <>
+                                    You can click on the button below to get a personalized learning tip based on the exersice description, your solution and the SQL feedback.
+                                    <br />
+                                    Note that this functionality is a work in progress and may take some time to respond.
+                                  </>
+                                  }
+                                type="info"
+                          />
+                              
+                        <button
+                          type="button"
+                          id="test_area"
+                          style={ {
+                            color: "black",
+                            borderRadius: 5,
+                            backgroundColor: "#388E3C",
+                            color: "white",
+                            border: "2px solid #388E3C",
+                            cursor: "pointer",
+                            padding: "5px 15px",
+                            marginLeft: "auto",
+                            marginRight: "20px",
+                          } }
+                          onClick={() => llmFeedback(feedbackOutput)}
+                        >
+                          LLM learning tip
+                        </button>
+                        <Box sx={{mt: 2}} />
+                        {showLLMTip && (
+                          <Box
+                              sx={ {
+                                padding: "10px",
+                                borderRadius: "5px",
+                                border: "1px solid #cac9c9ff",
+                                minHeight: 150,
+                                whiteSpace: "pre-wrap",
+                              } }
+                            >{llmTip}</Box>
+                        )}
+
+                        {/* TODO: Don't show the button if the task is solved correctly */}
+                        {/*No available LLM learning tip.
+                        <button
+                          type="button"
+                          id="test_area"
+                          style={ {
+                            color: "black",
+                            borderRadius: 5,
+                            backgroundColor: "#9c9c9cff",
+                            color: "white",
+                            border: "2px solid #939393ff",
+                            cursor: "pointer",
+                            padding: "5px 15px",
+                            marginLeft: "auto",
+                            marginRight: "20px",
+                          } }
+                          onClick={ () => {
+                            console.log("No available LLM learning tip");
+                          } }
+                        >
+                          No available LLM learning tip
+                        </button>*/}
+
+                        </>
+                      )}
+
+
                       <hr></hr>
                       <FormGroup>
                         <FormControlLabel

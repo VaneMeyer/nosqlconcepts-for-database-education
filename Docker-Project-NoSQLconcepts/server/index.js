@@ -18,6 +18,8 @@ require("dotenv").config();
 const app = express();
 const key = Math.random() * (10000000000 - 100000000) + 100000000;
 
+const sqlQueryDistance = require('./evaluation-tool/sql-query-distance/dist/index');
+
 const oneDay = 1000 * 60 * 60 * 24;
 //################# General Settings ######################################################
 // Middleware
@@ -295,6 +297,7 @@ app.post("/api/add-exercise", async (req, res) => {
       formValues.maxtime,
       formValues.hint,
       formValues.tasknumber,
+      formValues.maxsql_points,
     ],
     res
   );
@@ -312,6 +315,7 @@ app.post("/api/update-exercises", async (req, res) => {
       formValues.maxtime,
       formValues.hint,
       formValues.tasknumber,
+      formValues.maxsql_points,
       formValues.statement_id,
       formValues.area_id,
       formValues.default_query,
@@ -497,11 +501,14 @@ const executeQueryWithTimeout = (queryFunction, timeout) => {
 // Execute SQL queries
 // check if query is equal to the expected solution
 app.post("/api/execute-sql", async (req, res) => {
-  const { endpoint, execQuery, taskNumber, taskAreaId } = req.body;
+  const { endpoint, execQuery, taskNumber, taskAreaId, maxPoints_SQL } = req.body;
+  
 
   try {
     // Execute user's SQL query
     let userQueryResult = [{}];
+    let queryFeedback_new = "";
+    let queryFeedback = "";
     if (!execQuery.includes("private") && !execQuery.includes("tool")) {
       
             userQueryResult = await executeQueryWithTimeout(
@@ -518,19 +525,341 @@ app.post("/api/execute-sql", async (req, res) => {
           () => pool.query(getSolutionQuery, [taskNumber, taskAreaId]),
           50000
         );
-        const solution = await executeQueryWithTimeout(
-          () => pool2.query(expectedSolutionResult.rows[0].solution_query),
-          50000
-        );
-        // Send both results to the client
-        res.json({
-          userQueryResult: userQueryResult.rows,
-          expectedResult: solution.rows,
-        });
+
+        // ######### START: SQL Query Distance ##################
+
+        // check if no solution is stored for the exercise
+        if (
+            !expectedSolutionResult ||
+            !expectedSolutionResult.rows ||
+            expectedSolutionResult.rows.length === 0 ||
+            !expectedSolutionResult.rows[0].solution_query
+        ) {
+            console.log("No expected solution found.");
+            userQueryResult = await executeQueryWithTimeout(
+              () => pool.query(execQuery),
+              50000
+            );
+            console.log("userQueryResult:", userQueryResult.rows);
+            res.json({
+            userQueryResult: userQueryResult.rows,
+            expectedResult: "no solution",
+            queryFeedback: "",
+            queryFeedback_new: "",
+            userQuery: execQuery,
+            solutionQuery: "",
+          });
+        } else {
+          console.log("expectedSolutionResult is defined.");
+
+          //console.log("----------------------------------------------");
+          //console.log("Student Query (SQL):", execQuery);
+          //console.log("Solution Query (SQL):", expectedSolutionResult.rows[0].solution_query);
+          //console.log("----------------------------------------------");
+
+          let distance, steps, path;
+          // Reused configuration values (config_atomic, config_horizontal, config_shortcut, config)
+          // from SQL-Query-Distance (https://github.com/FAU-CS6/sql-query-distance)
+          // file: ./sql-query-distance/test.js
+          // License: MIT
+          const config_atomic = `
+          setDistinct:2
+          unsetDistinct:2
+          addSelectElement:1
+          removeSelectElement:1
+          addSelectAsterisk:1
+          removeSelectAsterisk:1
+          setSelectAsteriskTable:1
+          unsetSelectAsteriskTable:1
+          addSelectColumnReference:1
+          removeSelectColumnReference:1
+          setSelectColumnReferenceTable:1
+          unsetSelectColumnReferenceTable:1
+          addSelectLiteral:1
+          removeSelectLiteral:1
+          addSelectNot:1
+          removeSelectNot:1
+          addSelectAggregationFunction:1
+          removeSelectAggregationFunction:1
+          setSelectAggregationFunctionDistinct:2
+          unsetSelectAggregationFunctionDistinct:2
+          addSelectBinaryExpression:1
+          removeSelectBinaryExpression:1
+          setSelectAlias:2
+          unsetSelectAlias:1
+          addFromElement:2
+          removeFromElement:2
+          setTableJoinType:1
+          unsetTableJoinType:1
+          addFromColumnReference:1
+          removeFromColumnReference:1
+          setFromColumnReferenceTable:1
+          unsetFromColumnReferenceTable:1
+          addFromLiteral:1
+          removeFromLiteral:1
+          addFromNot:1
+          removeFromNot:1
+          addFromBinaryExpression:1
+          removeFromBinaryExpression:1
+          setFromAlias:1
+          unsetFromAlias:1
+          addWhereColumnReference:1
+          removeWhereColumnReference:1
+          setWhereColumnReferenceTable:1
+          unsetWhereColumnReferenceTable:1
+          addWhereLiteral:1
+          removeWhereLiteral:1
+          addWhereNot:1
+          removeWhereNot:1
+          addWhereBinaryExpression:1
+          removeWhereBinaryExpression:1
+          addGroupbyElement:1
+          removeGroupbyElement:2
+          addGroupbyColumnReference:1
+          removeGroupbyColumnReference:1
+          setGroupbyColumnReferenceTable:1
+          unsetGroupbyColumnReferenceTable:1
+          addGroupbyLiteral:1
+          removeGroupbyLiteral:1
+          addGroupbyNot:1
+          removeGroupbyNot:1
+          addGroupbyBinaryExpression:1
+          removeGroupbyBinaryExpression:1
+          addHavingColumnReference:1
+          removeHavingColumnReference:1
+          setHavingColumnReferenceTable:1
+          unsetHavingColumnReferenceTable:1
+          addHavingLiteral:1
+          removeHavingLiteral:1
+          addHavingNot:1
+          removeHavingbyNot:1
+          addHavingAggregationFunction:1
+          removeHavingAggregationFunction:1
+          setHavingAggregationFunctionDistinct:2
+          unsetHavingAggregationFunctionDistinct:2
+          addHavingBinaryExpression:1
+          removeHavingBinaryExpression:1
+          addOrderbyElement:1
+          removeOrderbyElement:1
+          setOrderbyDescending:1
+          unsetOrderbyDescending:1
+          addOrderbyColumnReference:1
+          removeOrderbyColumnReference:1
+          setOrderbyColumnReferenceTable:1
+          unsetOrderbyColumnReferenceTable:1
+          addOrderbyLiteral:1
+          removeOrderbyLiteral:1
+          addOrderbyNot:1
+          removeOrderbyNot:1
+          addOrderbyAggregationFunction:1
+          removeOrderbyAggregationFunction:1
+          setOrderbyAggregationFunctionDistinct:2
+          unsetOrderbyAggregationFunctionDistinct:2
+          addOrderbyBinaryExpression:1
+          removeOrderbyBinaryExpression:1
+          `;
+          const config_horizontal = `
+          swapSelectElements:1
+          changeSelectAsteriskTable:1
+          changeSelectColumnReferenceColumn:1
+          changeSelectColumnReferenceTable:1
+          changeSelectLiteralValue:1
+          changeSelectAggregationFunctionAggregation:1
+          changeSelectBinaryExpressionOperator:1
+          swapSelectBinaryExpressionArguments:0
+          swapSelectBinaryExpressionNesting:0
+          mirrorSelectBinaryExpressionInequation:0
+          changeSelectAlias:2
+          swapFromElements:0
+          changeFromJoinType:1
+          changeFromColumnReferenceColumn:1
+          changeFromColumnReferenceTable:1
+          changeFromLiteralValue:1
+          changeFromBinaryExpressionOperator:1
+          swapFromBinaryExpressionArguments:0
+          swapFromBinaryExpressionNesting:0
+          mirrorFromBinaryExpressionInequation:0
+          changeFromAlias:2
+          changeWhereColumnReferenceColumn:1
+          changeWhereColumnReferenceTable:1
+          changeWhereLiteralValue:1
+          changeWhereBinaryExpressionOperator:1
+          swapWhereBinaryExpressionArguments:0
+          swapWhereBinaryExpressionNesting:0
+          mirrorWhereBinaryExpressionInequation:0
+          swapGroupbyElements:0
+          changeGroupbyColumnReferenceColumn:1
+          changeGroupbyColumnReferenceTable:1
+          changeGroupbyLiteralValue:1
+          changeGroupbyBinaryExpressionOperator:1
+          swapGroupbyBinaryExpressionArguments:0
+          swapGroupbyBinaryExpressionNesting:0
+          mirrorGroupbyBinaryExpressionInequation:0
+          changeHavingColumnReferenceColumn:1
+          changeHavingColumnReferenceTable:1
+          changeHavingLiteralValue:1
+          changeHavingAggregationFunctionAggregation:1
+          changeHavingBinaryExpressionOperator:1
+          swapHavingBinaryExpressionArguments:0
+          swapHavingBinaryExpressionNesting:0
+          mirrorHavingBinaryExpressionInequation:0
+          changeOrderbyElements:1
+          changeOrderbyColumnReferenceColumn:1
+          changeOrderbyColumnReferenceTable:1
+          changeOrderbyLiteralValue:1
+          changeOrderbyAggregationFunctionAggregation:1
+          changeOrderbyBinaryExpressionOperator:1
+          swapOrderbyBinaryExpressionArguments:0
+          swapOrderbyBinaryExpressionNesting:0
+          mirrorOrderbyBinaryExpressionInequation:0
+          `;
+          const config_shortcut = `
+          applySelectTautologyLaw:0
+          applySelectDoubleNegationLaw:0
+          applySelectDistributiveLaw:0
+          applySelectDeMorgan:0
+          applySelectAbsorptionLaw:0
+          applyFromTautologyLaw:0
+          applyFromDoubleNegationLaw:0
+          applyFromDistributiveLaw:0
+          applyFromDeMorgan:0
+          applyFromAbsorptionLaw:0
+          applyWhereTautologyLaw:0
+          applyWhereDoubleNegationLaw:0
+          applyWhereDistributiveLaw:0
+          applyWhereDeMorgan:0
+          applyWhereAbsorptionLaw:0
+          applyGroupbyTautologyLaw:0
+          applyGroupbyDoubleNegationLaw:0
+          applyGroupbyDistributiveLaw:0
+          applyGroupbyDeMorgan:0
+          applyGroupbyAbsorptionLaw:0
+          applyHavingTautologyLaw:0
+          applyHavingDoubleNegationLaw:0
+          applyHavingDistributiveLaw:0
+          applyHavingDeMorgan:0
+          applyHavingAbsorptionLaw:0
+          applyOrderbyTautologyLaw:0
+          applyOrderbyDoubleNegationLaw:0
+          applyOrderbyDistributiveLaw:0
+          applyOrderbyDeMorgan:0
+          applyOrderbyAbsorptionLaw:0
+          moveInnerJoinConditionToWhere:0
+          moveWhereToInnerJoinCondition:0
+          expandAsterisk:0
+          collapseAsterisk:0
+          `;
+          const config = config_atomic + config_horizontal + config_shortcut;
+
+          // schema based on the database for the exercises
+          /*const schema = `
+          students ( _student_id_, first_name, last_name, degree_program, graduation_year )
+          graduationCeremonies ( _ceremony_id_, date, location, note )
+          invitations ( _invitation_id_, _student_id [Students]_, ceremony_id [GraduationCeremonies], rsvp )
+          programItems ( _item_id_, ceremony_id [GraduationCeremonies], title, start_time, duration_minutes )
+          sponsors ( _sponsor_id_, name, amount )
+          `;*/
+
+          // (SQLZoo) schema based on the database for the exercises
+          const schema_buses = `
+          stops ( _id_, name )
+          route ( _num_, _company_, _pos_, stop [stops] )
+          `;
+
+          const schema_euro = `
+          eteam ( _id_, teamname, coach )
+          game ( _id_, mdate, stadium, team1 [eteam], team2 [eteam] )
+          goal ( _matchid [game]_, teamid [eteam], player, _gtime_ )
+          `;
+
+          const schema_movie = `
+          actor ( _id_, name )
+          casting ( _movieid [movie]_, _actorid [actor]_, _ord_ )
+          movie ( _id_, title, yr, director [actor], budget, gross )
+          `;
+          
+          const schema_teachers = `
+          teacher ( _id_, dept [dept], name, phone, mobile )
+          dept ( _id_, name )
+          `;
+
+          const schema_world = `
+          world ( _name_, continent, area, population, gdp, capital, tld, flag )
+          `;
+
+          const schemaByEndpoint = {
+            World: schema_world,
+            Movie: schema_movie,
+            Euro: schema_euro,
+            Teachers: schema_teachers,
+            Buses: schema_buses,
+          };
+
+          const schema = schemaByEndpoint[endpoint];
+          if (!schema) {
+            return res.status(400).json({ error: `Unknown endpoint for schema: ${endpoint}` });
+          }
+        
+          try {
+            console.log(`calculating...`);
+            console.time();
+            // Distance: sum of edit step costs
+            const maxDistance = Number(maxPoints_SQL);
+            //console.log("maxDistance: ", maxDistance);
+
+            if (maxDistance === 0 || maxDistance === null) {
+              [distance, steps, path] = await
+              sqlQueryDistance.parseAndCalculateDistance(
+                expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
+            } else {
+            [distance, steps, path] = await
+              sqlQueryDistance.parseAndCalculateDistance(
+                expectedSolutionResult.rows[0].solution_query, execQuery, schema, config, maxDistance);
+            }
+            console.timeEnd();
+
+            queryFeedback = sqlQueryDistance.stringifyDistance(distance, steps, path);
+            //console.log("sqlQueryDistance Feedback:", queryFeedback);
+
+            //console.log("===========================================================");
+            queryFeedback_new = sqlQueryDistance.stringifyDistance_new(distance, steps, path);
+            //console.log("Edited sqlQueryDistance Feedback: ", queryFeedback_new);
+            //console.log("===========================================================");
+
+            //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
+            //console.log("Distance: ", distance);
+            //console.log("Steps: ", JSON.stringify(steps, null, 2));
+            //console.log("Path: ", JSON.stringify(path, null, 2));
+            //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
+
+          } catch (error) {
+            console.error("Error calculating the sqlQueryDistance:", error);
+            queryFeedback_new = "ERROR: " + error.message;
+          }
+
+        // ######### END: SQL Query Distance ##################
+
+
+          const solution = await executeQueryWithTimeout(
+            () => pool2.query(expectedSolutionResult.rows[0].solution_query),
+            50000
+          );
+          // Send both results to the client
+          res.json({
+            userQueryResult: userQueryResult.rows,
+            expectedResult: solution.rows,
+            queryFeedback: queryFeedback,
+            queryFeedback_new: queryFeedback_new,
+            userQuery: execQuery,
+            solutionQuery: expectedSolutionResult.rows[0].solution_query,
+          });
+        }
+
       } catch (error) {
         res.json({
           userQueryResult: userQueryResult.rows,
           expectedResult: "no solution",
+          queryFeedback_new: queryFeedback_new || ""
         });
       }
     } else {
@@ -682,6 +1011,64 @@ app.delete('/api/delete-user/:username', async (req, res) => {
 
 //################# tests ######################################################
 
+
+//################# LLM ######################################################
+app.post('/api/LLMfeedback', async (req, res) => {
+  console.log("-_-_-_-_-_-_-_-_ LLM _-_-_-_-_-_-_-_-")
+  const startTime = Date.now();
+  const { questionData, studentAnswer, correctAnswer, toolFeedback } = req.body;
+
+  //console.log("questionData: ", questionData);
+  //console.log("studentAnswer: ", studentAnswer);
+  //console.log("correctAnswer: ", correctAnswer);
+  //console.log("toolFeedback: ", toolFeedback);
+
+  try {
+    const prompt = ` You are a helpful tutor.
+      Provide clear, constructive feedback that helps the student understand their mistake and how to improve their answer,
+      based on the following information:
+      The exersice questiondata: "${questionData}"
+      The correct sample answer: "${correctAnswer}"
+      The Student Answer: "${studentAnswer}"
+      The generated SQL Feedback: "${toolFeedback}"
+
+      The students have to find the correct query themself, so do provide only a hint in your output without a solution query.
+      Also limit your output to 200 characters.
+      
+      Format it strictly following exact structure, with no additional text, special characters, Markdown, Brackets or deviations
+      and be precise about which table etc is needed in order to understand their mistake and how to improve their answer: 
+      "(1) Learning tip: [learning tip text]",
+      and ensure the actual learning tip appears only after "Learning tip:".
+      If more than one learning tip is really necessary, seperate them with "\n" and increase the number in ( ) with 1,
+      exactly as the following structure:
+      "(1) Learning tip: [learning tip text]\n(2) Learning tip: [learning tip text]".
+
+      Ensure the learning tip(s) are clear, educational, and supportive, but do not stretch them unnaturally.
+      `;
+    const response = await axios.post("http://ollama:11434/api/generate", {
+      model: "gemma3:12b",
+      prompt,
+      stream: false,
+    });
+
+    // Deconstruct llm response to learning tip(s)
+    const result = response.data.response || "No learning tips generated.";
+    const tips_count = (result.match(/:/g) || []).length;
+
+    const generationTime = Date.now() - startTime;
+    console.log(`Learning tip generation took ${generationTime} ms. This ${generationTime / 60000} minutes.`);
+    generationTimeMinutes = generationTime / 60000;
+
+    res.json({
+      learning_tips: result,
+      learning_tips_count: tips_count,
+      LLM_time: generationTimeMinutes + " minutes" });
+
+  } catch (error) {
+    console.error('Error from Ollama:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to get feedback from Ollama' });
+  }
+});
 
 
 

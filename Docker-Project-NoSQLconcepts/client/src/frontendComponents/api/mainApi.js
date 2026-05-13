@@ -42,5 +42,20 @@ export const fetchDbStructure = async (endpoint) => {
 };
 
 
+// LLM API call
+export const fetchLLMFeedback = async (questionData, studentAnswer, correctAnswer, toolFeedback) => {
+  try {
+    const response = await axios.post(`${API_URL}/LLMfeedback`, {
+      questionData,
+      studentAnswer,
+      correctAnswer,
+      toolFeedback,
+    });
 
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching LLM feedback:", error);
+    throw error;
+  }
+};
 

@@ -54,6 +54,7 @@ const ManageExercises = () => {
     maxtime: "",
     hint: "",
     tasknumber: "",
+    maxsql_points: 0,
   });
   const [openFormDialog, setOpenFormDialog] = useState(false);
   const [areaIdFilter, setAreaIdFilter] = useState(""); // New state for area_id filter
@@ -88,6 +89,7 @@ const ManageExercises = () => {
       maxtime: "",
       hint: "",
       tasknumber: "",
+      maxsql_points: 0,
     });
     setOpenFormDialog(true);
     setSelectedArea("");
@@ -124,6 +126,7 @@ const ManageExercises = () => {
       maxtime: "",
       hint: "",
       tasknumber: "",
+      maxsql_points: 0,
     });
   };
 
@@ -392,6 +395,16 @@ if (filteredStatementIds.length > 0) {
             label="Max Time - e.g. '1,5h'"
             name="maxtime"
             value={formValues.maxtime}
+            onChange={handleFormInputChange}
+            style={{ marginBottom: "10px" }}
+          />
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Maximum Points for this task - e.g. '10' or '10.00'"
+            helperText="The number has to be at least 0 and not infinite. You can only use numbers from 0 to 100,00"
+            name="maxsql_points"
+            value={formValues.maxsql_points}
             onChange={handleFormInputChange}
             style={{ marginBottom: "10px" }}
           />
