@@ -204,7 +204,10 @@ const executeQuery = async (query, params, res) => {
     const { rows } = await pool.query(query, params);
     res.json(rows);
   } catch (error) {
-    console.error(error, res);
+    console.error("Index.js executeQuery failed:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
   }
 };
 
@@ -806,15 +809,22 @@ app.post("/api/execute-sql", async (req, res) => {
             // Distance: sum of edit step costs
             const maxDistance = Number(maxPoints_SQL);
             //console.log("maxDistance: ", maxDistance);
+            const hasValidMaxDistance = Number.isFinite(maxDistance) && maxDistance > 0;
 
             if (maxDistance === 0 || maxDistance === null) {
               [distance, steps, path] = await
               sqlQueryDistance.parseAndCalculateDistance(
                 expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
-            } else {
-            [distance, steps, path] = await
+
+            } else if (hasValidMaxDistance) {
+              [distance, steps, path] = await
               sqlQueryDistance.parseAndCalculateDistance(
                 expectedSolutionResult.rows[0].solution_query, execQuery, schema, config, maxDistance);
+
+            } else {
+              [distance, steps, path] = await
+              sqlQueryDistance.parseAndCalculateDistance(
+                expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
             }
             console.timeEnd();
 

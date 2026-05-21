@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS tool.task_statements
     maxtime text COLLATE pg_catalog."default",
     hint text COLLATE pg_catalog."default",
     tasknumber text COLLATE pg_catalog."default",
-    maxsql_points numeric(5,2) DEFAULT 0,
+    maxsql_points numeric(5,2) DEFAULT 10,
     CONSTRAINT task_statements_pkey PRIMARY KEY (statement_id, area_id),
     CONSTRAINT task_statements_area_id_fkey FOREIGN KEY (area_id)
         REFERENCES tool.task_areas (area_id) MATCH SIMPLE
@@ -209,13 +209,13 @@ VALUES
 (2, 3,
  'Zeigen Sie den Namen der Länder an, die eine Bevölkerung von mindestens 200 Millionen haben. 200 Millionen sind 200000000 (8 Nullen).',
  'SELECT name FROM world WHERE population = 64105700',
- 'SELECT name FROM world WHERE population >= 200000000;',
+ 'SELECT name FROM world WHERE population > 200000000 or population = 200000000;',
  'Aufgabe 2',
  '2'), 
 (3, 3,
  'Geben Sie den Namen und das Pro-Kopf-BIP (per capita GDP) der Länder mit einer Bevölkerung von mindestens 200 Millionen an.',
  '',
- 'SELECT name, (gdp / population) FROM world WHERE population >= 200000000',
+ 'SELECT name, (gdp / population) FROM world WHERE population > 200000000 or population = 200000000',
  'Aufgabe 3',
  '3'), 
 (4, 3,
@@ -245,7 +245,7 @@ VALUES
 (8, 3,
  'Exklusives ODER (XOR nicht unterstützt in PostgreSQL). Zeigen Sie die Länder an, die flächenmäßig groß (mehr als 3 Millionen) oder bevölkerungsreich (mehr als 250 Millionen) sind, aber nicht beides. Gebe Name, Bevölkerungsanzahl und Gebiet (area) aus.',
  '',
- 'SELECT name, population, area FROM world WHERE (area > 3000000 AND population <= 250000000) OR (area <= 3000000 AND population > 250000000);',
+ 'SELECT name, population, area FROM world WHERE (area > 3000000 AND (population < 250000000 OR population = 250000000)) OR ((area < 3000000 OR area = 3000000) AND population > 250000000);',
  'Aufgabe 8',
  '8'), 
 (9, 3,
@@ -257,7 +257,7 @@ VALUES
 (10, 3,
  'Zeigen Sie den Namen und das GDP der Länder mit einem GDP von mindestens einer Billion (1000000000000; das sind 12 Nullen) an. Runden Sie diesen Wert auf die nächste 1000.',
  '',
- 'SELECT name, ROUND(gdp / population, -3) as per_capita_gdp FROM world WHERE gdp >= 1000000000000;',
+ 'SELECT name, ROUND(gdp / population, -3) as per_capita_gdp FROM world WHERE gdp > 1000000000000 or gdp = 1000000000000;',
  'Aufgabe 10',
  '10'), 
 (11, 3,
@@ -359,7 +359,7 @@ VALUES
 (4, 5,
  'Wie viele Länder haben eine Fläche von mindestens 1.000.000?',
  '',
- 'SELECT COUNT(area) FROM world WHERE area >= 1000000;',
+ 'SELECT COUNT(area) FROM world WHERE area > 1000000 or area = 1000000;',
  'Aufgabe 4',
  '4'), 
 (5, 5,
@@ -383,7 +383,7 @@ VALUES
 (8, 5,
  'Listen Sie die Kontinente auf, die eine Gesamtbevölkerung von mindestens 100 Millionen haben.',
  '',
- 'SELECT continent FROM world GROUP BY continent HAVING SUM(population) >= 100000000;',
+ 'SELECT continent FROM world GROUP BY continent HAVING SUM(population) > 100000000 or SUM(population) = 100000000;',
  'Aufgabe 8',
  '8'), 
 (1, 6,
@@ -447,12 +447,12 @@ VALUES
       Zeige player, teamid, coach, gtime für alle Tore, die in den ersten 10 Minuten erzielt wurden (gtime<=10)',
  'SELECT player, teamid, gtime
     FROM goal 
-   WHERE gtime<=10',
+   WHERE gtime < 10 OR gtime = 10',
  'SELECT goal.player, goal.teamid, eteam.coach, goal.gtime
       FROM goal
       INNER JOIN eteam
       ON goal.teamid = eteam.id
-      WHERE goal.gtime <= 10;',
+      WHERE goal.gtime < 10 OR goal.gtime = 10;',
  'Aufgabe 5',
  '5'),
 (6, 6,
@@ -741,7 +741,7 @@ VALUES
       FROM casting INNER JOIN actor ON casting.actorid = actor.id
       WHERE casting.ord = 1
       GROUP BY actor.id
-      HAVING COUNT(*) >= 15
+      HAVING COUNT(*) > 15 or COUNT(*) = 15
       ORDER BY actor.name;',
  'Aufgabe 13',
  '13'), 

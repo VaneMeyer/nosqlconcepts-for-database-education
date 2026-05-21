@@ -30,7 +30,6 @@ import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite
 import ImportantMsg from "../components/otherComponents/importantMsg.jsx";
 
 import ResultTable from "../components/exerciseSheetComponents/ResultTable.jsx";
-import { fetchTasksData } from "../api/mainApi.js";
 import { fetchTasksData, fetchLLMFeedback } from "../api/mainApi.js";
 import DbAccordion from "../components/exerciseSheetComponents/dbAccordion.jsx";
 import { sendToExecute } from "../api/queryApi.js";
@@ -447,6 +446,14 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                   <hr></hr>
                   <Typography>{task.hint}</Typography>
                 </Box>
+                <ImportantMsg
+                  message={
+                    <>
+                      If the task includes min or max (e.g. "min 1000 cars"), use '&gt; or =' instead of '&gt;=' for example.
+                    </>
+                  }
+                  type="info"
+                />
                 <Box p={0} aria-labelledby="Input Elements to solve the task">
                   
                     <form>
