@@ -46,7 +46,7 @@ const Item = styled(Paper)(({ theme }) => ({
   overflow: "auto",
 }));
 function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
-  feedback_on = true;
+  //feedback_on = true;
   const getInitialFormData = (taskNumber) => {
     try {
       const stored = localStorage.getItem(`formdata_${area_id}_${taskNumber}`);
@@ -130,7 +130,11 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   const executeQuery = async () => {
     setQueryResult("");
     setShowLLMTip(false);
-    const execQuery = formData.query_text;
+    const execQuery = (formData.query_text || task.default_query || "").trim();
+    if (!execQuery) {
+      setError("Bitte zuerst ein SQL-Query eingeben.");
+      return;
+    }
 
     try {
       const response = await sendToExecute(
@@ -139,6 +143,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
         taskNumber,
         area_id,
         maxPoints_SQL,
+        feedback_on
       );
 
 
@@ -286,6 +291,10 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     setFormData({ ...formData, query_text: newContent });
   };
 
+  function removeMarkers(keyWords) {
+    return (keyWords || "").replace(/\[\[[\s\S]*\]\]/, "").trim();
+  }
+
   function sqlDistanceHandling(queryFeedback_new) {
     let totalDistance = "";
     let noCalculation = "";
@@ -303,7 +312,8 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
 
       feedbackOutput = outputSplitter.map( a => {
         const lines = a.split("\n");
-        const editStep = (lines.shift() || "").trim();
+        const rawEditStep = (lines.shift() || "").trim();
+         const editStep = removeMarkers(rawEditStep);
         let solution = lines.join("\n").trim();
         solution = solution.replace(/,{2,}$/gm, m => m.slice(0,1));
       return { editStep, solution };
@@ -449,7 +459,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                 <ImportantMsg
                   message={
                     <>
-                      If the task includes min or max (e.g. "min 1000 cars"), use '&gt; or =' instead of '&gt;=' for example.
+                      Enthält die Aufgabe ,,mind.'' oder ,,max.'' (z.B. ,,mind. 1000 Autos''), dann verwende zum Beispiel '&gt; or =' anstelle von '&gt;='.
                     </>
                   }
                   type="info"
@@ -543,10 +553,10 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                                 <ImportantMsg
                                   message={
                                     <>
-                                      Your query produces the correct output table! Full points are awarded.
+                                      Deine Abfrage erzeugt die korrekte Ergebnistabelle! Du erhältst die volle Punktzahl.
                                       <br />
-                                      Note that structurally different queries with the same output may still result in edit steps with (not weighted) cost
-                                      when compared to the expected solution.
+                                      Beachte, dass strukturell unterschiedliche Abfragen mit demselben Ergebnis beim Vergleich
+                                      mit der erwarteten Lösung dennoch Bearbeitungsschritte mit ungewichteten Kosten verursachen können.
                                       </>
                                   }
                                   type="success"
@@ -555,11 +565,11 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                           <ImportantMsg
                                 message={
                                   <>
-                                    You can see an overview of the errors below and click any item to view more details.
+                                    Du kannst dir unten eine Übersicht der Fehler ansehen und auf einen Eintrag klicken, um weitere Details anzuzeigen.
                                     <br />
-                                    If an error has 'Cost: 0' then it's a mathematical or logical transformation that does not change the meaning of the SQL query.
-                                    There are some operator types (like <code>LIKE</code>) that cannot be parsed yet,
-                                    so no detailed feedback is available for them at the moment.
+                                    Hat ein Fehler die „Kosten: 0“, handelt es sich um eine mathematische oder logische Umformung, die die Bedeutung der SQL-Abfrage nicht verändert.
+                                    Einige Operatortypen, wie z. B. <code>LIKE</code>, können derzeit noch nicht verarbeitet werden.
+                                    Daher ist für sie momentan kein detailliertes Feedback verfügbar.
                                     </>
                                     }
                                 type="info"
@@ -633,7 +643,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                         </>
                       )}
                       <hr></hr>
-                      {feedback_on && queryResult && (
+                      {feedback_on && (queryResult || error ) && (
                         <>
                         <Typography variant="h6" gutterBottom>
                             LLM learning tip
@@ -641,9 +651,9 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                           <ImportantMsg
                                 message={
                                   <>
-                                    You can click on the button below to get a personalized learning tip based on the exersice description, your solution and the SQL feedback.
+                                    Klicke auf die Button unten, um einen personalisierten Lerntipp auf Grundlage der Aufgabenbeschreibung, deiner Lösung und des SQL-Feedbacks zu erhalten.
                                     <br />
-                                    Note that this functionality is a work in progress and may take some time to respond.
+                                    Bitte beachte, dass sich diese Funktion noch in der Entwicklung befindet und die Antwort einige Zeit dauern kann.
                                   </>
                                   }
                                 type="info"

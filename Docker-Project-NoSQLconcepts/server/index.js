@@ -11,6 +11,7 @@ const mainQueries = require("./queries/mainQueries");
 const adminQueries = require("./queries/adminQueries");
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
+//const axios = require("axios");
 
 
 require("dotenv").config();
@@ -504,7 +505,13 @@ const executeQueryWithTimeout = (queryFunction, timeout) => {
 // Execute SQL queries
 // check if query is equal to the expected solution
 app.post("/api/execute-sql", async (req, res) => {
-  const { endpoint, execQuery, taskNumber, taskAreaId, maxPoints_SQL } = req.body;
+  const { endpoint, execQuery, taskNumber, taskAreaId, maxPoints_SQL, feedback_on } = req.body;
+
+  const isFeedbackOn =
+    feedback_on === true ||
+    feedback_on === "true" ||
+    feedback_on === 1 ||
+    feedback_on === "1";
   
 
   try {
@@ -803,55 +810,78 @@ app.post("/api/execute-sql", async (req, res) => {
             return res.status(400).json({ error: `Unknown endpoint for schema: ${endpoint}` });
           }
         
-          try {
-            console.log(`calculating...`);
-            console.time();
-            // Distance: sum of edit step costs
-            const maxDistance = Number(maxPoints_SQL);
-            //console.log("maxDistance: ", maxDistance);
-            const hasValidMaxDistance = Number.isFinite(maxDistance) && maxDistance > 0;
+          
+          if (isFeedbackOn) {
+            try {
+              console.log(`calculating...`);
+              console.time();
+              // Distance: sum of edit step costs
+              const maxDistance = Number(maxPoints_SQL);
+              //console.log("maxDistance: ", maxDistance);
+              const hasValidMaxDistance = Number.isFinite(maxDistance) && maxDistance > 0;
 
-            if (maxDistance === 0 || maxDistance === null) {
-              [distance, steps, path] = await
-              sqlQueryDistance.parseAndCalculateDistance(
-                expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
+              if (maxDistance === 0 || maxDistance === null) {
+                [distance, steps, path] = await
+                sqlQueryDistance.parseAndCalculateDistance(
+                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
 
-            } else if (hasValidMaxDistance) {
-              [distance, steps, path] = await
-              sqlQueryDistance.parseAndCalculateDistance(
-                expectedSolutionResult.rows[0].solution_query, execQuery, schema, config, maxDistance);
+              } else if (hasValidMaxDistance) {
+                [distance, steps, path] = await
+                sqlQueryDistance.parseAndCalculateDistance(
+                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config, maxDistance);
 
-            } else {
-              [distance, steps, path] = await
-              sqlQueryDistance.parseAndCalculateDistance(
-                expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
+              } else {
+                [distance, steps, path] = await
+                sqlQueryDistance.parseAndCalculateDistance(
+                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
+              }
+
+
+              /*if (maxDistance === 0 || maxDistance === null) {
+                [distance, steps, path] = await
+                sqlQueryDistance.parseAndCalculateDistance(
+                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
+              } else {
+
+                if (hasValidMaxDistance) {
+                  [distance, steps, path] = await
+                  sqlQueryDistance.parseAndCalculateDistance(
+                    expectedSolutionResult.rows[0].solution_query, execQuery, schema, config, maxDistance);
+
+                } else {
+                  [distance, steps, path] = await
+                  sqlQueryDistance.parseAndCalculateDistance(
+                    expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
+                }
+              }*/
+
+              console.timeEnd();
+
+              queryFeedback = sqlQueryDistance.stringifyDistance(distance, steps, path);
+              //console.log("sqlQueryDistance Feedback:", queryFeedback);
+
+              //console.log("===========================================================");
+              queryFeedback_new = sqlQueryDistance.stringifyDistance_new(distance, steps, path);
+              //console.log("Edited sqlQueryDistance Feedback: ", queryFeedback_new);
+              //console.log("===========================================================");
+
+              //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
+              //console.log("Distance: ", distance);
+              //console.log("Steps: ", JSON.stringify(steps, null, 2));
+              //console.log("Path: ", JSON.stringify(path, null, 2));
+              //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
+
+            } catch (error) {
+              console.error("Error calculating the sqlQueryDistance:", error);
+              queryFeedback_new = "ERROR: " + error.message;
             }
-            console.timeEnd();
-
-            queryFeedback = sqlQueryDistance.stringifyDistance(distance, steps, path);
-            //console.log("sqlQueryDistance Feedback:", queryFeedback);
-
-            //console.log("===========================================================");
-            queryFeedback_new = sqlQueryDistance.stringifyDistance_new(distance, steps, path);
-            //console.log("Edited sqlQueryDistance Feedback: ", queryFeedback_new);
-            //console.log("===========================================================");
-
-            //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
-            //console.log("Distance: ", distance);
-            //console.log("Steps: ", JSON.stringify(steps, null, 2));
-            //console.log("Path: ", JSON.stringify(path, null, 2));
-            //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
-
-          } catch (error) {
-            console.error("Error calculating the sqlQueryDistance:", error);
-            queryFeedback_new = "ERROR: " + error.message;
           }
 
         // ######### END: SQL Query Distance ##################
 
-
+          const solutionPool = endpoint === "World" ? pool2 : endpoint === "Movie" ? pool3 : endpoint === "Euro" ? pool4 : endpoint === "Teachers" ? pool5 : pool6;
           const solution = await executeQueryWithTimeout(
-            () => pool2.query(expectedSolutionResult.rows[0].solution_query),
+            () => solutionPool.query(expectedSolutionResult.rows[0].solution_query),
             50000
           );
           // Send both results to the client

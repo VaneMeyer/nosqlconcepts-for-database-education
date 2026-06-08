@@ -566,7 +566,7 @@ function diff(a, b) {
 
 function stringifyDistance_new(distance, steps = null, path = null) {
     if (distance == Infinity)
-        return `Destination could not be reached within the maximum distance.`;
+        return `Die Ziellösung konnte innerhalb der maximalen Distanz nicht erreicht werden.`;
     // let result = `Total Distance: ${distance}\n`;
     let diffElement = "";
     let diffElement_before = "";
@@ -592,97 +592,97 @@ function stringifyDistance_new(distance, steps = null, path = null) {
                     diffElement_before = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
                     diffElement_after = diff(stringifyQuery(path[i+1]), stringifyQuery(path[i]))
                     if (diffElement_after === "") {
-                        newOrder += `\n\nThe following is excess: '${diffElement_before}'.`;
+                        newOrder += `\n\nFolgendes wird für die Lösung nicht benötigt: '${diffElement_before}'.`;
                     } else {
-                        newOrder += `\n\nThe following is not needed: '${diffElement_before}'. It needs to be changed to: '${diffElement_after}'`;
+                        newOrder += `\n\nFolgendes wird für die Lösung nicht benötigt: '${diffElement_before}'. Es muss geändert werden zu: '${diffElement_after}'`;
                     }
 
                 } else if (stringifyEdit(steps[i]).includes("excess")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe following is not needed: '${diffElement}'.`;
+                    newOrder += `\n\nFolgendes wird für die Lösung nicht benötigt: '${diffElement}'.`;
 
                 } else if (stringifyEdit(steps[i]).includes("Set (missing)")) {
                     diffElement_before = diff(stringifyQuery(path[i+1]), stringifyQuery(path[i]));
                     diffElement_after = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
                     if (diffElement_after === "") {
-                        newOrder += `\n\nThe following is missing: '${diffElement_before}'.`;
+                        newOrder += `\n\nFolgendes fehlt: '${diffElement_before}'.`;
                     } else {
-                        newOrder += `\n\nThe following is missing: '${diffElement_before}'. It needs to be changed to: '${diffElement_after}'`;
+                        newOrder += `\n\nFolgendes fehlt: '${diffElement_before}'. Es muss geändert werden zu: '${diffElement_after}'`;
                     }
                     
                 } else if (stringifyEdit(steps[i]).includes("missing")) {
                     diffElement = diff(stringifyQuery(path[i+1]), stringifyQuery(path[i]));
-                    newOrder += `\n\nThe following is missing:'${diffElement}'`;
+                    newOrder += `\n\nFolgendes fehlt:'${diffElement}'`;
                 
                 // -------------------- horizontalEdits --------------------
                 } else if (stringifyEdit(steps[i]).includes("Swap arguments of")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe following arguments need to be swapped: '${diffElement}'`;
+                    newOrder += `\n\nDie folgenden Argumente müssen vertauscht werden: '${diffElement}'`;
                 
                 } else if (stringifyEdit(steps[i]).includes("Swap nesting of")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe following nesting needs to be swapped: '${diffElement}'`;
+                    newOrder += `\n\nDie folgende Verschachtelung muss vertauscht werden: '${diffElement}'`;
                     
                 } else if (stringifyEdit(steps[i]).includes("Mirror")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe following needs to be mirrored: '${diffElement}'`;
+                    newOrder += `\n\nFolgendes muss umgekehrt formuliert werden: '${diffElement}'`;
                 
                 } else if (stringifyEdit(steps[i]).includes("Swap elements")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe following elements need to be swapped: '${diffElement}'`;
+                    newOrder += `\n\nDie folgenden Elemente müssen vertauscht werden: '${diffElement}'`;
 
                 } else if (stringifyEdit(steps[i]).includes("Change positions")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe following needs to change positions: '${diffElement}'`;
+                    newOrder += `\n\nFolgendes muss an eine andere Position verschoben werden: '${diffElement}'`;
                 
                 } else if (stringifyEdit(steps[i]).includes("Change (incorrect)")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe following incorrect value needs to be changed: '${diffElement}'`;
+                    newOrder += `\n\nDer folgende falsche Wert muss geändert werden: '${diffElement}'`;
 
                 // -------------------- shortcutEdits --------------------
                 } else if (stringifyEdit(steps[i]).includes("tautology law")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe redundant condition '${diffElement}' can be removed.`;
+                    newOrder += `\n\nDie redundante Bedingung '${diffElement}' kann entfernt werden.`;
                 
                 } else if (stringifyEdit(steps[i]).includes("double negation law")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nThe double negation '${diffElement}' can be simplified.`;
+                    newOrder += `\n\nDie doppelte Verneinung '${diffElement}' kann vereinfacht werden.`;
                 
                 } else if (stringifyEdit(steps[i]).includes("distributive law")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nRewrite '${diffElement}' using the distributive law.`;
+                    newOrder += `\n\nForme '${diffElement}' mithilfe des Distributivgesetzes um.`;
 
                 } else if (stringifyEdit(steps[i]).includes("De Morgan's law")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nApply De Morgan's law to: '${diffElement}'`;
+                    newOrder += `\n\nWende die De-Morgan-Regel auf Folgendes an: '${diffElement}'`;
                 
                 } else if (stringifyEdit(steps[i]).includes("absorption law")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\n'${diffElement}' contains a redundant part. Use the absorption law to reduce it.`;
+                    newOrder += `\n\n'${diffElement}' enthält einen redundanten Teil. Vereinfache den Ausdruck mithilfe des Absorptionsgesetzes.`;
 
                 } else if (stringifyEdit(steps[i]).includes("Move the join-condition")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nMove the join condition '${diffElement}' into the WHERE-clause.`;
+                    newOrder += `\n\nVerschiebe die Join-Bedingung '${diffElement}' in die WHERE-Klausel.`;
                 
                 } else if (stringifyEdit(steps[i]).includes("Move expression from")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nMove '${diffElement}' from the WHERE-clause into the join-condition of an INNER JOIN.`;
+                    newOrder += `\n\nVerschiebe '${diffElement}' aus der WHERE-Klausel in die Join-Bedingung eines INNER JOINs.`;
 
                 } else if (stringifyEdit(steps[i]).includes("Replace an asterisk with")) {
                     diffElement = diff(stringifyQuery(path[i+1]), stringifyQuery(path[i]));
-                    newOrder += `\n\nReplace an asterisk with all the column names in the table, which are:\n '${diffElement}'.`;
+                    newOrder += `\n\nErsetze den Asterisk (*) durch alle Spaltennamen der Tabelle: \n '${diffElement}'.`;
 
                 } else if (stringifyEdit(steps[i]).includes("Replace a number of expressions")) {
                     diffElement = diff(stringifyQuery(path[i]), stringifyQuery(path[i+1]));
-                    newOrder += `\n\nReplace these expressions: '${diffElement}' with an asterisk.`;
+                    newOrder += `\n\nErsetze die Ausdrücke: '${diffElement}' durch einen Asterisk (*).`;
 
                 // -------------------- No Match --------------------
                 } else {
-                    newOrder += `\n\nNo Match has been found.`;
+                    newOrder += `\n\nEs wurde keine Übereinstimmung gefunden.`;
                 }
                     
             } else {
-                newOrder += `\n\nError`;
+                newOrder += `\n\nFehler`;
             }    
             
         }

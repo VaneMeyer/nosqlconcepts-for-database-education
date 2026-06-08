@@ -133,7 +133,7 @@ function mirrorInequation(x, context) {
 // === SELECT ===
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapSelectElements",
-    description: "Swap elements in the select-clause",
+    description: "Elemente in der SELECT-Klausel vertauschen. [[Swap elements]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         if (query.selectLength < 2)
@@ -167,7 +167,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectAsteriskTable",
-    description: "Change (incorrect) table name on an asterisk in a select-element expression",
+    description: "Falschen Tabellennamen für einen Asterisk in einem Select-Element-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setSelectAsteriskTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, changeAsteriskTable, meta.select.length, 1);
@@ -175,7 +175,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectColumnReferenceColumn",
-    description: "Change (incorrect) column-reference column in a select-element expression",
+    description: "Falsche Spalte in einer Spaltenreferenz eines Select-Element-Ausdrucks ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addSelectColumnReference").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, changeColumnReferenceColumn(meta.select.columns, schema), meta.select.length, meta.select.columnReferenceHeight);
@@ -183,7 +183,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectColumnReferenceTable",
-    description: "Change (incorrect) column-reference table in a select-element expression",
+    description: "Falsche Tabelle in einer Spaltenreferenz eines Select-Element-Ausdrucks ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setSelectColumnReferenceTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, changeColumnReferenceTable, meta.select.length, meta.select.columnReferenceHeight);
@@ -191,7 +191,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectLiteralValue",
-    description: "Change (incorrect) literal value in a select-element expression",
+    description: "Falschen Literalwert in einem Select-Element-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addSelectLiteral").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, changeLiteralValue(meta.select.literals), meta.select.length, meta.select.literalHeight);
@@ -199,7 +199,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectAggregationFunctionAggregation",
-    description: "Change (incorrect) aggregation-function aggregation in a select-element expression",
+    description: "Falsche Aggregationsfunktion in einem Select-Element-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addSelectAggregationFunction").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, changeAggregationFunctionAggregation(meta.select.aggregations), meta.select.length, meta.select.aggregationHeight);
@@ -207,7 +207,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectBinaryExpressionOperator",
-    description: "Change (incorrect) binary-expression operator in a select-element expression",
+    description: "Falschen Operator in einem binären Ausdruck eines Select-Element-Ausdrucks ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addSelectBinaryExpression").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, changeBaseBinaryExpressionOperator, meta.select.length, meta.select.binaryExpressionHeight);
@@ -215,7 +215,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapSelectBinaryExpressionArguments",
-    description: "Swap arguments of commutative binary-expression in a select-element expression",
+    description: "Argumente eines kommutativen binären Ausdrucks in einem Select-Element-Ausdruck vertauschen. [[Swap arguments of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, swapCommutativeArguments, meta.select.length, meta.select.binaryExpressionHeight);
@@ -223,7 +223,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapSelectBinaryExpressionNesting",
-    description: "Swap nesting of associative binary-expression in a select-element expression",
+    description: "Verschachtelung eines assoziativen binären Ausdrucks in einem Select-Element-Ausdruck vertauschen. [[Swap nesting of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, swapAssociativeNesting, meta.select.length, meta.select.binaryExpressionHeight, meta.select);
@@ -231,7 +231,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "mirrorSelectBinaryExpressionInequation",
-    description: "Mirror an inequation in a select-element expression",
+    description: "Ungleichung in einem Select-Element-Ausdruck umkehren. [[Mirror]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, mirrorInequation, meta.select.length, meta.select.binaryExpressionHeight);
@@ -239,7 +239,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectAlias",
-    description: "Change (incorrect) explicit alias on a select-element",
+    description: "Falschen expliziten Alias eines Select-Elements ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setSelectAlias").cost,
     perform: (query, _schema, meta, result) => {
         if (!meta.select.as.length)
@@ -260,7 +260,7 @@ function mirrorInequation(x, context) {
 // === FROM ===
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapFromElements",
-    description: "Swap elements in the from-clause",
+    description: "Elemente in der FROM-Klausel vertauschen. [[Swap elements]]",
     cost: 0,
     perform: (query, _schema, _meta, result) => {
         //TODO: further research needed about when swapping from elements is equivalence transform
@@ -285,7 +285,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeFromJoinType",
-    description: "Change (incorrect) from-element join-type",
+    description: "Falschen Join-Typ eines FROM-Elements ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setTableJoinType").cost,
     perform: (query, _schema, meta, result) => {
         if (!meta.from.join)
@@ -305,7 +305,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeFromColumnReferenceColumn",
-    description: "Change (incorrect) column-reference column in a from-element join-condition",
+    description: "Falsche Spalte in einer Spaltenreferenz der Join-Bedingung eines FROM-Elements ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addFromColumnReference").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, changeColumnReferenceColumn(meta.from.columns, schema), meta.from.columnReferenceHeight);
@@ -313,7 +313,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeFromColumnReferenceTable",
-    description: "Change (incorrect) column-reference table in a from-element join-condition",
+    description: "Falsche Tabelle in einer Spaltenreferenz der Join-Bedingung eines FROM-Elements ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setFromColumnReferenceTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, changeColumnReferenceTable, meta.from.columnReferenceHeight);
@@ -321,7 +321,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeFromLiteralValue",
-    description: "Change (incorrect) literal value in a from-element join-condition",
+    description: "Falschen Literalwert in der Join-Bedingung eines FROM-Elements ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addFromLiteral").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, changeLiteralValue(meta.from.literals), meta.from.literalHeight);
@@ -329,7 +329,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeFromBinaryExpressionOperator",
-    description: "Change (incorrect) binary-expression operator in a from-element join-condition",
+    description: "Falschen Operator in einem binären Ausdruck der Join-Bedingung eines FROM-Elements ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addFromBinaryExpression").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, changeBaseBinaryExpressionOperator, meta.from.binaryExpressionHeight);
@@ -337,7 +337,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapFromBinaryExpressionArguments",
-    description: "Swap arguments of commutative binary-expression in a from-element join-condition",
+    description: "Argumente eines kommutativen binären Ausdrucks in der Join-Bedingung eines FROM-Elements vertauschen. [[Swap arguments of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, swapCommutativeArguments, meta.from.binaryExpressionHeight);
@@ -345,7 +345,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapFromBinaryExpressionNesting",
-    description: "Swap nesting of associative binary-expression in a from-element join-condition",
+    description: "Verschachtelung eines assoziativen binären Ausdrucks in der Join-Bedingung eines FROM-Elements vertauschen. [[Swap nesting of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, swapAssociativeNesting, meta.from.binaryExpressionHeight, false, false, meta.from);
@@ -353,7 +353,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "mirrorFromBinaryExpressionInequation",
-    description: "Mirror an inequation in a from-element join-condition",
+    description: "Seiten eines Vergleichs in der Join-Bedingung eines FROM-Elements vertauschen. [[Mirror]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, mirrorInequation, meta.from.binaryExpressionHeight);
@@ -361,7 +361,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeFromAlias",
-    description: "Change (incorrect) explicit alias on a from-element",
+    description: "Falschen expliziten Alias eines FROM-Elements ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setSelectAlias").cost,
     perform: (query, schema, _meta, result) => {
         for (let f = 0; f < query.fromLength; ++f) {
@@ -386,7 +386,7 @@ function mirrorInequation(x, context) {
 // === WHERE ===
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeWhereColumnReferenceColumn",
-    description: "Change (incorrect) column-reference column in the where-clause",
+    description: "Falsche Spalte in einer Spaltenreferenz der WHERE-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addWhereColumnReference").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, changeColumnReferenceColumn(meta.where.columns, schema), meta.where.columnReferenceHeight);
@@ -394,7 +394,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeWhereColumnReferenceTable",
-    description: "Change (incorrect) column-reference table in the where-clause",
+    description: "Falsche Tabelle in einer Spaltenreferenz der WHERE-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setWhereColumnReferenceTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, changeColumnReferenceTable, meta.where.columnReferenceHeight);
@@ -402,7 +402,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeWhereLiteralValue",
-    description: "Change (incorrect) literal value in the where-clause",
+    description: "Falschen Literalwert in der WHERE-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addWhereLiteral").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, changeLiteralValue(meta.where.literals), meta.where.literalHeight);
@@ -410,7 +410,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeWhereBinaryExpressionOperator",
-    description: "Change (incorrect) binary-expression operator in the where-clause",
+    description: "Falschen Operator in einem binären Ausdruck der WHERE-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addWhereBinaryExpression").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, changeBaseBinaryExpressionOperator, meta.where.binaryExpressionHeight);
@@ -418,7 +418,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapWhereBinaryExpressionArguments",
-    description: "Swap arguments of commutative binary-expression in the where-clause",
+    description: "Argumente eines kommutativen binären Ausdrucks in der WHERE-Klausel vertauschen. [[Swap arguments of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, swapCommutativeArguments, meta.where.binaryExpressionHeight);
@@ -426,7 +426,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapWhereBinaryExpressionNesting",
-    description: "Swap nesting of associative binary-expression in the where-clause",
+    description: "Verschachtelung eines assoziativen binären Ausdrucks in der WHERE-Klausel vertauschen. [[Swap nesting of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, swapAssociativeNesting, meta.where.binaryExpressionHeight, meta.where);
@@ -434,7 +434,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "mirrorWhereBinaryExpressionInequation",
-    description: "Mirror an inequation in the where-clause",
+    description: "Seiten eines Vergleichs in der WHERE-Klausel vertauschen. [[Mirror]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, mirrorInequation, meta.where.binaryExpressionHeight);
@@ -443,7 +443,7 @@ function mirrorInequation(x, context) {
 // === GROUP BY ===
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapGroupbyElements",
-    description: "Swap elements in the group-by-clause",
+    description: "Elemente in der GROUP-BY-Klausel vertauschen. [[Swap elements]]",
     cost: 0,
     perform: (query, _schema, _meta, result) => {
         if (query.groupbyLength < 2)
@@ -463,7 +463,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeGroupbyColumnReferenceColumn",
-    description: "Change (incorrect) column-reference column in a group-by expression",
+    description: "Falsche Spalte in einer Spaltenreferenz eines GROUP-BY-Ausdrucks ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addGroupbyColumnReference").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, changeColumnReferenceColumn(meta.groupby.columns, schema), meta.groupby.columnReferenceHeight);
@@ -471,7 +471,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeGroupbyColumnReferenceTable",
-    description: "Change (incorrect) column-reference table in a group-by expression",
+    description: "Falsche Tabelle in einer Spaltenreferenz eines GROUP-BY-Ausdrucks ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setGroupbyColumnReferenceTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, changeColumnReferenceTable, meta.groupby.columnReferenceHeight);
@@ -479,7 +479,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeGroupbyLiteralValue",
-    description: "Change (incorrect) literal value in a group-by expression",
+    description: "Falschen Literalwert in einem GROUP-BY-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addGroupbyLiteral").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, changeLiteralValue(meta.groupby.literals), meta.groupby.literalHeight);
@@ -487,7 +487,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeGroupbyBinaryExpressionOperator",
-    description: "Change (incorrect) binary-expression operator in a group-by expression",
+    description: "Falschen Operator in einem binären Ausdruck eines GROUP-BY-Ausdrucks ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addGroupbyBinaryExpression").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, changeBaseBinaryExpressionOperator, meta.groupby.binaryExpressionHeight);
@@ -495,7 +495,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapGroupbyBinaryExpressionArguments",
-    description: "Swap arguments of commutative binary-expression in a group-by expression",
+    description: "Argumente eines kommutativen binären Ausdrucks in einem GROUP-BY-Ausdruck vertauschen. [[Swap arguments of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, swapCommutativeArguments, meta.groupby.binaryExpressionHeight);
@@ -503,7 +503,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapGroupbyBinaryExpressionNesting",
-    description: "Swap nesting of associative binary-expression in a group-by expression",
+    description: "Verschachtelung eines assoziativen binären Ausdrucks in einem GROUP-BY-Ausdruck vertauschen. [[Swap nesting of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, swapAssociativeNesting, meta.groupby.binaryExpressionHeight, meta.groupby);
@@ -511,7 +511,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "mirrorGroupbyBinaryExpressionInequation",
-    description: "Mirror an inequation in a group-by expression",
+    description: "Ungleichung in einem GROUP-BY-Ausdruck spiegeln. [[Mirror]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, mirrorInequation, meta.groupby.binaryExpressionHeight);
@@ -520,7 +520,7 @@ function mirrorInequation(x, context) {
 // === Having ===
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeHavingColumnReferenceColumn",
-    description: "Change (incorrect) column-reference column in the having-clause",
+    description: "Falsch referenzierte Spalte in der HAVING-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addHavingColumnReference").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, changeColumnReferenceColumn(meta.having.columns, schema), meta.having.columnReferenceHeight);
@@ -528,7 +528,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeHavingColumnReferenceTable",
-    description: "Change (incorrect) column-reference table in the having-clause",
+    description: "Falsch referenzierte Tabelle in der HAVING-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setHavingColumnReferenceTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, changeColumnReferenceTable, meta.having.columnReferenceHeight);
@@ -536,7 +536,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeHavingLiteralValue",
-    description: "Change (incorrect) literal value in the having-clause",
+    description: "Falschen Literalwert in der HAVING-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addHavingLiteral").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, changeLiteralValue(meta.having.literals), meta.having.literalHeight);
@@ -544,7 +544,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeHavingAggregationFunctionAggregation",
-    description: "Change (incorrect) aggregation-function aggregation in the having-clause",
+    description: "Falsche Aggregationsfunktion in der HAVING-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addHavingAggregationFunction").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, changeAggregationFunctionAggregation(meta.having.aggregations), meta.having.aggregationHeight);
@@ -552,7 +552,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeHavingBinaryExpressionOperator",
-    description: "Change (incorrect) binary-expression operator in the having-clause",
+    description: "Falschen Operator in einem binären Ausdruck der HAVING-Klausel ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addHavingBinaryExpression").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, changeBaseBinaryExpressionOperator, meta.having.binaryExpressionHeight);
@@ -560,7 +560,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapHavingBinaryExpressionArguments",
-    description: "Swap arguments of commutative binary-expression in the having-clause",
+    description: "Argumente eines kommutativen binären Ausdrucks in der HAVING-Klausel vertauschen. [[Swap arguments of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, swapCommutativeArguments, meta.having.binaryExpressionHeight);
@@ -568,7 +568,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapHavingBinaryExpressionNesting",
-    description: "Swap nesting of associative binary-expression in the having-clause",
+    description: "Verschachtelung eines assoziativen binären Ausdrucks in der HAVING-Klausel vertauschen. [[Swap nesting of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, swapAssociativeNesting, meta.having.binaryExpressionHeight, meta.having);
@@ -576,7 +576,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "mirrorHavingBinaryExpressionInequation",
-    description: "Mirror an inequation in the having-clause",
+    description: "Ungleichung in der HAVING-Klausel spiegeln. [[Mirror]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, mirrorInequation, meta.having.binaryExpressionHeight);
@@ -585,7 +585,7 @@ function mirrorInequation(x, context) {
 // === Order By ===
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeOrderbyElements",
-    description: "Change position of elements in the order-by-clause",
+    description: "Position der Elemente in der ORDER-BY-Klausel ändern. [[Change positions]]",
     cost: atomicEdits_1.atomicEdits.get("addOrderbyElement").cost,
     perform: (query, _schema, _meta, result) => {
         if (query.orderbyLength < 2)
@@ -605,7 +605,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeOrderbyColumnReferenceColumn",
-    description: "Change (incorrect) column-reference column in a order-by expression",
+    description: "Falsch referenzierte Spalte in einem ORDER-BY-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addOrderbyColumnReference").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, changeColumnReferenceColumn(meta.orderby.columns, schema), meta.orderby.columnReferenceHeight);
@@ -613,7 +613,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeOrderbyColumnReferenceTable",
-    description: "Change (incorrect) column-reference table in a order-by expression",
+    description: "Falsch referenzierte Tabelle in einem ORDER-BY-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setOrderbyColumnReferenceTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, changeColumnReferenceTable, meta.orderby.columnReferenceHeight);
@@ -621,7 +621,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeOrderbyLiteralValue",
-    description: "Change (incorrect) literal value in a order-by expression",
+    description: "Falschen Literalwert in einem ORDER-BY-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addOrderbyLiteral").cost,
     perform: (query, schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, changeLiteralValue(meta.orderby.literals), meta.orderby.literalHeight);
@@ -629,7 +629,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeOrderbyAggregationFunctionAggregation",
-    description: "Change (incorrect) aggregation-function aggregation in a order-by expression",
+    description: "Falsche Aggregationsfunktion in einem ORDER-BY-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addOrderbyAggregationFunction").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, changeAggregationFunctionAggregation(meta.orderby.aggregations), meta.orderby.aggregationHeight);
@@ -637,7 +637,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeOrderbyBinaryExpressionOperator",
-    description: "Change (incorrect) binary-expression operator in a order-by expression",
+    description: "Falschen Operator in einem binären Ausdruck eines ORDER-BY-Ausdrucks ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("addOrderbyBinaryExpression").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, changeBaseBinaryExpressionOperator, meta.orderby.binaryExpressionHeight);
@@ -645,7 +645,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapOrderbyBinaryExpressionArguments",
-    description: "Swap arguments of commutative binary-expression in a order-by expression",
+    description: "Argumente eines kommutativen binären Ausdrucks in einem ORDER-BY-Ausdruck vertauschen. [[Swap arguments of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, swapCommutativeArguments, meta.orderby.binaryExpressionHeight);
@@ -653,7 +653,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "swapOrderbyBinaryExpressionNesting",
-    description: "Swap nesting of associative binary-expression in a order-by expression",
+    description: "Verschachtelung eines assoziativen binären Ausdrucks in einem ORDER-BY-Ausdruck vertauschen. [[Swap nesting of]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, swapAssociativeNesting, meta.orderby.binaryExpressionHeight, meta.orderby);
@@ -661,7 +661,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "mirrorOrderbyBinaryExpressionInequation",
-    description: "Mirror an inequation in a order-by expression",
+    description: "Ungleichung in einem ORDER-BY-Ausdruck spiegeln. [[Mirror]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, mirrorInequation, meta.orderby.binaryExpressionHeight);

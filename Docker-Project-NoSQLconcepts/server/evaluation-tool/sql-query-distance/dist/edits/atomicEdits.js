@@ -121,7 +121,7 @@ function removeBinaryExpression(x) {
 // === DISTINCT ===
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setDistinct",
-    description: "Set (missing) distinct-declaration",
+    description: "Fehlende Distinct-Deklaration hinzufügen. [[Set (missing)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         if (!meta.distinct || query.distinct == true)
@@ -131,7 +131,7 @@ function removeBinaryExpression(x) {
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetDistinct",
-    description: "Unset (excess) distinct-declaration",
+    description: "Überflüssige Distinct-Deklaration entfernen. [[Unset (excess)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         if (meta.distinct || query.distinct == false)
@@ -154,7 +154,7 @@ function replaceSelectExpression(query, result, multimap, selectLength, recursio
 exports.replaceSelectExpression = replaceSelectExpression;
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectElement",
-    description: "Add (missing) element in select-clause",
+    description: "Fehlendes Element zur SELECT-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, schema, meta, result) => {
         if ((new sql_1.SelectMetaInfo(query, schema).length >= Math.max(meta.select.length, 1))
@@ -167,7 +167,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectElement",
-    description: "Remove (excess) element in select-clause",
+    description: "Überflüssiges Element aus der SELECT-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         for (let s = 0; s < query.selectLength; ++s) {
@@ -177,7 +177,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectAsterisk",
-    description: "Add (missing) asterisk-selection to a select-element expression",
+    description: "Fehlende Asterisk-Auswahl zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         if (!meta.select.asterisk)
@@ -187,7 +187,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectAsterisk",
-    description: "Remove (excess) asterisk-selection from a select-element expression",
+    description: "Überflüssige Asterisk-Auswahl aus einem Select-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, removeAsterisk, meta.select.length, Infinity);
@@ -195,7 +195,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setSelectAsteriskTable",
-    description: "Set (missing) table name on an asterisk in a select-element expression",
+    description: "Fehlenden Tabellennamen für einen Asterisk in einem Select-Element-Ausdruck hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, setAsteriskTable, meta.select.length, meta.select.asterisk ? 1 : 0);
@@ -203,7 +203,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetSelectAsteriskTable",
-    description: "Unset (excess) table name on an asterisk in a select-element expression",
+    description: "Überflüssigen Tabellennamen vor einem Asterisk in einem Select-Element-Ausdruck entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, unsetAsteriskTable, meta.select.length, meta.select.asterisk ? 1 : 0);
@@ -211,7 +211,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectColumnReference",
-    description: "Add (missing) column-reference to a select-element expression",
+    description: "Fehlende Spaltenreferenz zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, addColumnReference(meta.select.columns), meta.select.length, meta.select.columnReferenceHeight);
@@ -219,7 +219,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectColumnReference",
-    description: "Remove (excess) column-reference from a select-element expression",
+    description: "Überflüssige Spaltenreferenz aus einem Select-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, removeColumnReference, meta.select.length, Infinity);
@@ -227,7 +227,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setSelectColumnReferenceTable",
-    description: "Set (missing) table name on a column-reference in a select-element expression",
+    description: "Fehlenden Tabellennamen für eine Spaltenreferenz in einem Select-Element-Ausdruck hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, setColumnReferenceTable, meta.select.length, meta.select.columnReferenceHeight);
@@ -235,7 +235,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetSelectColumnReferenceTable",
-    description: "Unset (excess) table name on a column-reference in a select-element expression",
+    description: "Überflüssigen Tabellennamen vor einer Spaltenreferenz in einem Select-Element-Ausdruck entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, unsetColumnReferenceTable, meta.select.length, meta.select.columnReferenceHeight);
@@ -243,7 +243,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectLiteral",
-    description: "Add (missing) literal to a select-element expression",
+    description: "Fehlendes Literal zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, addLiteral(meta.select.literals), meta.select.length, meta.select.literalHeight);
@@ -251,7 +251,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectLiteral",
-    description: "Remove (excess) literal from a select-element expression",
+    description: "Überflüssiges Literal aus einem Select-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, removeLiteral, meta.select.length, Infinity);
@@ -259,7 +259,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectNot",
-    description: "Add (missing) NOT to a select-element expression",
+    description: "Fehlendes NOT zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, addNot, meta.select.length, meta.select.notHeight, meta.select);
@@ -267,7 +267,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectNot",
-    description: "Remove (excess) NOT from a select-element expression",
+    description: "Überflüssiges NOT aus einem Select-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, removeNot, meta.select.length, Infinity);
@@ -275,7 +275,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectAggregationFunction",
-    description: "Add (missing) aggregation-function to a select-element expression",
+    description: "Fehlende Aggregationsfunktion zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, addAggregationFunction(meta.select.aggregations), meta.select.length, meta.select.aggregationHeight, meta.select);
@@ -283,7 +283,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectAggregationFunction",
-    description: "Remove (excess) aggregation-function from a select-element expression",
+    description: "Überflüssige Aggregationsfunktion aus einem Select-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, removeAggregationFunction, meta.select.length, Infinity);
@@ -291,8 +291,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setSelectAggregationFunctionDistinct",
-    description: "Set (missing) distinct-declaration on an aggregation-function " +
-        "in a select-element expression",
+    description: "Fehlende Distinct-Deklaration für eine Aggregationsfunktion in einem Select-Element-Ausdruck hinzufügen. [[Set (missing)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, setAggregationFunctionDistinct, meta.select.length, meta.select.aggregationHeight);
@@ -300,8 +299,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetSelectAggregationFunctionDistinct",
-    description: "Unset (excess) distinct-declaration on an aggregation-function " +
-        "in a select-element expression",
+    description: "Überflüssige Distinct-Deklaration einer Aggregationsfunktion in einem Select-Element-Ausdruck entfernen. [[Unset (excess)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, unsetAggregationFunctionDistinct, meta.select.length, meta.select.aggregationHeight);
@@ -309,7 +307,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectBinaryExpression",
-    description: "Add (missing) binary-expression to a select-element expression",
+    description: "Fehlenden binären Ausdruck zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, addBaseBinaryExpression, meta.select.length, meta.select.binaryExpressionHeight, meta.select);
@@ -317,7 +315,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectBinaryExpression",
-    description: "Remove (excess) binary-expression from a select-element expression",
+    description: "Überflüssigen binären Ausdruck aus einem Select-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, removeBinaryExpression, meta.select.length, Infinity);
@@ -325,7 +323,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setSelectAlias",
-    description: "Set (missing) explicit alias on a select-element",
+    description: "Fehlenden expliziten Alias für ein Select-Element hinzufügen. [[Set (missing)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         if (meta.select.as.length <= 0)
@@ -342,7 +340,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetSelectAlias",
-    description: "Unset (excess) explicit alias on a select-element",
+    description: "Überflüssigen expliziten Alias eines Select-Elements entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         for (let s = 0; s < query.selectLength && s < meta.select.length; ++s) {
@@ -369,7 +367,7 @@ function replaceFromExpression(query, result, multimap, recursionDepth, applyToF
 exports.replaceFromExpression = replaceFromExpression;
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addFromElement",
-    description: "Add (missing) element in from-clause",
+    description: "Fehlendes Element zur FROM-Klausel hinzufügen. [[missing]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         if (query.fromLength >= meta.from.length)
@@ -383,7 +381,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeFromElement",
-    description: "Remove (excess) element in from-clause",
+    description: "Überflüssiges Element aus der FROM-Klausel entfernen. [[excess]]",
     cost: 2,
     perform: (query, _schema, _meta, result) => {
         for (let f = 0; f < query.fromLength; ++f) {
@@ -393,7 +391,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setTableJoinType",
-    description: "Set (missing) complex join-type on a from-element (change cross join to a complex join)",
+    description: "Fehlenden komplexen Join-Typ für ein FROM-Element hinzufügen (Cross Join in einen komplexen Join ändern). [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         if (!meta.from.join)
@@ -413,7 +411,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetTableJoinType",
-    description: "Unset (excess) complex join-type on a from-element (change complex join to cross join)",
+    description: "Überflüssigen komplexen Join-Typ eines From-Elements entfernen (komplexen Join in einen Cross Join ändern). [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         for (let f = 0; f < query.fromLength; ++f) {
@@ -426,7 +424,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addFromColumnReference",
-    description: "Add (missing) column-reference to a from-element join-condition",
+    description: "Fehlende Spaltenreferenz zur Join-Bedingung eines FROM-Elements hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceFromExpression(query, result, addColumnReference(meta.from.columns), meta.from.columnReferenceHeight);
@@ -434,7 +432,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeFromColumnReference",
-    description: "Remove (excess) column-reference from a from-element join-condition",
+    description: "Überflüssige Spaltenreferenz aus der Join-Bedingung eines From-Elements entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceFromExpression(query, result, removeColumnReference, Infinity, true, true);
@@ -442,7 +440,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setFromColumnReferenceTable",
-    description: "Set (missing) table name on a column-reference in a from-element join-condition",
+    description: "Fehlenden Tabellennamen für eine Spaltenreferenz in der Join-Bedingung eines FROM-Elements hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceFromExpression(query, result, setColumnReferenceTable, meta.from.columnReferenceHeight);
@@ -450,7 +448,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetFromColumnReferenceTable",
-    description: "Unset (excess) table name on a column-reference in a from-element join-condition",
+    description: "Überflüssigen Tabellennamen vor einer Spaltenreferenz in der Join-Bedingung eines From-Elements entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceFromExpression(query, result, unsetColumnReferenceTable, meta.from.columnReferenceHeight);
@@ -458,7 +456,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addFromLiteral",
-    description: "Add (missing) literal to a from-element join-condition",
+    description: "Fehlendes Literal zur Join-Bedingung eines FROM-Elements hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceFromExpression(query, result, addLiteral(meta.from.literals), meta.from.literalHeight);
@@ -466,7 +464,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeFromLiteral",
-    description: "Remove (excess) literal from a from-element join-condition",
+    description: "Überflüssiges Literal aus der Join-Bedingung eines FROM-Elements entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceFromExpression(query, result, removeLiteral, Infinity, true, true);
@@ -474,7 +472,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addFromNot",
-    description: "Add (missing) NOT to a from-element join-condition",
+    description: "Fehlendes NOT zur Join-Bedingung eines FROM-Elements hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceFromExpression(query, result, addNot, meta.from.notHeight, false, false, meta.from);
@@ -482,7 +480,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeFromNot",
-    description: "Remove (excess) NOT from a from-element join-condition",
+    description: "Überflüssiges NOT aus der Join-Bedingung eines FROM-Elements entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceFromExpression(query, result, removeNot, Infinity, true, true);
@@ -490,7 +488,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addFromBinaryExpression",
-    description: "Add (missing) binary-expression to a from-element join-condition",
+    description: "Fehlenden binären Ausdruck zur Join-Bedingung eines FROM-Elements hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceFromExpression(query, result, addBaseBinaryExpression, meta.from.binaryExpressionHeight, false, false, meta.from);
@@ -498,7 +496,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeFromBinaryExpression",
-    description: "Remove (excess) binary-expression from a from-element join-condition",
+    description: "Überflüssigen binären Ausdruck aus der Join-Bedingung eines FROM-Elements entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceFromExpression(query, result, removeBinaryExpression, Infinity, true, true);
@@ -506,7 +504,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setFromAlias",
-    description: "Set (missing) explicit alias on from-element",
+    description: "Fehlenden expliziten Alias für ein FROM-Element hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, schema, _meta, result) => {
         for (let f = 0; f < query.fromLength; ++f) {
@@ -530,7 +528,7 @@ exports.replaceFromExpression = replaceFromExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetFromAlias",
-    description: "Remove (excess) explicit alias from from-element",
+    description: "Überflüssigen expliziten Alias aus einem FROM-Element entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         for (let f = 0; f < query.fromLength; ++f) {
@@ -553,7 +551,7 @@ function replaceWhereExpression(query, result, multimap, recursionDepth, maxHeig
 exports.replaceWhereExpression = replaceWhereExpression;
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addWhereColumnReference",
-    description: "Add (missing) column-reference to the where-clause",
+    description: "Fehlende Spaltenreferenz zur WHERE-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceWhereExpression(query, result, addColumnReference(meta.where.columns), meta.where.columnReferenceHeight);
@@ -561,7 +559,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeWhereColumnReference",
-    description: "Remove (excess) column-reference from the where-clause",
+    description: "Überflüssige Spaltenreferenz aus der WHERE-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceWhereExpression(query, result, removeColumnReference, Infinity);
@@ -569,7 +567,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setWhereColumnReferenceTable",
-    description: "Set (missing) table name on a column-reference in the where-clause",
+    description: "Fehlenden Tabellennamen für eine Spaltenreferenz in der WHERE-Klausel hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceWhereExpression(query, result, setColumnReferenceTable, meta.where.columnReferenceHeight);
@@ -577,7 +575,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetWhereColumnReferenceTable",
-    description: "Unset (excess) table name on a column-reference in the where-clause",
+    description: "Überflüssigen Tabellennamen vor einer Spaltenreferenz in der WHERE-Klausel entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceWhereExpression(query, result, unsetColumnReferenceTable, meta.where.columnReferenceHeight);
@@ -585,7 +583,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addWhereLiteral",
-    description: "Add (missing) literal to the where-clause",
+    description: "Fehlendes Literal zur WHERE-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceWhereExpression(query, result, addLiteral(meta.where.literals), meta.where.literalHeight);
@@ -593,7 +591,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeWhereLiteral",
-    description: "Remove (excess) literal from the where-clause",
+    description: "Überflüssiges Literal aus der WHERE-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceWhereExpression(query, result, removeLiteral, Infinity);
@@ -601,7 +599,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addWhereNot",
-    description: "Add (missing) NOT to the where-clause",
+    description: "Fehlendes NOT zur WHERE-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceWhereExpression(query, result, addNot, meta.where.notHeight, meta.where);
@@ -609,7 +607,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeWhereNot",
-    description: "Remove (excess) NOT from the where-clause",
+    description: "Überflüssiges NOT aus der WHERE-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceWhereExpression(query, result, removeNot, Infinity);
@@ -617,7 +615,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addWhereBinaryExpression",
-    description: "Add (missing) binary-expression to the where-clause",
+    description: "Fehlenden binären Ausdruck zur WHERE-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceWhereExpression(query, result, addBaseBinaryExpression, meta.where.binaryExpressionHeight, meta.where);
@@ -625,7 +623,7 @@ exports.replaceWhereExpression = replaceWhereExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeWhereBinaryExpression",
-    description: "Remove (excess) binary-expression from the where-clause",
+    description: "Überflüssigen binären Ausdruck aus der WHERE-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceWhereExpression(query, result, removeBinaryExpression, Infinity);
@@ -645,7 +643,7 @@ function replaceGroupbyExpression(query, result, multimap, recursionDepth, maxHe
 exports.replaceGroupbyExpression = replaceGroupbyExpression;
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addGroupbyElement",
-    description: "Add (missing) element in group-by-clause",
+    description: "Fehlendes Element zur GROUP-BY-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         if (query.groupbyLength >= meta.groupby.length)
@@ -657,7 +655,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeGroupbyElement",
-    description: "Remove (excess) element in group-by-clause",
+    description: "Überflüssiges Element aus der GROUP-BY-Klausel entfernen. [[excess]]",
     cost: 2,
     perform: (query, _schema, _meta, result) => {
         for (let g = 0; g < query.groupbyLength; ++g) {
@@ -667,7 +665,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addGroupbyColumnReference",
-    description: "Add (missing) column-reference to a group-by expression",
+    description: "Fehlende Spaltenreferenz zu einem GROUP-BY-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceGroupbyExpression(query, result, addColumnReference(meta.groupby.columns), meta.groupby.columnReferenceHeight);
@@ -675,7 +673,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeGroupbyColumnReference",
-    description: "Remove (excess) column-reference from a group-by expression",
+    description: "Überflüssige Spaltenreferenz aus einem GROUP-BY-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceGroupbyExpression(query, result, removeColumnReference, Infinity);
@@ -683,7 +681,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setGroupbyColumnReferenceTable",
-    description: "Set (missing) table name on a column-reference in a group-by expression",
+    description: "Fehlenden Tabellennamen für eine Spaltenreferenz in einem GROUP-BY-Ausdruck hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceGroupbyExpression(query, result, setColumnReferenceTable, meta.groupby.columnReferenceHeight);
@@ -691,7 +689,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetGroupbyColumnReferenceTable",
-    description: "Unset (excess) table name on a column-reference in a group-by expression",
+    description: "Überflüssigen Tabellennamen vor einer Spaltenreferenz in einem GROUP-BY-Ausdruck entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceGroupbyExpression(query, result, unsetColumnReferenceTable, meta.groupby.columnReferenceHeight);
@@ -699,7 +697,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addGroupbyLiteral",
-    description: "Add (missing) literal to a group-by expression",
+    description: "Fehlendes Literal zu einem GROUP-BY-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceGroupbyExpression(query, result, addLiteral(meta.groupby.literals), meta.groupby.literalHeight);
@@ -707,7 +705,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeGroupbyLiteral",
-    description: "Remove (excess) literal from a group-by expression",
+    description: "Überflüssiges Literal aus einem GROUP-BY-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceGroupbyExpression(query, result, removeLiteral, Infinity);
@@ -715,7 +713,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addGroupbyNot",
-    description: "Add (missing) NOT to a group-by expression",
+    description: "Fehlendes NOT zu einem GROUP-BY-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceGroupbyExpression(query, result, addNot, meta.groupby.notHeight, meta.groupby);
@@ -723,7 +721,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeGroupbyNot",
-    description: "Remove (excess) NOT from a group-by expression",
+    description: "Überflüssiges NOT aus einem GROUP-BY-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceGroupbyExpression(query, result, removeNot, Infinity);
@@ -731,7 +729,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addGroupbyBinaryExpression",
-    description: "Add (missing) binary-expression to a group-by expression",
+    description: "Fehlenden binären Ausdruck zu einem GROUP-BY-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceGroupbyExpression(query, result, addBaseBinaryExpression, meta.groupby.columnReferenceHeight, meta.groupby);
@@ -739,7 +737,7 @@ exports.replaceGroupbyExpression = replaceGroupbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeGroupbyBinaryExpression",
-    description: "Remove (excess) binary-expression from a group-by expression",
+    description: "Überflüssigen binären Ausdruck aus einem GROUP-BY-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceGroupbyExpression(query, result, removeBinaryExpression, Infinity);
@@ -757,7 +755,7 @@ function replaceHavingExpression(query, result, multimap, recursionDepth, maxHei
 exports.replaceHavingExpression = replaceHavingExpression;
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addHavingColumnReference",
-    description: "Add (missing) column-reference to the having-clause",
+    description: "Fehlende Spaltenreferenz zur HAVING-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, addColumnReference(meta.having.columns), meta.having.columnReferenceHeight);
@@ -765,7 +763,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeHavingColumnReference",
-    description: "Remove (excess) column-reference from the having-clause",
+    description: "Überflüssige Spaltenreferenz aus der HAVING-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceHavingExpression(query, result, removeColumnReference, Infinity);
@@ -773,7 +771,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setHavingColumnReferenceTable",
-    description: "Set (missing) table name on a column-reference in the having-clause",
+    description: "Fehlenden Tabellennamen für eine Spaltenreferenz in der HAVING-Klausel hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, setColumnReferenceTable, meta.having.columnReferenceHeight);
@@ -781,7 +779,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetHavingColumnReferenceTable",
-    description: "Unset (excess) table name on a column-reference in the having-clause",
+    description: "Überflüssigen Tabellennamen vor einer Spaltenreferenz in der HAVING-Klausel entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, unsetColumnReferenceTable, meta.having.columnReferenceHeight);
@@ -789,7 +787,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addHavingLiteral",
-    description: "Add (missing) literal to the having-clause",
+    description: "Fehlendes Literal zur HAVING-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, addLiteral(meta.having.literals), meta.having.literalHeight);
@@ -797,7 +795,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeHavingLiteral",
-    description: "Remove (excess) literal from the having-clause",
+    description: "Überflüssiges Literal aus der HAVING-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceHavingExpression(query, result, removeLiteral, Infinity);
@@ -805,7 +803,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addHavingNot",
-    description: "Add (missing) NOT to the having-clause",
+    description: "Fehlendes NOT zur HAVING-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, addNot, meta.having.notHeight, meta.having);
@@ -813,7 +811,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeHavingbyNot",
-    description: "Remove (excess) NOT from the having-clause",
+    description: "Überflüssiges NOT aus der HAVING-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceHavingExpression(query, result, removeNot, Infinity);
@@ -821,7 +819,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addHavingAggregationFunction",
-    description: "Add (missing) aggregation-function to the having-clause",
+    description: "Fehlende Aggregationsfunktion zur HAVING-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, addAggregationFunction(meta.having.aggregations), meta.having.aggregationHeight, meta.having);
@@ -829,7 +827,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeHavingAggregationFunction",
-    description: "Remove (excess) aggregation-function from the having-clause",
+    description: "Überflüssige Aggregationsfunktion aus der HAVING-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceHavingExpression(query, result, removeAggregationFunction, Infinity);
@@ -837,7 +835,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setHavingAggregationFunctionDistinct",
-    description: "Set (missing) distinct-declaration on an aggregation function in the having-clause",
+    description: "Fehlende Distinct-Deklaration für eine Aggregationsfunktion in der HAVING-Klausel hinzufügen. [[Set (missing)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, setAggregationFunctionDistinct, meta.having.aggregationHeight);
@@ -845,7 +843,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetHavingAggregationFunctionDistinct",
-    description: "Unset (excess) distinct-declaration on an aggregation function in the having-clause",
+    description: "Überflüssige Distinct-Deklaration einer Aggregationsfunktion in der HAVING-Klausel entfernen. [[Unset (excess)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, unsetAggregationFunctionDistinct, meta.having.aggregationHeight);
@@ -853,7 +851,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addHavingBinaryExpression",
-    description: "Add (missing) binary-expression to the having-clause",
+    description: "Fehlenden binären Ausdruck zur HAVING-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceHavingExpression(query, result, addBaseBinaryExpression, meta.having.binaryExpressionHeight, meta.having);
@@ -861,7 +859,7 @@ exports.replaceHavingExpression = replaceHavingExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeHavingBinaryExpression",
-    description: "Remove (excess) binary-expression from the having-clause",
+    description: "Überflüssigen binären Ausdruck aus der HAVING-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceHavingExpression(query, result, removeBinaryExpression, Infinity);
@@ -882,7 +880,7 @@ function replaceOrderbyExpression(query, result, multimap, recursionDepth, maxHe
 exports.replaceOrderbyExpression = replaceOrderbyExpression;
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addOrderbyElement",
-    description: "Add (missing) element in order-by-clause",
+    description: "Fehlendes Element zur ORDER-BY-Klausel hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         if (query.orderbyLength >= meta.orderby.length)
@@ -894,7 +892,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeOrderbyElement",
-    description: "Remove (excess) element in order-by-clause",
+    description: "Überflüssiges Element aus der ORDER-BY-Klausel entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         for (let o = 0; o < query.orderbyLength; ++o) {
@@ -904,7 +902,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setOrderbyDescending",
-    description: "Set (missing) order of order-by-element from ascending to descending",
+    description: "Sortierreihenfolge eines ORDER-BY-Elements von aufsteigend zu absteigend ändern. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         for (let o = 0; o < query.orderbyLength; ++o) {
@@ -917,7 +915,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetOrderbyDescending",
-    description: "Set (missing) order of order-by-element from descending to ascending",
+    description: "Sortierreihenfolge eines ORDER-BY-Elements von absteigend zu aufsteigend ändern. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         for (let o = 0; o < query.orderbyLength; ++o) {
@@ -930,7 +928,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addOrderbyColumnReference",
-    description: "Add (missing) column-reference to a order-by-element expression",
+    description: "Fehlende Spaltenreferenz zu einem ORDER-BY-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, addColumnReference(meta.orderby.columns), meta.orderby.columnReferenceHeight);
@@ -938,7 +936,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeOrderbyColumnReference",
-    description: "Remove (excess) column-reference from a order-by-element expression",
+    description: "Überflüssige Spaltenreferenz aus einem ORDER-BY-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceOrderbyExpression(query, result, removeColumnReference, Infinity);
@@ -946,7 +944,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setOrderbyColumnReferenceTable",
-    description: "Set (missing) table name on a column-reference in a order-by-element expression",
+    description: "Fehlenden Tabellennamen für eine Spaltenreferenz in einem ORDER-BY-Element-Ausdruck hinzufügen. [[Set (missing)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, setColumnReferenceTable, meta.orderby.columnReferenceHeight);
@@ -954,7 +952,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetOrderbyColumnReferenceTable",
-    description: "Unset (excess) table name on a column-reference in a order-by-element expression",
+    description: "Überflüssigen Tabellennamen vor einer Spaltenreferenz in einem ORDER-BY-Element-Ausdruck entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, unsetColumnReferenceTable, meta.orderby.columnReferenceHeight);
@@ -962,7 +960,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addOrderbyLiteral",
-    description: "Add (missing) literal to a order-by-element expression",
+    description: "Fehlendes Literal zu einem ORDER-BY-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, addLiteral(meta.orderby.literals), meta.orderby.literalHeight);
@@ -970,7 +968,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeOrderbyLiteral",
-    description: "Remove (excess) literal from a order-by-element expression",
+    description: "Überflüssiges Literal aus einem ORDER-BY-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceOrderbyExpression(query, result, removeLiteral, Infinity);
@@ -978,7 +976,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addOrderbyNot",
-    description: "Add (missing) NOT to a order-by-element expression",
+    description: "Fehlendes NOT zu einem ORDER-BY-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, addNot, meta.orderby.notHeight, meta.orderby);
@@ -986,7 +984,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeOrderbyNot",
-    description: "Remove (excess) NOT from a order-by-element expression",
+    description: "Überflüssiges NOT aus einem ORDER-BY-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceOrderbyExpression(query, result, removeNot, Infinity);
@@ -994,7 +992,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addOrderbyAggregationFunction",
-    description: "Add (missing) aggregation-function to a order-by-element expression",
+    description: "Fehlende Aggregationsfunktion zu einem ORDER-BY-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, addAggregationFunction(meta.orderby.aggregations), meta.orderby.aggregationHeight, meta.orderby);
@@ -1002,7 +1000,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeOrderbyAggregationFunction",
-    description: "Remove (excess) aggregation-function from a order-by-element expression",
+    description: "Überflüssige Aggregationsfunktion aus einem ORDER-BY-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceOrderbyExpression(query, result, removeAggregationFunction, Infinity);
@@ -1010,8 +1008,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "setOrderbyAggregationFunctionDistinct",
-    description: "Set (missing) distinct-declaration on an aggregation function " +
-        "in an order-by-element expression",
+    description: "Fehlende Distinct-Deklaration für eine Aggregationsfunktion in einem ORDER-BY-Element-Ausdruck hinzufügen. [[Set (missing)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, setAggregationFunctionDistinct, meta.orderby.aggregationHeight);
@@ -1019,8 +1016,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetOrderbyAggregationFunctionDistinct",
-    description: "Unset (excess) distinct-declaration on an aggregation function " +
-        "in an order-by-element expression",
+    description: "Überflüssige Distinct-Deklaration einer Aggregationsfunktion in einem ORDER-BY-Element-Ausdruck entfernen. [[Unset (excess)]]",
     cost: 2,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, unsetAggregationFunctionDistinct, meta.orderby.aggregationHeight);
@@ -1028,7 +1024,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addOrderbyBinaryExpression",
-    description: "Add (missing) binary-expression to a order-by-element expression",
+    description: "Fehlenden binären Ausdruck zu einem ORDER-BY-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceOrderbyExpression(query, result, addBaseBinaryExpression, meta.orderby.binaryExpressionHeight, meta.orderby);
@@ -1036,7 +1032,7 @@ exports.replaceOrderbyExpression = replaceOrderbyExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeOrderbyBinaryExpression",
-    description: "Remove (excess) binary-expression from a order-by-element expression",
+    description: "Überflüssigen binären Ausdruck aus einem ORDER-BY-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, _meta, result) => {
         replaceOrderbyExpression(query, result, removeBinaryExpression, Infinity);

@@ -157,7 +157,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 // === SELECT ===
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applySelectTautologyLaw",
-    description: "Apply tautology law in a select-element expression",
+    description: "Tautologiegesetz in einem Select-Element-Ausdruck anwenden. [[tautology law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, applyTautologyLaw, meta.select.length, meta.select.binaryExpressionHeight, meta.select);
@@ -165,7 +165,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applySelectDoubleNegationLaw",
-    description: "Apply double negation law in a select-element expression",
+    description: "Doppelte Verneinung in einem Select-Element-Ausdruck vereinfachen. [[double negation law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, applyDoubleNegationLaw, meta.select.length, meta.select.notHeight, meta.select);
@@ -173,7 +173,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applySelectDistributiveLaw",
-    description: "Apply distributive law in a select-element expression",
+    description: "Distributivgesetz in einem Select-Element-Ausdruck anwenden. [[distributive law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, applyDistributiveLaw, meta.select.length, meta.select.binaryExpressionHeight, meta.select);
@@ -181,7 +181,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applySelectDeMorgan",
-    description: "Apply De Morgan's law in a select-element expression",
+    description: "De-Morgan-Regel in einem Select-Element-Ausdruck anwenden. [[De Morgan's law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, applyDeMorgan, meta.select.length, Math.max(meta.select.binaryExpressionHeight, meta.select.notHeight));
@@ -189,7 +189,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applySelectAbsorptionLaw",
-    description: "Apply absorption law in a select-element expression",
+    description: "Absorptionsgesetz in einem Select-Element-Ausdruck anwenden. [[absorption law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, applyAbsorptionLaw, meta.select.length, meta.select.binaryExpressionHeight);
@@ -209,7 +209,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 // === FROM ===
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyFromTautologyLaw",
-    description: "Apply tautology law in a from-element join-condition",
+    description: "Tautologiegesetz in der Join-Bedingung eines FROM-Elements anwenden. [[tautology law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, applyTautologyLaw, meta.from.binaryExpressionHeight, false, false, meta.from);
@@ -217,7 +217,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyFromDoubleNegationLaw",
-    description: "Apply double negation law in a from-element join-condition",
+    description: "Doppelte Verneinung in der Join-Bedingung eines FROM-Elements vereinfachen. [[double negation law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, applyDoubleNegationLaw, meta.from.notHeight, false, false, meta.from);
@@ -225,7 +225,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyFromDistributiveLaw",
-    description: "Apply distributive law in a from-element join-condition",
+    description: "Distributivgesetz in der Join-Bedingung eines FROM-Elements anwenden. [[distributive law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, applyDistributiveLaw, meta.from.binaryExpressionHeight, false, false, meta.from);
@@ -233,7 +233,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyFromDeMorgan",
-    description: "Apply De Morgan's law in a from-element join-condition",
+    description: "De-Morgan-Regel in der Join-Bedingung eines FROM-Elements anwenden. [[De Morgan's law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, applyDeMorgan, Math.max(meta.from.binaryExpressionHeight, meta.from.notHeight));
@@ -241,7 +241,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyFromAbsorptionLaw",
-    description: "Apply absorption law in a from-element join-condition",
+    description: "Absorptionsgesetz in der Join-Bedingung eines FROM-Elements anwenden. [[absorption law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceFromExpression)(query, result, applyAbsorptionLaw, meta.from.binaryExpressionHeight);
@@ -250,7 +250,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 // === WHERE ===
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyWhereTautologyLaw",
-    description: "Apply tautology law in the where-clause",
+    description: "Tautologiegesetz in der WHERE-Klausel anwenden. [[tautology law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, applyTautologyLaw, meta.where.binaryExpressionHeight, meta.where);
@@ -258,7 +258,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyWhereDoubleNegationLaw",
-    description: "Apply double negation law in the where-clause",
+    description: "Doppelte Verneinung in der WHERE-Klausel vereinfachen. [[double negation law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, applyDoubleNegationLaw, meta.where.notHeight, meta.where);
@@ -266,7 +266,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyWhereDistributiveLaw",
-    description: "Apply distributive law in the where-clause",
+    description: "Distributivgesetz in der WHERE-Klausel anwenden. [[distributive law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, applyDistributiveLaw, meta.where.binaryExpressionHeight, meta.where);
@@ -274,7 +274,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyWhereDeMorgan",
-    description: "Apply De Morgan's law in the where-clause",
+    description: "De-Morgan-Regel in der WHERE-Klausel anwenden. [[De Morgan's law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, applyDeMorgan, Math.max(meta.where.binaryExpressionHeight, meta.where.notHeight));
@@ -282,7 +282,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyWhereAbsorptionLaw",
-    description: "Apply absorption law in the where-clause",
+    description: "Absorptionsgesetz in der WHERE-Klausel anwenden. [[absorption law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceWhereExpression)(query, result, applyAbsorptionLaw, meta.where.binaryExpressionHeight);
@@ -291,7 +291,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 // === GROUP BY ===
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyGroupbyTautologyLaw",
-    description: "Apply tautology law in a group-by expression",
+    description: "Tautologiegesetz in einem GROUP-BY-Ausdruck anwenden. [[tautology law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, applyTautologyLaw, meta.groupby.binaryExpressionHeight, meta.groupby);
@@ -299,7 +299,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyGroupbyDoubleNegationLaw",
-    description: "Apply double negation law in a group-by expression",
+    description: "Doppelte Verneinung in einem GROUP-BY-Ausdruck vereinfachen. [[double negation law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, applyDoubleNegationLaw, meta.groupby.notHeight, meta.groupby);
@@ -307,7 +307,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyGroupbyDistributiveLaw",
-    description: "Apply distributive law in a group-by expression",
+    description: "Distributivgesetz in einem GROUP-BY-Ausdruck anwenden. [[distributive law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, applyDistributiveLaw, meta.groupby.binaryExpressionHeight, meta.groupby);
@@ -315,7 +315,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyGroupbyDeMorgan",
-    description: "Apply De Morgan's law in a group-by expression",
+    description: "De-Morgan-Regel in einem GROUP-BY-Ausdruck anwenden. [[De Morgan's law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, applyDeMorgan, Math.max(meta.groupby.binaryExpressionHeight, meta.groupby.notHeight));
@@ -323,7 +323,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyGroupbyAbsorptionLaw",
-    description: "Apply absorption law in a group-by expression",
+    description: "Absorptionsgesetz in einem GROUP-BY-Ausdruck anwenden. [[absorption law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceGroupbyExpression)(query, result, applyAbsorptionLaw, meta.groupby.binaryExpressionHeight);
@@ -332,7 +332,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 // === Having ===
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyHavingTautologyLaw",
-    description: "Apply tautology law in the having-clause",
+    description: "Tautologiegesetz in der HAVING-Klausel anwenden. [[tautology law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, applyTautologyLaw, meta.having.binaryExpressionHeight, meta.having);
@@ -340,7 +340,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyHavingDoubleNegationLaw",
-    description: "Apply double negation law in the having-clause",
+    description: "Doppelte Verneinung in der HAVING-Klausel vereinfachen. [[double negation law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, applyDoubleNegationLaw, meta.having.notHeight - 1, meta.having);
@@ -348,7 +348,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyHavingDistributiveLaw",
-    description: "Apply distributive law in the having-clause",
+    description: "Distributivgesetz in der HAVING-Klausel anwenden. [[distributive law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, applyDistributiveLaw, meta.having.binaryExpressionHeight, meta.having);
@@ -356,7 +356,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyHavingDeMorgan",
-    description: "Apply De Morgan's law in the having-clause",
+    description: "De-Morgan-Regel in der HAVING-Klausel anwenden. [[De Morgan's law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, applyDeMorgan, Math.max(meta.having.binaryExpressionHeight, meta.having.notHeight));
@@ -364,7 +364,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyHavingAbsorptionLaw",
-    description: "Apply absorption law in the having-clause",
+    description: "Absorptionsgesetz in der HAVING-Klausel anwenden. [[absorption law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceHavingExpression)(query, result, applyAbsorptionLaw, meta.having.binaryExpressionHeight);
@@ -373,7 +373,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 // === Order By ===
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyOrderbyTautologyLaw",
-    description: "Apply tautology law in a order-by expression",
+    description: "Tautologiegesetz in einem ORDER-BY-Ausdruck anwenden. [[tautology law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, applyTautologyLaw, meta.orderby.binaryExpressionHeight, meta.orderby);
@@ -381,7 +381,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyOrderbyDoubleNegationLaw",
-    description: "Apply double negation law in a order-by expression",
+    description: "Doppelte Verneinung in einem ORDER-BY-Ausdruck vereinfachen. [[double negation law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, applyDoubleNegationLaw, meta.orderby.notHeight, meta.orderby);
@@ -389,7 +389,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyOrderbyDistributiveLaw",
-    description: "Apply distributive law in a order-by expression",
+    description: "Distributivgesetz in einem ORDER-BY-Ausdruck anwenden. [[distributive law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, applyDistributiveLaw, meta.orderby.binaryExpressionHeight, meta.orderby);
@@ -397,7 +397,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyOrderbyDeMorgan",
-    description: "Apply De Morgan's law in a order-by expression",
+    description: "De-Morgan-Regel in einem ORDER-BY-Ausdruck anwenden. [[De Morgan's law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, applyDeMorgan, Math.max(meta.orderby.binaryExpressionHeight, meta.orderby.notHeight));
@@ -405,7 +405,7 @@ function unsetColumnReferenceUnnecessaryTable(x, context) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "applyOrderbyAbsorptionLaw",
-    description: "Apply absorption law in a order-by expression",
+    description: "Absorptionsgesetz in einem ORDER-BY-Ausdruck anwenden. [[absorption law]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceOrderbyExpression)(query, result, applyAbsorptionLaw, meta.orderby.binaryExpressionHeight);
@@ -436,7 +436,7 @@ function extractFirstLevelConjugate(removed) {
 }
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "moveInnerJoinConditionToWhere",
-    description: "Move the join-condition of an INNER JOIN to the where-clause",
+    description: "Join-Bedingung eines INNER JOINs in die WHERE-Klausel verschieben. [[Move the join-condition]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         if ((meta.where.binaryExpressionHeight < 0
@@ -467,7 +467,7 @@ function extractFirstLevelConjugate(removed) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "moveWhereToInnerJoinCondition",
-    description: "Move expression from the where-clause to the join-condition of an INNER JOIN",
+    description: "Ausdruck aus der WHERE-Klausel in die Join-Bedingung eines INNER JOINs verschieben. [[Move expression from]]",
     cost: 0,
     perform: (query, _schema, meta, result) => {
         if (query.where == null
@@ -501,7 +501,7 @@ function extractFirstLevelConjugate(removed) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "expandAsterisk",
-    description: "Replace an asterisk with the expressions it represents",
+    description: "Einen Asterisk durch die Ausdrücke ersetzen, die er repräsentiert. [[Replace an asterisk with]]",
     cost: 0,
     perform: (query, schema, meta, result) => {
         if (query.groupbyLength > 0) {
@@ -579,7 +579,7 @@ function extractFirstLevelConjugate(removed) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "collapseAsterisk",
-    description: "Replace a number of expressions with an asterisk representing them",
+    description: "Mehrere Ausdrücke durch einen Asterisk ersetzen, der sie repräsentiert. [[Replace a number of expressions]]",
     cost: 0,
     perform: (query, schema, meta, result) => {
         if (!meta.select.asterisk)
