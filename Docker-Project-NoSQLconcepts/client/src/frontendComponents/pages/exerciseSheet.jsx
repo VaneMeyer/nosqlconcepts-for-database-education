@@ -484,12 +484,12 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                           Ausführen
                           <PlayCircleFilledWhiteIcon></PlayCircleFilledWhiteIcon>
                         </Button>
-                        {feedback_on && (
+                        {/*feedback_on && (
                           <ImportantMsg
                             message="Note that the feedback functionality is a work in progress. It is possible that a message will appear stating that your result does not match the expected result. Your solution may still be correct. We are working on improving this functionality in the future so that your individual solution is evaluated with regard to the task description."
                             type="info"
                           />
-                        )}
+                        )*/}
                         {queryResult && (
                           <ImportantMsg
                             message={
