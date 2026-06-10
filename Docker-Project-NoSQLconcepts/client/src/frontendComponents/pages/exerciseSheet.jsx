@@ -566,8 +566,8 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                                     Du kannst dir unten eine Übersicht der Fehler ansehen und auf einen Eintrag klicken, um weitere Details anzuzeigen.
                                     <br />
                                     Hat ein Fehler die „Kosten: 0“, handelt es sich um eine mathematische oder logische Umformung, die die Bedeutung der SQL-Abfrage nicht verändert.
-                                    Einige Operatortypen, wie z. B. <code>LIKE</code>, können derzeit noch nicht verarbeitet werden.
-                                    Daher ist für sie momentan kein detailliertes Feedback verfügbar.
+                                    Einige Operatortypen, wie z. B. <code>LIKE</code>,  <code>BETWEEN</code>,  <code>IN</code> können derzeit noch nicht verarbeitet werden.
+                                    Daher ist für sie momentan kein detailliertes Feedback verfügbar und es werden in dem Fall noch keine Punkte abgezogen.
                                     </>
                                     }
                                 type="info"
