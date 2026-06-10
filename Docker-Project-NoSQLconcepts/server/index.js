@@ -11,7 +11,7 @@ const mainQueries = require("./queries/mainQueries");
 const adminQueries = require("./queries/adminQueries");
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
-
+const axios = require('axios');
 
 require("dotenv").config();
 
@@ -1056,7 +1056,7 @@ app.post('/api/LLMfeedback', async (req, res) => {
       Ensure the learning tip(s) are clear, educational, and supportive, but do not stretch them unnaturally.
       `;
     const response = await axios.post("http://ollama:11434/api/generate", {
-      model: "gemma3:12b",
+      model: "gemma3:4b",
       prompt,
       stream: false,
     });
