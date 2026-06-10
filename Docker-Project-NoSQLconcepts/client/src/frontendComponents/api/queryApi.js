@@ -2,10 +2,10 @@ import axios from 'axios';
 
 const API_URL = '/api';
 
-export const sendToExecute = async (endpoint,  execQuery, taskNumber, taskAreaId, maxPoints_SQL ) => { //apiRoute anstelle von endpoint
+export const sendToExecute = async (endpoint,  execQuery, taskNumber, taskAreaId, maxPoints_SQL, feedback_on  ) => { //apiRoute anstelle von endpoint
     try {
       const response = await axios.post(`${API_URL}/execute-sql`, {
-        endpoint, execQuery, taskNumber, taskAreaId, maxPoints_SQL
+        endpoint, execQuery, taskNumber, taskAreaId, maxPoints_SQL, feedback_on
       });
   
       return response;
