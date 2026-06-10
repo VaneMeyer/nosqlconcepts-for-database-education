@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS tool.task_statements
     maxtime text COLLATE pg_catalog."default",
     hint text COLLATE pg_catalog."default",
     tasknumber text COLLATE pg_catalog."default",
-    maxsql_points numeric(5,2) DEFAULT 10,
+    maxsql_points numeric(5,2) DEFAULT 5,
     CONSTRAINT task_statements_pkey PRIMARY KEY (statement_id, area_id),
     CONSTRAINT task_statements_area_id_fkey FOREIGN KEY (area_id)
         REFERENCES tool.task_areas (area_id) MATCH SIMPLE
