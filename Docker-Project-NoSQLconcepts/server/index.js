@@ -9,18 +9,16 @@ const path = require("path");
 const loginQueries = require("./queries/loginQueries");
 const mainQueries = require("./queries/mainQueries");
 const adminQueries = require("./queries/adminQueries");
-const jwt = require('jsonwebtoken');
-const helmet = require('helmet');
-const axios = require('axios');
-
-
+const jwt = require("jsonwebtoken");
+const helmet = require("helmet");
+const axios = require("axios");
 
 require("dotenv").config();
 
 const app = express();
 const key = Math.random() * (10000000000 - 100000000) + 100000000;
 
-const sqlQueryDistance = require('./evaluation-tool/sql-query-distance/dist/index');
+const sqlQueryDistance = require("./evaluation-tool/sql-query-distance/dist/index");
 
 const oneDay = 1000 * 60 * 60 * 24;
 //################# General Settings ######################################################
@@ -41,27 +39,26 @@ app.use(
     saveUninitialized: true,
     cookie: { maxAge: oneDay },
     resave: false,
-  })
+  }),
 );
 
-
 app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-  res.setHeader('Origin-Agent-Cluster', '?1');
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  res.setHeader("Origin-Agent-Cluster", "?1");
   next();
 });
 
 app.get("/", (req, res) => {
   const dir = "public";
   res.sendFile(path.join(__dirname, dir, "index.html"));
-});  
+});
 /* app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 }); */
 
-app.get('/conditions', (req, res) => {
-      res.send(`By using this application, you agree to the following terms regarding the use of cookies and the collection of your data:  This application uses cookies to store your login information. Cookies are small text files stored on your device that
+app.get("/conditions", (req, res) => {
+  res.send(`By using this application, you agree to the following terms regarding the use of cookies and the collection of your data:  This application uses cookies to store your login information. Cookies are small text files stored on your device that
           help us remember your login details for future sessions and provide a
           better user experience.
           We collect and use the data you provide,
@@ -84,7 +81,6 @@ app.get('/conditions', (req, res) => {
           regarding our use of cookies and data, please contact us. Thank you
           for your understanding and cooperation.`);
 });
-
 
 // Set trust proxy once for the entire application
 app.set("trust proxy", "loopback");
@@ -146,10 +142,14 @@ app.post("/api/login", async (req, res) => {
 
     if (rows.length === 1) {
       const user = rows[0];
-      const token = jwt.sign({ id: user.id, role: user.role, username: user.user_name }, SECRET_KEY, { expiresIn: '6h' });
+      const token = jwt.sign(
+        { id: user.id, role: user.role, username: user.user_name },
+        SECRET_KEY,
+        { expiresIn: "6h" },
+      );
 
-      res.cookie('token', token, { httpOnly: true });
-      res.json({ message: 'Login successful' });
+      res.cookie("token", token, { httpOnly: true });
+      res.json({ message: "Login successful" });
     } else {
       res.status(401).send("Wrong credentials");
     }
@@ -161,10 +161,9 @@ app.post("/api/login", async (req, res) => {
 
 // Logout
 app.get("/api/logout", (req, res) => {
-  res.cookie('token', '', { expires: new Date(0) });
+  res.cookie("token", "", { expires: new Date(0) });
   res.send("Logged out");
 });
-
 
 const authenticateJWT = (req, res, next) => {
   const token = req.cookies.token;
@@ -182,24 +181,19 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 // Check Auth Route
-app.get('/api/check-auth', authenticateJWT, (req, res) => {
-  
+app.get("/api/check-auth", authenticateJWT, (req, res) => {
   res.json(req.user);
 });
 // protected route
-app.get('/api/admin', authenticateJWT, (req, res) => {
-  if (req.user.role === 'admin') {
-    res.json({ message: 'Admin access granted' });
+app.get("/api/admin", authenticateJWT, (req, res) => {
+  if (req.user.role === "admin") {
+    res.json({ message: "Admin access granted" });
   } else {
     res.sendStatus(403);
   }
 });
 
-
-
-
 //################# Charts Data ######################################################
-
 
 const executeQuery = async (query, params, res) => {
   try {
@@ -213,28 +207,12 @@ const executeQuery = async (query, params, res) => {
   }
 };
 
-
-
-
-
-
-
-
-
 //################# Main Data ######################################################
-
-
-
 
 // GET /area-names
 app.get("/api/area-names", async (req, res) => {
   await executeQuery(mainQueries.areaNamesQuery, [], res);
 });
-
-
-
-
-
 
 //POST getTasks
 app.post("/api/getTasks", async (req, res) => {
@@ -245,18 +223,8 @@ app.post("/api/getTasks", async (req, res) => {
     return res.status(400).send("Missing areaId");
   }
 
-  await executeQuery(
-    mainQueries.getTasksQuery,
-    [areaId],
-    res
-  );
+  await executeQuery(mainQueries.getTasksQuery, [areaId], res);
 });
-
-
-
-
-
-
 
 //################# Admin ######################################################
 
@@ -283,7 +251,7 @@ app.post("/api/delete-exercises", async (req, res) => {
   await executeQuery(
     adminQueries.deleteExerciseQuery,
     [statement_id, area_id],
-    res
+    res,
   );
 });
 // POST /add-exercise
@@ -304,7 +272,7 @@ app.post("/api/add-exercise", async (req, res) => {
       formValues.tasknumber,
       formValues.maxsql_points,
     ],
-    res
+    res,
   );
 });
 // POST /update-exercises
@@ -325,10 +293,9 @@ app.post("/api/update-exercises", async (req, res) => {
       formValues.area_id,
       formValues.default_query,
     ],
-    res
+    res,
   );
 });
-
 
 // POST /add-assignments
 app.post("/api/add-assignment", async (req, res) => {
@@ -343,7 +310,7 @@ app.post("/api/add-assignment", async (req, res) => {
       formValues.endpoint,
       formValues.is_active,
     ],
-    res
+    res,
   );
 });
 
@@ -366,66 +333,42 @@ app.post("/api/update-assignment", async (req, res) => {
       formValues.is_active,
       formValues.feedback_on,
     ],
-    res
+    res,
   );
 });
 
 // POST /delete-assignment
 app.post("/api/delete-assignment", async (req, res) => {
   const { area_id } = req.body;
-  await executeQuery(
-    adminQueries.deleteAssignmentQuery,
-    [ area_id],
-    res
-  );
+  await executeQuery(adminQueries.deleteAssignmentQuery, [area_id], res);
 });
 
 // POST /delete-userdata
 app.post("/api/delete-userdata", async (req, res) => {
   const { userdata } = req.body;
-  await executeQuery(
-    adminQueries.deleteUserDataQuery,
-    [userdata.data_id],
-    res
-  );
+  await executeQuery(adminQueries.deleteUserDataQuery, [userdata.data_id], res);
 });
 // POST /delete-alluserdata
 app.post("/api/delete-alluserdata", async (req, res) => {
   const { username } = req.body;
-  await executeQuery(
-    adminQueries.deleteAllUserDataQuery,
-    [username],
-    res
-  );
+  await executeQuery(adminQueries.deleteAllUserDataQuery, [username], res);
 });
 // POST /delete-alluserdata
 app.post("/api/delete-allhistorydata", async (req, res) => {
   const { username } = req.body;
-  await executeQuery(
-    adminQueries.deleteAllHistoryDataQuery,
-    [username],
-    res
-  );
+  await executeQuery(adminQueries.deleteAllHistoryDataQuery, [username], res);
 });
 
 //POST /get-status
 app.post("/api/get-status", async (req, res) => {
   const { areaId } = req.body;
-  await executeQuery(
-    adminQueries.getStatusQuery,
-    [ areaId],
-    res
-  );
+  await executeQuery(adminQueries.getStatusQuery, [areaId], res);
 });
 
 //POST /update-status
 app.post("/api/update-status", async (req, res) => {
   const { areaId, checked } = req.body;
-  await executeQuery(
-    adminQueries.updateStatusQuery,
-    [ areaId, checked],
-    res
-  );
+  await executeQuery(adminQueries.updateStatusQuery, [areaId, checked], res);
 });
 
 //################# get DB's Structure ######################################################
@@ -434,9 +377,14 @@ app.post("/api/update-status", async (req, res) => {
 const { getPgStructureQuery } = mainQueries;
 
 app.post("/api/getPostgreSQLStructure", async (req, res) => {
-   const { endpoint } = req.body;
+  const { endpoint } = req.body;
   try {
-    const postgreSQL_query = () => (endpoint === "World" && pool2.query(getPgStructureQuery) || endpoint === "Movie" && pool3.query(getPgStructureQuery) || endpoint === "Euro" && pool4.query(getPgStructureQuery) || endpoint === "Teachers" && pool5.query(getPgStructureQuery) || endpoint === "Buses" && pool6.query(getPgStructureQuery) );
+    const postgreSQL_query = () =>
+      (endpoint === "World" && pool2.query(getPgStructureQuery)) ||
+      (endpoint === "Movie" && pool3.query(getPgStructureQuery)) ||
+      (endpoint === "Euro" && pool4.query(getPgStructureQuery)) ||
+      (endpoint === "Teachers" && pool5.query(getPgStructureQuery)) ||
+      (endpoint === "Buses" && pool6.query(getPgStructureQuery));
     let result = await executeQueryWithTimeout(postgreSQL_query, 50000);
 
     tables_set = new Set();
@@ -475,11 +423,6 @@ app.post("/api/getPostgreSQLStructure", async (req, res) => {
   }
 });
 app.set("trust proxy", "loopback");
- 
-
-
-
-
 
 //################# Query Execution ######################################################
 //################# Timeout Function ######################################################
@@ -506,14 +449,20 @@ const executeQueryWithTimeout = (queryFunction, timeout) => {
 // Execute SQL queries
 // check if query is equal to the expected solution
 app.post("/api/execute-sql", async (req, res) => {
-  const { endpoint, execQuery, taskNumber, taskAreaId, maxPoints_SQL, feedback_on } = req.body;
+  const {
+    endpoint,
+    execQuery,
+    taskNumber,
+    taskAreaId,
+    maxPoints_SQL,
+    feedback_on,
+  } = req.body;
 
   const isFeedbackOn =
     feedback_on === true ||
     feedback_on === "true" ||
     feedback_on === 1 ||
     feedback_on === "1";
-  
 
   try {
     // Execute user's SQL query
@@ -521,38 +470,40 @@ app.post("/api/execute-sql", async (req, res) => {
     let queryFeedback_new = "";
     let queryFeedback = "";
     if (!execQuery.includes("private") && !execQuery.includes("tool")) {
-      
-            userQueryResult = await executeQueryWithTimeout(
-          () => (endpoint === "World" && pool2.query(execQuery) || endpoint === "Movie" && pool3.query(execQuery) || endpoint === "Euro" && pool4.query(execQuery) || endpoint === "Teachers" && pool5.query(execQuery) || endpoint === "Buses" && pool6.query(execQuery)),
-          50000);
-        
-    
+      userQueryResult = await executeQueryWithTimeout(
+        () =>
+          (endpoint === "World" && pool2.query(execQuery)) ||
+          (endpoint === "Movie" && pool3.query(execQuery)) ||
+          (endpoint === "Euro" && pool4.query(execQuery)) ||
+          (endpoint === "Teachers" && pool5.query(execQuery)) ||
+          (endpoint === "Buses" && pool6.query(execQuery)),
+        50000,
+      );
 
-      
       try {
         // Check if the user's query matches the expected solution
         const { getSolutionQuery } = mainQueries;
         const expectedSolutionResult = await executeQueryWithTimeout(
           () => pool.query(getSolutionQuery, [taskNumber, taskAreaId]),
-          50000
+          50000,
         );
 
         // ######### START: SQL Query Distance ##################
 
         // check if no solution is stored for the exercise
         if (
-            !expectedSolutionResult ||
-            !expectedSolutionResult.rows ||
-            expectedSolutionResult.rows.length === 0 ||
-            !expectedSolutionResult.rows[0].solution_query
+          !expectedSolutionResult ||
+          !expectedSolutionResult.rows ||
+          expectedSolutionResult.rows.length === 0 ||
+          !expectedSolutionResult.rows[0].solution_query
         ) {
-            console.log("No expected solution found.");
-            userQueryResult = await executeQueryWithTimeout(
-              () => pool.query(execQuery),
-              50000
-            );
-            console.log("userQueryResult:", userQueryResult.rows);
-            res.json({
+          console.log("No expected solution found.");
+          userQueryResult = await executeQueryWithTimeout(
+            () => pool.query(execQuery),
+            50000,
+          );
+          console.log("userQueryResult:", userQueryResult.rows);
+          res.json({
             userQueryResult: userQueryResult.rows,
             expectedResult: "no solution",
             queryFeedback: "",
@@ -788,7 +739,7 @@ app.post("/api/execute-sql", async (req, res) => {
           casting ( _movieid [movie]_, _actorid [actor]_, _ord_ )
           movie ( _id_, title, yr, director [actor], budget, gross )
           `;
-          
+
           const schema_teachers = `
           teacher ( _id_, dept [dept], name, phone, mobile )
           dept ( _id_, name )
@@ -808,11 +759,12 @@ app.post("/api/execute-sql", async (req, res) => {
 
           const schema = schemaByEndpoint[endpoint];
           if (!schema) {
-            return res.status(400).json({ error: `Unknown endpoint for schema: ${endpoint}` });
+            return res
+              .status(400)
+              .json({ error: `Unknown endpoint for schema: ${endpoint}` });
           }
-        
-          
-          if (isFeedbackOn) {
+
+          /*   if (isFeedbackOn) {
             try {
               console.log(`calculating...`);
               console.time();
@@ -838,23 +790,7 @@ app.post("/api/execute-sql", async (req, res) => {
               }
 
 
-              /*if (maxDistance === 0 || maxDistance === null) {
-                [distance, steps, path] = await
-                sqlQueryDistance.parseAndCalculateDistance(
-                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
-              } else {
-
-                if (hasValidMaxDistance) {
-                  [distance, steps, path] = await
-                  sqlQueryDistance.parseAndCalculateDistance(
-                    expectedSolutionResult.rows[0].solution_query, execQuery, schema, config, maxDistance);
-
-                } else {
-                  [distance, steps, path] = await
-                  sqlQueryDistance.parseAndCalculateDistance(
-                    expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
-                }
-              }*/
+              
 
               console.timeEnd();
 
@@ -876,14 +812,79 @@ app.post("/api/execute-sql", async (req, res) => {
               console.error("Error calculating the sqlQueryDistance:", error);
               queryFeedback_new = "ERROR: " + error.message;
             }
+          } */
+          if (isFeedbackOn) {
+            try {
+              console.log("calculating...");
+              console.time("sql-distance");
+
+              const DEFAULT_MAX_DISTANCE = 10;
+
+              const parsedMaxDistance = Number(maxPoints_SQL);
+
+              const effectiveMaxDistance =
+                Number.isFinite(parsedMaxDistance) && parsedMaxDistance > 0
+                  ? parsedMaxDistance
+                  : DEFAULT_MAX_DISTANCE;
+
+              console.log({
+                maxDistance: effectiveMaxDistance,
+                queryLength: execQuery?.length,
+              });
+
+              [distance, steps, path] = await Promise.race([
+                sqlQueryDistance.parseAndCalculateDistance(
+                  expectedSolutionResult.rows[0].solution_query,
+                  execQuery,
+                  schema,
+                  config,
+                  effectiveMaxDistance,
+                ),
+                new Promise((_, reject) =>
+                  setTimeout(
+                    () => reject(new Error("SQL distance timeout")),
+                    5000,
+                  ),
+                ),
+              ]);
+
+              console.timeEnd("sql-distance");
+
+              queryFeedback = sqlQueryDistance.stringifyDistance(
+                distance,
+                steps,
+                path,
+              );
+
+              queryFeedback_new = sqlQueryDistance.stringifyDistance_new(
+                distance,
+                steps,
+                path,
+              );
+            } catch (error) {
+              console.error("Error calculating sqlQueryDistance:", error);
+
+              queryFeedback_new =
+                "ERROR: " + (error?.message || "Unknown error");
+            }
           }
 
-        // ######### END: SQL Query Distance ##################
+          // ######### END: SQL Query Distance ##################
 
-          const solutionPool = endpoint === "World" ? pool2 : endpoint === "Movie" ? pool3 : endpoint === "Euro" ? pool4 : endpoint === "Teachers" ? pool5 : pool6;
+          const solutionPool =
+            endpoint === "World"
+              ? pool2
+              : endpoint === "Movie"
+                ? pool3
+                : endpoint === "Euro"
+                  ? pool4
+                  : endpoint === "Teachers"
+                    ? pool5
+                    : pool6;
           const solution = await executeQueryWithTimeout(
-            () => solutionPool.query(expectedSolutionResult.rows[0].solution_query),
-            50000
+            () =>
+              solutionPool.query(expectedSolutionResult.rows[0].solution_query),
+            50000,
           );
           // Send both results to the client
           res.json({
@@ -895,12 +896,11 @@ app.post("/api/execute-sql", async (req, res) => {
             solutionQuery: expectedSolutionResult.rows[0].solution_query,
           });
         }
-
       } catch (error) {
         res.json({
           userQueryResult: userQueryResult.rows,
           expectedResult: "no solution",
-          queryFeedback_new: queryFeedback_new || ""
+          queryFeedback_new: queryFeedback_new || "",
         });
       }
     } else {
@@ -912,150 +912,151 @@ app.post("/api/execute-sql", async (req, res) => {
   }
 });
 
-
-
-
 //################# student projects SS24 ######################################################
 //################# project 4 SS24 ######################################################
 // Example route to get data from the database
-app.get('/api/data', async (req, res) => {
+app.get("/api/data", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM tool.user_task_data');
+    const result = await pool.query("SELECT * FROM tool.user_task_data");
     res.json(result.rows); // Send fetched data as JSON response
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error'); // Send 500 status on error
+    res.status(500).send("Server Error"); // Send 500 status on error
   }
 });
 
 // Route to get task-related data
-app.post('/api/task_data', async (req, res) => {
-  const {selectedTaskAreaId} = req.body;
+app.post("/api/task_data", async (req, res) => {
+  const { selectedTaskAreaId } = req.body;
   try {
-    const result_task_data = await pool.query('SELECT * FROM tool.task_statements where area_id = $1 order by statement_id', [selectedTaskAreaId]);
+    const result_task_data = await pool.query(
+      "SELECT * FROM tool.task_statements where area_id = $1 order by statement_id",
+      [selectedTaskAreaId],
+    );
     res.json(result_task_data.rows); // Send fetched task data as JSON response
-    
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error'); // Send 500 status on error
+    res.status(500).send("Server Error"); // Send 500 status on error
   }
 });
 
 // Route to get user-related data
-app.get('/api/user_data', async (req, res) => {
+app.get("/api/user_data", async (req, res) => {
   try {
-    const result_user_data = await pool.query('SELECT distinct username FROM tool.user_task_data');
+    const result_user_data = await pool.query(
+      "SELECT distinct username FROM tool.user_task_data",
+    );
     res.json(result_user_data.rows); // Send fetched user data as JSON response
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error'); // Send 500 status on error
+    res.status(500).send("Server Error"); // Send 500 status on error
   }
 });
 
 // Route to get area-related data
-app.get('/api/area_data', async (req, res) => {
+app.get("/api/area_data", async (req, res) => {
   try {
-    const result_area_data = await pool.query('SELECT * FROM tool.task_areas');
+    const result_area_data = await pool.query("SELECT * FROM tool.task_areas");
     res.json(result_area_data.rows); // Send fetched area data as JSON response
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error'); // Send 500 status on error
+    res.status(500).send("Server Error"); // Send 500 status on error
   }
 });
 //################# project 5 SS24 ######################################################
 // Route to get data from the database
-app.get('/api/get-data', async (req, res) => {
+app.get("/api/get-data", async (req, res) => {
   try {
-      const result = await pool.query('SELECT * FROM private.users');
-      term_res = res.json(result.rows);
-      //console.log(term_res);
+    const result = await pool.query("SELECT * FROM private.users");
+    term_res = res.json(result.rows);
+    //console.log(term_res);
   } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 
 // Route to create a new user
-app.post('/api/add-user', async (req, res) => {
+app.post("/api/add-user", async (req, res) => {
   //console.log("add-user", req.body)
   try {
-      const { user_name, password, role } = req.body;
-      //console.log(req.body);
-      const newUser = await pool.query(
-          'INSERT INTO private.users (user_name, password, role) VALUES ($1, $2, $3) RETURNING *',
-          [user_name, password, role]
-      );
-      res.status(201).json(newUser.rows[0]);
+    const { user_name, password, role } = req.body;
+    //console.log(req.body);
+    const newUser = await pool.query(
+      "INSERT INTO private.users (user_name, password, role) VALUES ($1, $2, $3) RETURNING *",
+      [user_name, password, role],
+    );
+    res.status(201).json(newUser.rows[0]);
   } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 
 // Route to update an existing user
-app.put('/api/update-user', async (req, res) => {
- // console.log("update-user", req.body)
+app.put("/api/update-user", async (req, res) => {
+  // console.log("update-user", req.body)
   try {
-      const { user_name, password, role } = req.body;
-      const userCheck = await pool.query('SELECT * FROM private.users WHERE user_name = $1', [user_name]);
+    const { user_name, password, role } = req.body;
+    const userCheck = await pool.query(
+      "SELECT * FROM private.users WHERE user_name = $1",
+      [user_name],
+    );
 
-      if (userCheck.rows.length === 0) {
-          return res.status(404).send('User not found');
-      }
+    if (userCheck.rows.length === 0) {
+      return res.status(404).send("User not found");
+    }
 
-      const updatedUser = await pool.query(
-          'UPDATE private.users SET password = $2, role = $3 WHERE user_name = $1 RETURNING *',
-          [user_name, password, role]
-      );
-      res.status(200).json(updatedUser.rows[0]);
+    const updatedUser = await pool.query(
+      "UPDATE private.users SET password = $2, role = $3 WHERE user_name = $1 RETURNING *",
+      [user_name, password, role],
+    );
+    res.status(200).json(updatedUser.rows[0]);
   } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 
 // Route to get user by username
-app.get('/api/get-user-by-username/:username', async (req, res) => {
+app.get("/api/get-user-by-username/:username", async (req, res) => {
   const { username } = req.params;
 
   try {
-      const query = 'SELECT * FROM private.users WHERE user_name = $1';
-      const result = await pool.query(query, [username]);
+    const query = "SELECT * FROM private.users WHERE user_name = $1";
+    const result = await pool.query(query, [username]);
 
-      if (result.rows.length > 0) {
-          res.json(result.rows[0]); // return user found
-      } else {
-          res.json(null); // returns null if no user found
-      }
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]); // return user found
+    } else {
+      res.json(null); // returns null if no user found
+    }
   } catch (error) {
-      console.error('Error fetching user by username:', error);
-      res.status(500).send('Server Error');
+    console.error("Error fetching user by username:", error);
+    res.status(500).send("Server Error");
   }
 });
 
 // Route to delete a user by its username
-app.delete('/api/delete-user/:username', async (req, res) => {
+app.delete("/api/delete-user/:username", async (req, res) => {
   const { username } = req.params;
 
   try {
-      const query = 'DELETE FROM private.users WHERE user_name = $1';
-      await pool.query(query, [username]);
+    const query = "DELETE FROM private.users WHERE user_name = $1";
+    await pool.query(query, [username]);
 
-      res.json({ message: 'Benutzer erfolgreich gelöscht' });
+    res.json({ message: "Benutzer erfolgreich gelöscht" });
   } catch (error) {
-      console.error('Fehler beim Löschen des Benutzers:', error);
-      res.status(500).send('Serverfehler');
+    console.error("Fehler beim Löschen des Benutzers:", error);
+    res.status(500).send("Serverfehler");
   }
 });
 
-
-
 //################# tests ######################################################
 
-
 //################# LLM ######################################################
-app.post('/api/LLMfeedback', async (req, res) => {
-  console.log("-_-_-_-_-_-_-_-_ LLM _-_-_-_-_-_-_-_-")
+app.post("/api/LLMfeedback", async (req, res) => {
+  console.log("-_-_-_-_-_-_-_-_ LLM _-_-_-_-_-_-_-_-");
   const startTime = Date.now();
   const { questionData, studentAnswer, correctAnswer, toolFeedback } = req.body;
 
@@ -1097,25 +1098,23 @@ app.post('/api/LLMfeedback', async (req, res) => {
     const tips_count = (result.match(/:/g) || []).length;
 
     const generationTime = Date.now() - startTime;
-    console.log(`Learning tip generation took ${generationTime} ms. This ${generationTime / 60000} minutes.`);
+    console.log(
+      `Learning tip generation took ${generationTime} ms. This ${generationTime / 60000} minutes.`,
+    );
     generationTimeMinutes = generationTime / 60000;
 
     res.json({
       learning_tips: result,
       learning_tips_count: tips_count,
-      LLM_time: generationTimeMinutes + " minutes" });
-
+      LLM_time: generationTimeMinutes + " minutes",
+    });
   } catch (error) {
-    console.error('Error from Ollama:', error.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to get feedback from Ollama' });
+    console.error("Error from Ollama:", error.response?.data || error.message);
+    res.status(500).json({ error: "Failed to get feedback from Ollama" });
   }
 });
 
-
-
-
 //################# start server ######################################################
-app.listen(8000, '0.0.0.0', () => {
-  console.log('Server running on port 8000');
+app.listen(8000, "0.0.0.0", () => {
+  console.log("Server running on port 8000");
 });
-
