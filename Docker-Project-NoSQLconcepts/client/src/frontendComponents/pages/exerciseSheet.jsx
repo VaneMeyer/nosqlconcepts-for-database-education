@@ -84,6 +84,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
 
   const [queryFeedback_new, setQueryFeedback_new] = useState("");
   const [totalDistance, setTotalDistance] = useState("");
+  const [zeroCostOutput, setZeroCostOutput] = useState([]);
   const [noCalculation, setNoCalculation] = useState("");
   const [feedbackOutput, setFeedbackOutput] = useState([]);
   const [collectedEditSteps, setCollectedEditSteps] = useState([]);
@@ -99,10 +100,11 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   const [solutionSQL, setSolutionSQL] = useState("");
 
   useEffect(() => {
-    const { totalDistance, noCalculation, feedbackOutput, errorCount } = sqlDistanceHandling(queryFeedback_new || "");
+    const { totalDistance, noCalculation, feedbackOutput, zeroCostOutput, errorCount } = sqlDistanceHandling(queryFeedback_new || "");
     setTotalDistance(totalDistance);
     setNoCalculation(noCalculation);
     setFeedbackOutput(feedbackOutput);
+    setZeroCostOutput(zeroCostOutput);
     setErrorCount(errorCount);
   }, [queryFeedback_new]);
 
@@ -300,6 +302,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     let noCalculation = "";
     let feedbackOutput = [];
     let errorCount = 0;
+    let zeroCostOutput = [];
     // console.log("Query Feedback New: ", queryFeedback_new);
 
     if (/^\s*ERROR:\s*/.test(queryFeedback_new)) {
@@ -313,15 +316,22 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       feedbackOutput = outputSplitter.map( a => {
         const lines = a.split("\n");
         const rawEditStep = (lines.shift() || "").trim();
-         const editStep = removeMarkers(rawEditStep);
+        const editStep = removeMarkers(rawEditStep);
         let solution = lines.join("\n").trim();
         solution = solution.replace(/,{2,}$/gm, m => m.slice(0,1));
+
+        if (/^(Cost|Kosten)\s*0\s*:/i.test(editStep)) {
+          zeroCostOutput.push({ editStep, solution });
+          return null;
+        }
+
       return { editStep, solution };
-      });
+      }).filter(Boolean);
+
       errorCount = feedbackOutput.length;
     }
 
-    return { totalDistance, noCalculation, feedbackOutput, errorCount };
+    return { totalDistance, noCalculation, feedbackOutput, zeroCostOutput, errorCount };
   }
 
   function calculatedPoints(maxPoints_SQL, feedbackOutput) {
@@ -329,7 +339,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     const scaleFactor = 1;
     let minusPoints = 0;
     feedbackOutput.forEach( a => {
-      const match = a.editStep.match(/Cost\s*([\d.,]+):/i);
+      const match = a.editStep.match(/(?:Cost|Kosten)\s*([\d.,]+):/i);
       if (match) {
         minusPoints += parseFloat(match[1].replace(",", "."));
       }
@@ -459,7 +469,9 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                 <ImportantMsg
                   message={
                     <>
-                      Enthält die Aufgabe ,,mind.'' oder ,,max.'' (z.B. ,,mind. 1000 Autos''), dann verwende zum Beispiel '&gt; or =' anstelle von '&gt;='.
+                      Enthält die Aufgabe ,,mind.'' oder ,,max.'' (z.B. ,,mind. 1000 Autos''),
+                      <br />
+                      dann verwende zum Beispiel '&gt; or =' anstelle von '&gt;='.
                     </>
                   }
                   type="info"
@@ -500,12 +512,12 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                             type="success"
                           />
                         )}
-                        {queryResult && feedback_on && (
+                        {/*queryResult && feedback_on && (
                           <ImportantMsg
                             message={feedback}
                             type={feedbackType}
                           />
-                        )}
+                        )*/}
 
                         {queryResult && (
                           <ResultTable
@@ -573,6 +585,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                                     </>
                                     }
                                 type="info"
+                                textAlign="justify"
                           />
 
                           <Box
@@ -585,7 +598,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                               } }
                             >
                               {totalDistance
-                                ? "These are the " + errorCount + " suggested changes to your query:"
+                                ? "Dies sind die " + errorCount + " vorgeschlagenen Änderungen an der Abfrage:"
                                 : ""}
 
                               {totalDistance === ""
@@ -640,6 +653,80 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                                 ))
                                 }
                           </Box>
+
+                          {totalDistance && zeroCostOutput.length > 0 && (
+                            <Box
+                                sx={ {
+                                  padding: "10px",
+                                  borderRadius: "5px",
+                                  border: "1px solid #cac9c9ff",
+                                  minHeight: 0,
+                                  whiteSpace: "pre-wrap",
+                                  marginTop: "12px",
+                                } }
+                              >
+                                <details>
+                                  <summary
+                                    style={{
+                                      width: "260px",
+                                      margin: "0 auto",
+                                      padding: "10px 15px",
+                                      listStyle: "none",
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      fontWeight: "bold",
+                                      cursor: "pointer",
+                                      border: "1px solid #bdbdbdff",
+                                      borderRadius: "5px",
+                                    }}
+                                  >
+                                    Optionale Hinweise anzeigen
+                                  </summary>
+                                  
+                                  <div style={{ paddingTop: "10px", width: "100%" }}>
+                                    <Typography sx={{ marginBottom: "8px" }}>
+                                      {"Diese " + zeroCostOutput.length + " vorgeschlagene(n) Änderung(en) haben keine Auswirkung auf deine Punktzahl:"}
+                                    </Typography>
+
+                                    {zeroCostOutput.map((entry, i) => (
+                                      <details key={i}
+                                        style={ {
+                                          border: "1px solid #bdbdbdff",
+                                          borderRadius: "5px",
+                                          marginTop: "10px",
+                                          overflow: "hidden"
+                                        } }
+                                      >
+                                        <summary
+                                        style={ {
+                                          justifyContent: "flex-start",
+                                          padding: "10px 15px",
+                                          listStyle: "none",
+                                          display: "flex",
+                                          fontWeight: "bold",
+                                          cursor: "pointer",
+                                        } }
+                                        >
+                                          { entry.editStep }
+                                          </summary>
+
+                                        <div
+                                          style={ {
+                                            justifyContent: "flex-start",
+                                            padding: "10px 45px",
+                                            listStyle: "none",
+                                            display: "flex",
+                                          } }
+                                        >
+                                        { entry.solution }
+                                        </div>
+                                      </details>
+                                    ) )
+                                    }
+                                  </div>
+                              </details>
+                            </Box>
+                          )}
                         </>
                       )}
                       <hr></hr>

@@ -167,7 +167,7 @@ function mirrorInequation(x, context) {
 });
 (0, edit_1.addEdit)(exports.horizontalEdits, {
     name: "changeSelectAsteriskTable",
-    description: "Falschen Tabellennamen für einen Asterisk in einem Select-Element-Ausdruck ändern. [[Change (incorrect)]]",
+    description: "Falschen Tabellennamen für einen Asterisk (*)in einem Select-Element-Ausdruck ändern. [[Change (incorrect)]]",
     cost: atomicEdits_1.atomicEdits.get("setSelectAsteriskTable").cost,
     perform: (query, _schema, meta, result) => {
         (0, atomicEdits_1.replaceSelectExpression)(query, result, changeAsteriskTable, meta.select.length, 1);

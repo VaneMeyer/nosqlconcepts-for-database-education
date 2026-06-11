@@ -431,7 +431,7 @@ exports.validateQuerySyntaxAndSemantics = validateQuerySyntaxAndSemantics;
  * @returns the stringified edit
  */
 function stringifyEdit(edit) {
-    return `Cost ${edit.cost}: ${edit.description}`;
+    return `Kosten ${edit.cost}: ${edit.description}`;
 }
 exports.stringifyEdit = stringifyEdit;
 /**
@@ -455,8 +455,8 @@ function parseConfig(description, config = (0, config_1.createDefaultConfig)()) 
         if (!config.has(edit))
             throw new Error(`Edit "${edit}" could not be found in config.`);
         else if (isNaN(cost))
-            throw new Error(`Cost ${elements[1]} of edit ${edit}` +
-                ` could not be parsed into a number.`);
+            throw new Error(`Kosten ${elements[1]} von Edit ${edit}` +
+                ` konnten nicht in eine Zahl umgewandelt werden.`);
         config.get(edit).cost = cost;
     }
     return config;
@@ -582,7 +582,7 @@ function stringifyDistance_new(distance, steps = null, path = null) {
 
         for (let i = 0; i < combinedCount; ++i) {
             if (stringifySteps) {
-                newOrder += `\n\n>>>${stringifyEdit(steps[i])}.`;
+                newOrder += `\n\n>>>${stringifyEdit(steps[i])}`;
             }
                 
             if (stringifySteps) {

@@ -177,7 +177,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "addSelectAsterisk",
-    description: "Fehlende Asterisk-Auswahl zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
+    description: "Fehlende Asterisk-Auswahl (*) zu einem Select-Element-Ausdruck hinzufügen. [[missing]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         if (!meta.select.asterisk)
@@ -187,7 +187,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "removeSelectAsterisk",
-    description: "Überflüssige Asterisk-Auswahl aus einem Select-Element-Ausdruck entfernen. [[excess]]",
+    description: "Überflüssige Asterisk-Auswahl (*) aus einem Select-Element-Ausdruck entfernen. [[excess]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, removeAsterisk, meta.select.length, Infinity);
@@ -203,7 +203,7 @@ exports.replaceSelectExpression = replaceSelectExpression;
 });
 (0, edit_1.addEdit)(exports.atomicEdits, {
     name: "unsetSelectAsteriskTable",
-    description: "Überflüssigen Tabellennamen vor einem Asterisk in einem Select-Element-Ausdruck entfernen. [[Unset (excess)]]",
+    description: "Überflüssigen Tabellennamen vor einem Asterisk (*)in einem Select-Element-Ausdruck entfernen. [[Unset (excess)]]",
     cost: 1,
     perform: (query, _schema, meta, result) => {
         replaceSelectExpression(query, result, unsetAsteriskTable, meta.select.length, meta.select.asterisk ? 1 : 0);

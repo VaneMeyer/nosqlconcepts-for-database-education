@@ -501,7 +501,7 @@ function extractFirstLevelConjugate(removed) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "expandAsterisk",
-    description: "Einen Asterisk durch die Ausdrücke ersetzen, die er repräsentiert. [[Replace an asterisk with]]",
+    description: "Einen Asterisk (*) durch die Ausdrücke ersetzen, die er repräsentiert. [[Replace an asterisk with]]",
     cost: 0,
     perform: (query, schema, meta, result) => {
         if (query.groupbyLength > 0) {
@@ -579,7 +579,7 @@ function extractFirstLevelConjugate(removed) {
 });
 (0, edit_1.addEdit)(exports.shortcutEdits, {
     name: "collapseAsterisk",
-    description: "Mehrere Ausdrücke durch einen Asterisk ersetzen, der sie repräsentiert. [[Replace a number of expressions]]",
+    description: "Mehrere Ausdrücke durch einen Asterisk (*) ersetzen, der sie repräsentiert. [[Replace a number of expressions]]",
     cost: 0,
     perform: (query, schema, meta, result) => {
         if (!meta.select.asterisk)
