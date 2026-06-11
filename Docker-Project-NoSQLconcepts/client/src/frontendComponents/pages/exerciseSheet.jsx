@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import QuizIcon from "@mui/icons-material/Quiz";
-//import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   Box,
   Button,
@@ -18,7 +18,6 @@ import {
   Checkbox,
   Typography,
 } from "@mui/material";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import AceEditor from "react-ace";
@@ -34,8 +33,7 @@ import { fetchTasksData, fetchLLMFeedback } from "../api/mainApi.js";
 import DbAccordion from "../components/exerciseSheetComponents/dbAccordion.jsx";
 import { sendToExecute } from "../api/queryApi.js";
 import { Link } from "react-router-dom";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { Fab } from "@mui/material";
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundCoor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -46,7 +44,7 @@ const Item = styled(Paper)(({ theme }) => ({
   overflow: "auto",
 }));
 function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
-  //feedback_on = true;
+  
   const getInitialFormData = (taskNumber) => {
     try {
       const stored = localStorage.getItem(`formdata_${area_id}_${taskNumber}`);
@@ -496,12 +494,12 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                           Ausführen
                           <PlayCircleFilledWhiteIcon></PlayCircleFilledWhiteIcon>
                         </Button>
-                        {/*feedback_on && (
+                        {/* {feedback_on && (
                           <ImportantMsg
                             message="Note that the feedback functionality is a work in progress. It is possible that a message will appear stating that your result does not match the expected result. Your solution may still be correct. We are working on improving this functionality in the future so that your individual solution is evaluated with regard to the task description."
                             type="info"
                           />
-                        )*/}
+                        )} */}
                         {queryResult && (
                           <ImportantMsg
                             message={
@@ -512,12 +510,12 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                             type="success"
                           />
                         )}
-                        {/*queryResult && feedback_on && (
+                       {/*  {queryResult && feedback_on && (
                           <ImportantMsg
                             message={feedback}
                             type={feedbackType}
                           />
-                        )*/}
+                        )} */}
 
                         {queryResult && (
                           <ResultTable
@@ -580,8 +578,8 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                                     Du kannst dir unten eine Übersicht der Fehler ansehen und auf einen Eintrag klicken, um weitere Details anzuzeigen.
                                     <br />
                                     Hat ein Fehler die „Kosten: 0“, handelt es sich um eine mathematische oder logische Umformung, die die Bedeutung der SQL-Abfrage nicht verändert.
-                                    Einige Operatortypen, wie z. B. <code>LIKE</code>, können derzeit noch nicht verarbeitet werden.
-                                    Daher ist für sie momentan kein detailliertes Feedback verfügbar.
+                                    Einige Operatortypen, wie z. B. <code>LIKE</code>,  <code>BETWEEN</code>,  <code>IN</code> können derzeit noch nicht verarbeitet werden.
+                                    Daher ist für sie momentan kein detailliertes Feedback verfügbar und es werden in dem Fall noch keine Punkte abgezogen.
                                     </>
                                     }
                                 type="info"
@@ -753,7 +751,6 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                             color: "black",
                             borderRadius: 5,
                             backgroundColor: "#388E3C",
-                            color: "white",
                             border: "2px solid #388E3C",
                             cursor: "pointer",
                             padding: "5px 15px",

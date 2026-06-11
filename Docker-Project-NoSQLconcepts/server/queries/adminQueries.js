@@ -3,7 +3,7 @@ const adminQueries = {
     getAllExercisesQuery: `SELECT s.statement_id, s.statement_text, s.area_id, a.area_name, s.topic, s.subtasknumber, s.maxtime, s.hint, s.solution_query, s.maxsql_points  FROM tool.task_statements s, tool.task_areas a where s.area_id = a.area_id order by area_id, statement_id`,
     deleteExerciseQuery: `DELETE FROM tool.task_statements WHERE statement_id = $1 AND area_id = $2`,
     addExerciseQuery: `INSERT INTO tool.task_statements (statement_id, area_id, statement_text, default_query, solution_query, topic, subtasknumber, maxtime, hint, tasknumber, maxsql_points) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-    updateExerciseQuery: `UPDATE tool.task_statements SET statement_text = $1, default_query =$10, solution_query = $2, topic = $3, subtasknumber = $4, maxtime = $5, hint = $6, tasknumber = $7, maxsql_points = $8 WHERE statement_id = $8 AND area_id = $9`,
+    updateExerciseQuery: `UPDATE tool.task_statements SET statement_text = $1, default_query =$11, solution_query = $2, topic = $3, subtasknumber = $4, maxtime = $5, hint = $6, tasknumber = $7, maxsql_points = $8 WHERE statement_id = $9 AND area_id = $10`,
     addAssignmentQuery: `INSERT INTO tool.task_areas (area_id, area_name, descr, link, endpoint, is_active) VALUES ($1, $2, $3, $4, $5, $6);`,
     getAllAssignmentsQuery:`SELECT * FROM tool.task_areas order by area_id`,
     deleteAssignmentQuery: `DELETE FROM tool.task_areas WHERE area_id = $1`,

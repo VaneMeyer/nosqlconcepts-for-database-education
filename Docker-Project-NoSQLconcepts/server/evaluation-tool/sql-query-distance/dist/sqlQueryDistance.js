@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseAndCalculateDistance = exports.calculateDistance = exports.removeUpdateListener = exports.addUpdateListener = exports.cancelCalculateDistance = exports.enableLogging = void 0;
+exports.parseAndCalculateDistance =
+  exports.calculateDistance =
+  exports.removeUpdateListener =
+  exports.addUpdateListener =
+  exports.cancelCalculateDistance =
+  exports.enableLogging =
+    void 0;
 const sql_1 = require("./sql");
 const config_1 = require("./config");
 const parser_1 = require("./parser");
@@ -11,7 +17,7 @@ let logging = false;
  * @param l whether logging should be enabled or disabled
  */
 function enableLogging(l) {
-    logging = l;
+  logging = l;
 }
 exports.enableLogging = enableLogging;
 let canceled;
@@ -19,7 +25,7 @@ let canceled;
  * Cancels the query distance calculation.
  */
 function cancelCalculateDistance() {
-    canceled = true;
+  canceled = true;
 }
 exports.cancelCalculateDistance = cancelCalculateDistance;
 const updateListeners = [];
@@ -29,7 +35,7 @@ const updateListeners = [];
  * @param l the update listener to add
  */
 function addUpdateListener(l) {
-    updateListeners.push(l);
+  updateListeners.push(l);
 }
 exports.addUpdateListener = addUpdateListener;
 /**
@@ -38,9 +44,8 @@ exports.addUpdateListener = addUpdateListener;
  * @param l the update listener to remove
  */
 function removeUpdateListener(l) {
-    const i = updateListeners.indexOf(l);
-    if (i >= 0)
-        updateListeners.splice(i, 1);
+  const i = updateListeners.indexOf(l);
+  if (i >= 0) updateListeners.splice(i, 1);
 }
 exports.removeUpdateListener = removeUpdateListener;
 /**
@@ -52,25 +57,24 @@ exports.removeUpdateListener = removeUpdateListener;
  * @param queueLength the number of currently queued nodes
  */
 function dispatchUpdate(distance, maxDistance, queryCount, queueLength) {
-    let stack = updateListeners.slice();
-    for (let i = 0; i < stack.length; ++i)
-        stack[i](distance, maxDistance, queryCount, queueLength);
+  let stack = updateListeners.slice();
+  for (let i = 0; i < stack.length; ++i)
+    stack[i](distance, maxDistance, queryCount, queueLength);
 }
 class Node {
-    query;
-    distance;
-    previous;
-    step;
-    nextEdit;
-    constructor(query, distance, previous, step, nextEdit = 0) {
-        this.query = query;
-        this.distance = distance;
-        this.previous = previous;
-        this.step = step;
-        this.nextEdit = nextEdit;
-    }
+  query;
+  distance;
+  previous;
+  step;
+  nextEdit;
+  constructor(query, distance, previous, step, nextEdit = 0) {
+    this.query = query;
+    this.distance = distance;
+    this.previous = previous;
+    this.step = step;
+    this.nextEdit = nextEdit;
+  }
 }
-;
 /**
  * Calculates the distance (and shortest path) between two queries asynchronously.
  * It uses a custom shortest path algorithm based on uniform cost search.
@@ -83,137 +87,191 @@ class Node {
  * @returns a promise for a tuple of the distance, edit-steps, and queries of the shortest path
  * @throws an error if the maximum search was exceeded before reaching the destination
  */
-async function calculateDistance(destination, start = null, schema = null, config = null, maxDistance = Infinity) {
-    if (!destination)
-        throw new Error("Für die Berechnung der Distanz ist eine Ziellösung erforderlich.");
-    if (!start)
-        start = new sql_1.Query();
-    if (!schema)
-        schema = sql_1.Schema.deduceSchema(destination);
-    destination.validateSemantics(schema);
-    const metaInfo = new sql_1.MetaInfo(destination, schema);
-    if (!config)
-        config = (0, config_1.createDefaultConfig)();
-    const sortedConfig = Array.from(config.values()).sort((e1, e2) => e1.cost - e2.cost);
-    const editCount = sortedConfig.length;
-    const firstEditCost = sortedConfig[0].cost;
-    if (!maxDistance && maxDistance !== 0)
-        maxDistance = Infinity;
-    canceled = false;
-    /* Uniform cost search,
-     * but neighbors are generated exactly when they are the nearest unvisited node
-     */
-    //All discovered Nodes of the Graph
-    const visited = new Map();
-    let queryCount = 1;
-    //Queue of nodes to be processed next
-    const queue = new Map();
-    let currentDistance = 0;
-    //fire first update event to show that processing started
-    dispatchUpdate(currentDistance, maxDistance, queryCount, 1);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    //check if start and destination are already equal
-    if (destination.equals(start))
-        return [0, [], [start]];
-    //mark start node as visited and add its first neighbors to the queue
-    const startNode = new Node(start, 0, null, null);
-    visited.set(start.hash, [startNode]);
-    currentDistance = startNode.distance + firstEditCost;
-    queue.set(currentDistance, [startNode]);
-    let destinationNode = new Node(destination, Infinity, null, null);
-    //init update counter and timestamps
-    let updateCounter = 0;
-    let thisUpdate = Date.now(), previousUpdate = thisUpdate;
-    //process queue of visited nodes ordered by smallest distance of their next unvisited neighbors
-    queueLoop: while (!canceled) {
-        //while(!queue.has(currentDistance)) ++currentDistance;
-        const currentQueue = queue.get(currentDistance);
-        const node = currentQueue.shift();
-        const query = node.query;
-        const editNr = node.nextEdit;
-        const edit = sortedConfig[editNr];
-        if (currentDistance > maxDistance) { //max search distance exceeded
-            throw new Error(`Die Ziellösung konnte nicht erreicht werden ` +
-                `innerhalb der maximalen Distanz von ${maxDistance}.`);
-        }
-        //for every neighbor generated by the edit
-        const neighbors = [];
-        edit.perform(query, schema, metaInfo, neighbors);
-        neighborLoop: for (let n = 0, nl = neighbors.length; n < nl; ++n) {
-            const neighbor = neighbors[n];
-            //skip this neighbor if it has already been visited
-            const comparableNodes = visited.get(neighbor.hash) || [];
-            for (let cn = 0, cnl = comparableNodes.length; cn < cnl; ++cn) {
-                const comparableQuery = comparableNodes[cn].query;
-                if (neighbor.equals(comparableQuery))
-                    continue neighborLoop;
-            }
-            //end the search if the destination has been reached
-            if (destination.equals(neighbor)) {
-                //override destination to make alias names etc. consistent
-                destinationNode = new Node(neighbor, currentDistance, node, edit);
-                break queueLoop;
-            }
-            //mark this neighbor as visited
-            ++queryCount;
-            const neighborNode = new Node(neighbor, currentDistance, node, edit);
-            if (logging)
-                console.log(neighborNode);
-            if (!visited.has(neighbor.hash))
-                visited.set(neighbor.hash, []);
-            visited.get(neighbor.hash).push(neighborNode);
-            //and queue it at the proper position
-            const nextDistance = currentDistance + firstEditCost;
-            if (!queue.has(nextDistance))
-                queue.set(nextDistance, []);
-            queue.get(nextDistance).push(neighborNode);
-        }
-        ++node.nextEdit;
-        if (node.nextEdit < editCount) {
-            //if there are edits left, that have not been performed on the query yet, re-queue node
-            const nextDistance = node.distance + sortedConfig[node.nextEdit].cost;
-            if (!queue.has(nextDistance))
-                queue.set(nextDistance, []);
-            queue.get(nextDistance).push(node);
-        }
-        const currentDistanceChanges = currentQueue.length == 0;
-        if (currentDistanceChanges) { //if this was the last node with the current distance
-            queue.delete(currentDistance);
-            if (queue.size == 0) { //when using all atomic edits, this should not be possible
-                throw new Error("Die Zielabfrage konnte nicht erreicht werden" +
-                    " unabhängig von der Distanz. Dies sollte nicht möglich sein," +
-                    " außer wenn einige atomare Bearbeitungsschritte in der Konfiguration fehlen.");
-            }
-            ++currentDistance;
-            while (!queue.has(currentDistance))
-                ++currentDistance;
-        }
-        //fire update events (and avoid massive freezing, especially in browser)
-        if (currentDistanceChanges ||
-            ((++updateCounter > 10000) && ((thisUpdate = Date.now()) - previousUpdate) > 1000)) {
-            updateCounter = 0;
-            previousUpdate = thisUpdate;
-            dispatchUpdate(currentDistance, maxDistance, queryCount, currentDistanceChanges ? queue.get(currentDistance).length : currentQueue.length);
-            await new Promise(resolve => setTimeout(resolve, 0));
-        }
+async function calculateDistance(
+  destination,
+  start = null,
+  schema = null,
+  config = null,
+  maxDistance = Infinity,
+) {
+  //optimieren testen
+  const MAX_VISITED_NODES = 10000;
+  const MAX_NEIGHBORS = 1000;
+  const MAX_RUNTIME_MS = 3000;
+
+  const startTime = Date.now();
+  //test ende
+  if (!destination)
+    throw new Error(
+      "Für die Berechnung der Distanz ist eine Ziellösung erforderlich.",
+    );
+  if (!start) start = new sql_1.Query();
+  if (!schema) schema = sql_1.Schema.deduceSchema(destination);
+  destination.validateSemantics(schema);
+  const metaInfo = new sql_1.MetaInfo(destination, schema);
+  if (!config) config = (0, config_1.createDefaultConfig)();
+  const sortedConfig = Array.from(config.values()).sort(
+    (e1, e2) => e1.cost - e2.cost,
+  );
+  const editCount = sortedConfig.length;
+  const firstEditCost = sortedConfig[0].cost;
+  if (!maxDistance && maxDistance !== 0) maxDistance = Infinity;
+  canceled = false;
+  /* Uniform cost search,
+   * but neighbors are generated exactly when they are the nearest unvisited node
+   */
+  //All discovered Nodes of the Graph
+  const visited = new Map();
+  let queryCount = 1;
+  //Queue of nodes to be processed next
+  const queue = new Map();
+  let currentDistance = 0;
+  //fire first update event to show that processing started
+  dispatchUpdate(currentDistance, maxDistance, queryCount, 1);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  //check if start and destination are already equal
+  if (destination.equals(start)) return [0, [], [start]];
+  //mark start node as visited and add its first neighbors to the queue
+  const startNode = new Node(start, 0, null, null);
+  visited.set(start.hash, [startNode]);
+  currentDistance = startNode.distance + firstEditCost;
+  queue.set(currentDistance, [startNode]);
+  let destinationNode = new Node(destination, Infinity, null, null);
+  //init update counter and timestamps
+  let updateCounter = 0;
+  let thisUpdate = Date.now(),
+    previousUpdate = thisUpdate;
+  //process queue of visited nodes ordered by smallest distance of their next unvisited neighbors
+  queueLoop: while (!canceled) {
+    //optimieren test
+    if (Date.now() - startTime > MAX_RUNTIME_MS) {
+      throw new Error(`Berechnungs-Timeout nach ${MAX_RUNTIME_MS}ms`);
     }
-    if (canceled) {
-        throw new Error("Die Distanzberechnung wurde abgebrochen" +
-            " bevor die Zielabfrage erreicht werden konnte.");
+
+    if ((queryCount & 2047) === 0) {
+      await new Promise((resolve) => setImmediate(resolve));
     }
-    if (logging)
-        console.log(destinationNode);
-    //gather steps and path from destination node back to start node
-    let node = destinationNode;
-    const steps = [];
-    const path = [];
+    //test ende
+    //while(!queue.has(currentDistance)) ++currentDistance;
+    const currentQueue = queue.get(currentDistance);
+    const node = currentQueue.shift();
+    const query = node.query;
+    const editNr = node.nextEdit;
+    const edit = sortedConfig[editNr];
+    if (currentDistance > maxDistance) {
+      //max search distance exceeded
+      throw new Error(
+        `Die Ziellösung konnte nicht erreicht werden ` +
+          `innerhalb der maximalen Distanz von ${maxDistance}.`,
+      );
+    }
+    //for every neighbor generated by the edit
+    const neighbors = [];
+    edit.perform(query, schema, metaInfo, neighbors);
+    //optimierung test
+    if (neighbors.length > MAX_NEIGHBORS) {
+      throw new Error(`Zu viele Nachbarn: (${neighbors.length})`);
+    }
+    //test ende
+    neighborLoop: for (let n = 0, nl = neighbors.length; n < nl; ++n) {
+      const neighbor = neighbors[n];
+      //skip this neighbor if it has already been visited
+      const comparableNodes = visited.get(neighbor.hash) || [];
+      for (let cn = 0, cnl = comparableNodes.length; cn < cnl; ++cn) {
+        const comparableQuery = comparableNodes[cn].query;
+        if (neighbor.equals(comparableQuery)) continue neighborLoop;
+      }
+      //end the search if the destination has been reached
+      if (destination.equals(neighbor)) {
+        //override destination to make alias names etc. consistent
+        destinationNode = new Node(neighbor, currentDistance, node, edit);
+        break queueLoop;
+      }
+      //mark this neighbor as visited
+      ++queryCount;
+      //optimierung test
+      if (queryCount > MAX_VISITED_NODES) {
+        throw new Error(`Berechnungslimit erreicht. Zu viele Knoten besucht: (${MAX_VISITED_NODES} Knoten)`);
+      }
+      //test ende
+      const neighborNode = new Node(neighbor, currentDistance, node, edit);
+      if (logging) console.log(neighborNode);
+      if (!visited.has(neighbor.hash)) visited.set(neighbor.hash, []);
+      visited.get(neighbor.hash).push(neighborNode);
+      //and queue it at the proper position
+      const nextDistance = currentDistance + firstEditCost;
+      if (!queue.has(nextDistance)) queue.set(nextDistance, []);
+      queue.get(nextDistance).push(neighborNode);
+    }
+    ++node.nextEdit;
+    if (node.nextEdit < editCount) {
+      //if there are edits left, that have not been performed on the query yet, re-queue node
+      const nextDistance = node.distance + sortedConfig[node.nextEdit].cost;
+      if (!queue.has(nextDistance)) queue.set(nextDistance, []);
+      queue.get(nextDistance).push(node);
+    }
+    const currentDistanceChanges = currentQueue.length == 0;
+    if (currentDistanceChanges) {
+      //if this was the last node with the current distance
+      queue.delete(currentDistance);
+      if (queue.size == 0) {
+        //when using all atomic edits, this should not be possible
+        throw new Error(
+          "Die Zielabfrage konnte nicht erreicht werden" +
+            " unabhängig von der Distanz. Dies sollte nicht möglich sein," +
+            " außer wenn einige atomare Bearbeitungsschritte in der Konfiguration fehlen.",
+        );
+      }
+      //test optimierung ++currentDistance;
+      //while (!queue.has(currentDistance))
+      //test ende   ++currentDistance;
+      //test optimierung
+      const distances = Array.from(queue.keys());
+
+      if (distances.length === 0) {
+        throw new Error("Leere Queue.");
+      }
+
+      currentDistance = Math.min(...distances);
+      //test ende
+    }
+    //fire update events (and avoid massive freezing, especially in browser)
+    if (
+      currentDistanceChanges ||
+      (++updateCounter > 10000 &&
+        (thisUpdate = Date.now()) - previousUpdate > 1000)
+    ) {
+      updateCounter = 0;
+      previousUpdate = thisUpdate;
+      dispatchUpdate(
+        currentDistance,
+        maxDistance,
+        queryCount,
+        currentDistanceChanges
+          ? queue.get(currentDistance).length
+          : currentQueue.length,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+  }
+  if (canceled) {
+    throw new Error(
+      "Die Distanzberechnung wurde abgebrochen" +
+        " bevor die Zielabfrage erreicht werden konnte.",
+    );
+  }
+  if (logging) console.log(destinationNode);
+  //gather steps and path from destination node back to start node
+  let node = destinationNode;
+  const steps = [];
+  const path = [];
+  path.unshift(node.query);
+  while (node.previous) {
+    steps.unshift(node.step);
+    node = node.previous;
     path.unshift(node.query);
-    while (node.previous) {
-        steps.unshift(node.step);
-        node = node.previous;
-        path.unshift(node.query);
-    }
-    return [destinationNode.distance, steps, path];
+  }
+  return [destinationNode.distance, steps, path];
 }
 exports.calculateDistance = calculateDistance;
 /**
@@ -228,18 +286,27 @@ exports.calculateDistance = calculateDistance;
  * @returns a promise for a tuple of the distance, edit-steps, and queries of the shortest path
  * @throws an error if the maximum search was exceeded before reaching the destination
  */
-async function parseAndCalculateDistance(destinationDescription, startDescription = null, schemaDescription = null, configDescription = null, maxDistance = Infinity) {
-    let destination = (0, parser_1.parseQuery)(destinationDescription);
-    let start = startDescription && (0, parser_1.clean)(startDescription) != ""
-        ? (0, parser_1.parseQuery)(startDescription)
-        : new sql_1.Query();
-    let schema = schemaDescription && (0, parser_1.clean)(schemaDescription) != ""
-        ? (0, parser_1.parseSchema)(schemaDescription)
-        : null;
-    let config = configDescription && (0, parser_1.clean)(configDescription) != ""
-        ? (0, parser_1.parseConfig)(configDescription)
-        : (0, config_1.createDefaultConfig)();
-    return calculateDistance(destination, start, schema, config, maxDistance);
+async function parseAndCalculateDistance(
+  destinationDescription,
+  startDescription = null,
+  schemaDescription = null,
+  configDescription = null,
+  maxDistance = Infinity,
+) {
+  let destination = (0, parser_1.parseQuery)(destinationDescription);
+  let start =
+    startDescription && (0, parser_1.clean)(startDescription) != ""
+      ? (0, parser_1.parseQuery)(startDescription)
+      : new sql_1.Query();
+  let schema =
+    schemaDescription && (0, parser_1.clean)(schemaDescription) != ""
+      ? (0, parser_1.parseSchema)(schemaDescription)
+      : null;
+  let config =
+    configDescription && (0, parser_1.clean)(configDescription) != ""
+      ? (0, parser_1.parseConfig)(configDescription)
+      : (0, config_1.createDefaultConfig)();
+  return calculateDistance(destination, start, schema, config, maxDistance);
 }
 exports.parseAndCalculateDistance = parseAndCalculateDistance;
 //# sourceMappingURL=sqlQueryDistance.js.map
