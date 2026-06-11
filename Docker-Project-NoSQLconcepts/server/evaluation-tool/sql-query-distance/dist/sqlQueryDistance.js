@@ -191,7 +191,7 @@ async function calculateDistance(
       ++queryCount;
       //optimierung test
       if (queryCount > MAX_VISITED_NODES) {
-        throw new Error(`Berechnungslimit erreicht. (${MAX_VISITED_NODES})`);
+        throw new Error(`Berechnungslimit erreicht. Zu viele Knoten besucht: (${MAX_VISITED_NODES} Knoten)`);
       }
       //test ende
       const neighborNode = new Node(neighbor, currentDistance, node, edit);
