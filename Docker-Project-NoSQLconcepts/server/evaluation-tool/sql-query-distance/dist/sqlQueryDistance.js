@@ -145,7 +145,7 @@ async function calculateDistance(
   queueLoop: while (!canceled) {
     //optimieren test
     if (Date.now() - startTime > MAX_RUNTIME_MS) {
-      throw new Error(`Distance calculation timeout after ${MAX_RUNTIME_MS}ms`);
+      throw new Error(`Berechnungs-Timeout nach ${MAX_RUNTIME_MS}ms`);
     }
 
     if ((queryCount & 2047) === 0) {
@@ -170,7 +170,7 @@ async function calculateDistance(
     edit.perform(query, schema, metaInfo, neighbors);
     //optimierung test
     if (neighbors.length > MAX_NEIGHBORS) {
-      throw new Error(`Neighbor explosion detected (${neighbors.length})`);
+      throw new Error(`Zu viele Nachbarn: (${neighbors.length})`);
     }
     //test ende
     neighborLoop: for (let n = 0, nl = neighbors.length; n < nl; ++n) {
@@ -191,7 +191,7 @@ async function calculateDistance(
       ++queryCount;
       //optimierung test
       if (queryCount > MAX_VISITED_NODES) {
-        throw new Error(`Maximum node count exceeded (${MAX_VISITED_NODES})`);
+        throw new Error(`Berechnungslimit erreicht. (${MAX_VISITED_NODES})`);
       }
       //test ende
       const neighborNode = new Node(neighbor, currentDistance, node, edit);
@@ -229,7 +229,7 @@ async function calculateDistance(
       const distances = Array.from(queue.keys());
 
       if (distances.length === 0) {
-        throw new Error("Queue became empty");
+        throw new Error("Leere Queue.");
       }
 
       currentDistance = Math.min(...distances);
