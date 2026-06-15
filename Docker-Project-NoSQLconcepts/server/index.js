@@ -1085,7 +1085,7 @@ app.post("/api/LLMfeedback", async (req, res) => {
       exactly as the following structure:
       "(1) Learning tip: [learning tip text]\n(2) Learning tip: [learning tip text]".
 
-      Ensure the learning tip(s) are clear, educational, and supportive, but do not stretch them unnaturally.
+      Ensure the learning tip(s) are for german speakers, clear, educational, and supportive, but do not stretch them unnaturally.
       `;
     const response = await axios.post("http://ollama:11434/api/generate", {
       model: "gemma3:4b",

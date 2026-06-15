@@ -7,7 +7,7 @@ export const fetchUserNames = async () => {
     const response = await axios.get(`${API_URL}/getUsers`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error fetching user names:", error);
     throw error;
   }
 };
@@ -16,7 +16,7 @@ export const fetchExercises = async () => {
     const response = await axios.get(`${API_URL}/getexercises`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error fetching  exercises:", error);
     throw error;
   }
 };
@@ -28,7 +28,7 @@ export const deleteExercise = async (statement_id, area_id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error deleting exercises:", error);
     throw error;
   }
 };
@@ -39,7 +39,7 @@ export const addExercise = async (formValues) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error adding exercises:", error);
     throw error;
   }
 };
@@ -50,7 +50,7 @@ export const updateExercise = async (formValues) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error updating exercises:", error);
     throw error;
   }
 };
@@ -62,7 +62,7 @@ export const addAssignment = async (formValues) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error adding assignments:", error);
     throw error;
   }
 };
@@ -72,7 +72,7 @@ export const fetchAssignments = async () => {
     const response = await axios.get(`${API_URL}/get-assignments`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error fetching assignments:", error);
     throw error;
   }
 };
@@ -84,7 +84,7 @@ export const deleteAssignment = async (area_id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error deleting assignments:", error);
     throw error;
   }
 };
@@ -95,7 +95,7 @@ export const updateAssignment = async (formValues) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error updating assignments:", error);
     throw error;
   }
 };
@@ -105,7 +105,7 @@ export const fetchStatus = async (areaId) => {
     const response = await axios.post(`${API_URL}/get-status`, { areaId });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error fetching status:", error);
     throw error;
   }
 };
@@ -118,7 +118,7 @@ export const updateNewStatus = async (areaId, checked) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error updating new status:", error);
     throw error;
   }
 };
@@ -129,7 +129,7 @@ export const deleteUserData = async (userdata) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error deleting user data:", error);
     throw error;
   }
 };
@@ -143,7 +143,7 @@ export const deleteAllUserData = async (username) => {
     });
     return (response.data, response2.data);
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error deleting all user data:", error);
     throw error;
   }
 };
@@ -153,7 +153,7 @@ export const fetchUserTaskData = async () => {
     const response = await axios.get(`${API_URL}/getUserTaskData`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error fetching user task data:", error);
     throw error;
   }
 };
@@ -162,7 +162,7 @@ export const fetchHistoryData = async () => {
     const response = await axios.get(`${API_URL}/getHistoryData`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching area names:", error);
+    console.error("Error fetching history data:", error);
     throw error;
   }
 };

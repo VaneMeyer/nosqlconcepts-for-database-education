@@ -54,7 +54,7 @@ const ManageExercises = () => {
     maxtime: "",
     hint: "",
     tasknumber: "",
-    maxsql_points: 10,
+    maxsql_points: 5,
   });
   const [openFormDialog, setOpenFormDialog] = useState(false);
   const [areaIdFilter, setAreaIdFilter] = useState(""); // New state for area_id filter
@@ -89,7 +89,7 @@ const ManageExercises = () => {
       maxtime: "",
       hint: "",
       tasknumber: "",
-      maxsql_points: 10,
+      maxsql_points: 5,
     });
     setOpenFormDialog(true);
     setSelectedArea("");
@@ -126,7 +126,7 @@ const ManageExercises = () => {
       maxtime: "",
       hint: "",
       tasknumber: "",
-      maxsql_points: 10,
+      maxsql_points: 5,
     });
   };
 

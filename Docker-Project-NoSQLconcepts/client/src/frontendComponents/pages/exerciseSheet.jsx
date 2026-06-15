@@ -6,6 +6,7 @@ import Container from "@mui/material/Container";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import QuizIcon from "@mui/icons-material/Quiz";
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 import {
   Box,
@@ -33,6 +34,7 @@ import { fetchTasksData, fetchLLMFeedback } from "../api/mainApi.js";
 import DbAccordion from "../components/exerciseSheetComponents/dbAccordion.jsx";
 import { sendToExecute } from "../api/queryApi.js";
 import { Link } from "react-router-dom";
+import GradientButton from "../components/exerciseSheetComponents/gradientButton.jsx";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -349,7 +351,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   // takes the exersice description, editsteps
   const llmFeedback = async (feedbackOutput) => {
     setShowLLMTip(true);
-    setLlmTip("Loading LLM learning tip...");
+    setLlmTip("Lerntipp wird geladen...");
     console.log("LLM Feedback Function");
 
     try {
@@ -383,7 +385,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       console.log("llmFeedback error");
       console.error("Error:", error);
       setLlmError("Failed to get answer from LLM.");
-      setLlmTip("No LLM Tip available.");
+      setLlmTip("Kein Lerntipp verfügbar.");
     }
   }
 
@@ -549,13 +551,13 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                       {feedback_on && queryResult && (
                         <>
                           <Typography variant="h6" gutterBottom>
-                            See Your SQL Feedback
+                            SQL Feedback
                           </Typography>
                           {maxPoints_SQL && (
                             <Typography variant="h7" gutterBottom>
                               {feedback.includes("Your query output is equal to the expected output")
-                                ? `There are ${maxPoints_SQL} points and you received ${maxPoints_SQL} points.`
-                                : `There are ${maxPoints_SQL} points and you received ${calculatedPoints(maxPoints_SQL, feedbackOutput)} points.`
+                                ? `Sie haben ${maxPoints_SQL} von ${maxPoints_SQL} Punkten erreicht.`
+                                : `Sie haben ${calculatedPoints(maxPoints_SQL, feedbackOutput)} von ${maxPoints_SQL} Punkten erreicht.`
                               }
                             </Typography>
                           )}
@@ -731,12 +733,12 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                       {feedback_on && (queryResult || error ) && (
                         <>
                         <Typography variant="h6" gutterBottom>
-                            LLM learning tip
+                            LLM Lerntipp
                           </Typography>
                           <ImportantMsg
                                 message={
                                   <>
-                                    Klicke auf die Button unten, um einen personalisierten Lerntipp auf Grundlage der Aufgabenbeschreibung, deiner Lösung und des SQL-Feedbacks zu erhalten.
+                                    Klicke auf die Button unten, um einen personalisierten, <b>KI-generierten</b> Lerntipp auf Grundlage der Aufgabenbeschreibung, deiner Lösung und des SQL-Feedbacks zu erhalten.
                                     <br />
                                     Bitte beachte, dass sich diese Funktion noch in der Entwicklung befindet und die Antwort einige Zeit dauern kann.
                                   </>
@@ -744,7 +746,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                                 type="info"
                           />
                               
-                        <button
+                       {/*  <button
                           type="button"
                           id="test_area"
                           style={ {
@@ -759,8 +761,9 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                           } }
                           onClick={() => llmFeedback(feedbackOutput)}
                         >
-                          LLM learning tip
-                        </button>
+                          Lerntipp generieren
+                        </button> */}
+                         <GradientButton id="test_area" onClick={() => llmFeedback(feedbackOutput)}> <AutoAwesomeIcon /> Lerntipp generieren</GradientButton>
                         <Box sx={{mt: 2}} />
                         {showLLMTip && (
                           <Box

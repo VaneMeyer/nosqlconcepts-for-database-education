@@ -18,13 +18,9 @@ import {
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import Logout from "@mui/icons-material/Logout";
 import LogOut from "../Auth/logout";
 import { checkAuth } from "../api/loginApi";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import SchoolIcon from "@mui/icons-material/School";
-import PersonIcon from "@mui/icons-material/Person";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import InfoIcon from "@mui/icons-material/Info";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import BuildIcon from "@mui/icons-material/Build";
@@ -88,7 +84,7 @@ function TopBar() {
   return (
     <AppBar
       position="static"
-      color="default" /* sx={{ backgroundColor: "rgb(255, 255, 255)" }} */
+      color="default" 
       
     >
       <Toolbar>

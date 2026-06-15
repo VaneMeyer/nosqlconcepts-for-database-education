@@ -78,7 +78,7 @@ export default function CardContainer() {
     try {
       const response = await fetchAssignments();
       setAssignments(response);
-      console.log(response);
+      //console.log(response);
       if (response.length > 0) {
         let idArray = response.map((item) => item.area_id);
         let maxId = Math.max(...idArray) + 1;

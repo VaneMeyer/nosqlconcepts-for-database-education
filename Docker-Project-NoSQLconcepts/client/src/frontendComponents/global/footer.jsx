@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import digitellLogo from "../images/DigiTeLL_Logo2023.png";
 import GULogo from "../images/GU-Logo-blau.jpg";
 import StiftungLogo from "../images/Logo_Stiftung_Hochschullehre_pos_klein.jpg";

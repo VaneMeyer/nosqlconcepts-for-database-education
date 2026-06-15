@@ -72,37 +72,3 @@ export function CustomThemeProvider({ children }) {
 
 export const useColorMode = () => useContext(ColorModeContext);
 
-/* // ThemeProvider.jsx
-import { createContext, useContext, useEffect, useState } from "react";
-
-const ThemeContext = createContext();
-
-export const ThemeProvider = ({ children }) => {
-  const [theme2, setTheme] = useState("light");
-
-  const toggleTheme = () => {
-    const next = theme2 === "light" ? "dark" : "light";
-    setTheme(next);
-    localStorage.setItem("theme", next);
-  };
-
-  // lade gespeichertes Theme
-  useEffect(() => {
-    const saved = localStorage.getItem("theme") || "light";
-    setTheme(saved);
-  }, []);
-
-  // aktualisiere HTML-Klasse
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme2 === "dark");
-  }, [theme2]);
-
-  return (
-    <ThemeContext.Provider value={{ theme2, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-
-export const useTheme2 = () => useContext(ThemeContext);
- */
