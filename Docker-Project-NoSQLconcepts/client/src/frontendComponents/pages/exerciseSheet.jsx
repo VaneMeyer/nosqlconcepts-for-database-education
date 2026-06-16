@@ -740,7 +740,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                                   <>
                                     Klicke auf die Button unten, um einen personalisierten, <b>KI-generierten</b> Lerntipp auf Grundlage der Aufgabenbeschreibung, deiner Lösung und des SQL-Feedbacks zu erhalten.
                                     <br />
-                                    Bitte beachte, dass sich diese Funktion noch in der Entwicklung befindet und die Antwort einige Zeit dauern kann.
+                                    Bitte beachte, dass sich diese Funktion derzeit noch in der Entwicklung befindet. Daher kann die Generierung der Antwort etwas Zeit in Anspruch nehmen. Außerdem können KI-generierte Antworten Fehler enthalten. 
                                   </>
                                   }
                                 type="info"
