@@ -328,6 +328,25 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       return { editStep, solution };
       }).filter(Boolean);
 
+
+      const asteriskStep =
+        "Einen Asterisk (*) durch die Ausdrücke ersetzen, die er repräsentiert";
+      const excessSelectStep =
+        "Überflüssiges Element aus der SELECT-Klausel entfernen";
+
+      const hasExcess = feedbackOutput.some( x =>
+        x.editStep.includes(excessSelectStep)
+      );
+      const asterixIndex = zeroCostOutput.findIndex( x =>
+        x.editStep.includes(asteriskStep)
+      );
+
+      if (hasExcess && asterixIndex !== -1) {
+        feedbackOutput.unshift(zeroCostOutput[asterixIndex]);
+        zeroCostOutput.splice(asterixIndex, 1);
+      }
+
+
       errorCount = feedbackOutput.length;
     }
 
