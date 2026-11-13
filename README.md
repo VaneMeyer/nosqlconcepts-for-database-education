@@ -1,7 +1,7 @@
-# sqlzooTutorialGerman
-## nosqlconcepts sqlZoo Turorial german
+# nosqlconcepts for database education
+## nosqlconcepts 
 
-based on https://sqlzoo.net/wiki/SQL_Tutorial 
+tasks based on https://sqlzoo.net/wiki/SQL_Tutorial 
  
 ## Installation and usage
 
