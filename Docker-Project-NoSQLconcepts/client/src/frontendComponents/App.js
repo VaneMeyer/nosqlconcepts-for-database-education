@@ -25,6 +25,7 @@ import AdminPage from "./pages/adminPage.jsx";
 import NewInformationC from "./pages/information.jsx";
 import QuizTaskSheet from "./pages/quizSheet.jsx";
 import { BBCquizQuestions, joinquiz2Questions, joinquizQuestions, nestedselectquizQuestions, selectquizQuestions, selfjoinquizQuestions, sumandcountquizQuestions, usingnullquizQuestions } from "./data/quizData";
+import AITutor from "./pages/aiTutor.jsx";
 
 const AuthContext = createContext();
 
@@ -94,6 +95,10 @@ const AppRoutes = ({ assignments }) => {
   const routes = [
     { path: "/", element: <NewDashboard /> },
 
+    {
+      path: "/ai-tutor",
+      element: <ProtectedRoute element={<AITutor />} isAdminRoute />,
+    },
     {
       path: "/manage-users",
       element: <ProtectedRoute element={<AdminPage />} isAdminRoute />,
