@@ -1,5 +1,5 @@
-# nosqlconcepts for database education
-## nosqlconcepts 
+# NoSQLconcepts for database education
+
 
 tasks based on https://sqlzoo.net/wiki/SQL_Tutorial 
  
