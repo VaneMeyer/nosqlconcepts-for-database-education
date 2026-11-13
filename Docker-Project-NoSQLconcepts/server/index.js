@@ -12,6 +12,8 @@ const adminQueries = require("./queries/adminQueries");
 const jwt = require("jsonwebtoken");
 const helmet = require("helmet");
 const axios = require("axios");
+const XLSX = require("xlsx");
+const fs = require("fs");
 
 require("dotenv").config();
 
@@ -72,11 +74,11 @@ app.get("/conditions", (req, res) => {
           data. The information collected will be used in accordance with our
           privacy policy and only for the purposes stated above.
          By continuing to use this application, you consent to
-          the storage of cookies on your device and the collection and use of
-          your data as described. 
-        
+          the storage of cookies on your device and the collection and use
+          of your data as described.
+
           Once you have completed the course, all your data will be permanently deleted from our systems.
-         
+
           If you have any questions or concerns
           regarding our use of cookies and data, please contact us. Thank you
           for your understanding and cooperation.`);
@@ -764,55 +766,7 @@ app.post("/api/execute-sql", async (req, res) => {
               .json({ error: `Unknown endpoint for schema: ${endpoint}` });
           }
 
-          /*   if (isFeedbackOn) {
-            try {
-              console.log(`calculating...`);
-              console.time();
-              // Distance: sum of edit step costs
-              const maxDistance = Number(maxPoints_SQL);
-              //console.log("maxDistance: ", maxDistance);
-              const hasValidMaxDistance = Number.isFinite(maxDistance) && maxDistance > 0;
 
-              if (maxDistance === 0 || maxDistance === null) {
-                [distance, steps, path] = await
-                sqlQueryDistance.parseAndCalculateDistance(
-                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
-
-              } else if (hasValidMaxDistance) {
-                [distance, steps, path] = await
-                sqlQueryDistance.parseAndCalculateDistance(
-                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config, maxDistance);
-
-              } else {
-                [distance, steps, path] = await
-                sqlQueryDistance.parseAndCalculateDistance(
-                  expectedSolutionResult.rows[0].solution_query, execQuery, schema, config);
-              }
-
-
-              
-
-              console.timeEnd();
-
-              queryFeedback = sqlQueryDistance.stringifyDistance(distance, steps, path);
-              //console.log("sqlQueryDistance Feedback:", queryFeedback);
-
-              //console.log("===========================================================");
-              queryFeedback_new = sqlQueryDistance.stringifyDistance_new(distance, steps, path);
-              //console.log("Edited sqlQueryDistance Feedback: ", queryFeedback_new);
-              //console.log("===========================================================");
-
-              //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
-              //console.log("Distance: ", distance);
-              //console.log("Steps: ", JSON.stringify(steps, null, 2));
-              //console.log("Path: ", JSON.stringify(path, null, 2));
-              //console.log("++++++++++++++++++++++++++++++++++++++++++++++");
-
-            } catch (error) {
-              console.error("Error calculating the sqlQueryDistance:", error);
-              queryFeedback_new = "ERROR: " + error.message;
-            }
-          } */
           if (isFeedbackOn) {
             try {
               console.log("calculating...");
@@ -957,7 +911,7 @@ app.get("/api/user_data", async (req, res) => {
 app.get("/api/area_data", async (req, res) => {
   try {
     const result_area_data = await pool.query("SELECT * FROM tool.task_areas");
-    res.json(result_area_data.rows); // Send fetched area data as JSON response
+    res.json(result_area_data.rows); // Send fetched data as JSON response
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error"); // Send 500 status on error
@@ -995,7 +949,7 @@ app.post("/api/add-user", async (req, res) => {
 
 // Route to update an existing user
 app.put("/api/update-user", async (req, res) => {
-  // console.log("update-user", req.body)
+  // console.log("add-user", req.body)
   try {
     const { user_name, password, role } = req.body;
     const userCheck = await pool.query(
@@ -1060,11 +1014,6 @@ app.post("/api/LLMfeedback", async (req, res) => {
   const startTime = Date.now();
   const { questionData, studentAnswer, correctAnswer, toolFeedback } = req.body;
 
-  //console.log("questionData: ", questionData);
-  //console.log("studentAnswer: ", studentAnswer);
-  //console.log("correctAnswer: ", correctAnswer);
-  //console.log("toolFeedback: ", toolFeedback);
-
   try {
     const prompt = ` You are a helpful tutor.
       Provide clear, constructive feedback that helps the student understand their mistake and how to improve their answer,
@@ -1076,9 +1025,9 @@ app.post("/api/LLMfeedback", async (req, res) => {
 
       The students have to find the correct query themself, so do provide only a hint in your output without a solution query.
       Also limit your output to 200 characters.
-      
+
       Format it strictly following exact structure, with no additional text, special characters, Markdown, Brackets or deviations
-      and be precise about which table etc is needed in order to understand their mistake and how to improve their answer: 
+      and be precise about which table etc is needed in order to understand their mistake and how to improve their answer:
       "(1) Learning tip: [learning tip text]",
       and ensure the actual learning tip appears only after "Learning tip:".
       If more than one learning tip is really necessary, seperate them with "\n" and increase the number in ( ) with 1,
@@ -1088,7 +1037,7 @@ app.post("/api/LLMfeedback", async (req, res) => {
       Ensure the learning tip(s) are for german speakers, clear, educational, and supportive, but do not stretch them unnaturally.
       `;
     const response = await axios.post("http://ollama:11434/api/generate", {
-      model: "gemma3:4b",
+      model: "gemma3:4b", //gemma4
       prompt,
       stream: false,
     });
@@ -1113,6 +1062,449 @@ app.post("/api/LLMfeedback", async (req, res) => {
     res.status(500).json({ error: "Failed to get feedback from Ollama" });
   }
 });
+
+//################# LLM EVALUATION API #############################################
+const EVALUATION_FILE = path.join(__dirname, "evaluation.xlsx");
+
+/*
+ * Health Check
+ */
+app.get(
+  "/api/health",
+  (_req, res) => {
+    const localModels = (process.env.LLM_MODELS || "")
+      .split(",")
+      .map((x) => x.trim())
+      .filter(Boolean);
+
+    const apiModels = [
+      "gwdg/qwen3-coder-next",
+      "gwdg/deepseek-v4-flash",
+      "meta-llama-3.1-8b-instruct",
+    ];
+
+    res.json({
+      ok: true,
+      models: [
+        ...localModels,
+        ...apiModels,
+      ],
+      localModels,
+      apiModels,
+      ollamaUrl:
+        process.env.OLLAMA_URL ||
+        "http://localhost:11434",
+      apiConfigured:
+        Boolean(
+          process.env.LLM_API_URL &&
+          process.env.LLM_USER_ID &&
+          process.env.LLM_API_KEY
+        ),
+    });
+  }
+);
+
+/*
+ * Evaluation
+ */
+app.post(
+  "/api/evaluate",
+  async (req, res) => {
+    const started = Date.now();
+
+    try {
+      validate(req.body);
+
+      const {
+        task,
+        studentID,
+        studentSolution,
+        humanEvaluation,
+      } = req.body;
+
+      const { evaluateWithModels } = await import("./services/evaluator.js");
+
+      const results =
+        await evaluateWithModels({
+          task,
+          studentID,
+          studentSolution,
+          humanEvaluation,
+        });
+
+      const successfulResults =
+        results.filter(
+          (result) =>
+            result.success
+        );
+
+      let run = null;
+      let saved = false;
+
+      if (
+        successfulResults.length > 0
+      ) {
+        run = getNextRun(
+          task.taskID,
+          studentID
+        );
+
+        const row =
+          createEvaluationRow({
+            task,
+            studentID,
+            humanEvaluation,
+            results,
+            run,
+          });
+
+        appendEvaluationRow(row);
+
+        saved = true;
+      }
+
+      res.json({
+        ok: true,
+        evaluatedAt:
+          new Date().toISOString(),
+        durationMs:
+          Date.now() - started,
+        run,
+        saved,
+        results,
+      });
+    } catch (error) {
+      console.error(
+        "Evaluation error:",
+        error
+      );
+
+      res.status(400).json({
+        ok: false,
+        error:
+          error?.message ||
+          "Evaluation failed",
+      });
+    }
+  }
+);
+
+
+function validate(body) {
+  const {
+    task,
+    studentID,
+    studentSolution,
+    humanEvaluation,
+  } = body;
+
+  if (
+    !task?.taskID?.trim()
+  ) {
+    throw Error(
+      "taskID is required"
+    );
+  }
+
+  if (
+    !studentID?.trim()
+  ) {
+    throw Error(
+      "studentID is required"
+    );
+  }
+
+  if (
+    !task.description?.trim()
+  ) {
+    throw Error(
+      "task.description is required"
+    );
+  }
+
+  if (
+    !task.referenceSolution?.trim()
+  ) {
+    throw Error(
+      "task.referenceSolution is required"
+    );
+  }
+
+  if (
+    !Number.isFinite(
+      Number(task.maxPoints)
+    ) ||
+    Number(task.maxPoints) <= 0
+  ) {
+    throw Error(
+      "task.maxPoints must be positive"
+    );
+  }
+
+  if (
+    !studentSolution?.trim()
+  ) {
+    throw Error(
+      "studentSolution is required"
+    );
+  }
+
+  if (
+    !humanEvaluation
+  ) {
+    throw Error(
+      "humanEvaluation is required"
+    );
+  }
+
+  if (
+    !humanEvaluation.tutorID?.trim()
+  ) {
+    throw Error(
+      "tutorID is required"
+    );
+  }
+
+  if (
+    !Number.isFinite(
+      Number(
+        humanEvaluation.points
+      )
+    )
+  ) {
+    throw Error(
+      "humanEvaluation.points is required"
+    );
+  }
+}
+
+
+function getNextRun(
+  taskID,
+  studentID
+) {
+  if (
+    !fs.existsSync(
+      EVALUATION_FILE
+    )
+  ) {
+    return 1;
+  }
+
+  const workbook =
+    XLSX.readFile(
+      EVALUATION_FILE
+    );
+
+  const sheetName =
+    workbook.SheetNames[0];
+
+  if (!sheetName) {
+    return 1;
+  }
+
+  const sheet =
+    workbook.Sheets[sheetName];
+
+  const rows =
+    XLSX.utils.sheet_to_json(
+      sheet,
+      {
+        defval: "",
+      }
+    );
+
+  let maxRun = 0;
+
+  for (const row of rows) {
+    if (
+      String(row.taskID) ===
+        String(taskID) &&
+      String(row.StudID) ===
+        String(studentID)
+    ) {
+      const currentRun =
+        Number(row.Run);
+
+      if (
+        Number.isFinite(currentRun) &&
+        currentRun > maxRun
+      ) {
+        maxRun = currentRun;
+      }
+    }
+  }
+
+  return maxRun + 1;
+}
+
+
+function createEvaluationRow({
+  task,
+  studentID,
+  humanEvaluation,
+  results,
+  run,
+}) {
+  const row = {
+    taskID: task.taskID,
+    StudID: studentID,
+    TutID: humanEvaluation.tutorID,
+    maxPoints: Number(task.maxPoints),
+    TutPoints: Number(humanEvaluation.points),
+    TutCategory:
+      humanEvaluation.category || "",
+  };
+
+  for (const result of results) {
+    const model = result.model;
+
+    if (!result.success) {
+      row[`${model}Points`] = "";
+      row[`${model}Category`] = "";
+      row[`${model}Confidence`] = "";
+      row[`${model}correctFeedback`] = "";
+      row[`${model}Runtime`] =
+        result.durationMs;
+      continue;
+    }
+
+    const evaluation =
+      result.evaluation;
+
+    row[`${model}Points`] =
+      evaluation.points;
+
+    row[`${model}Category`] =
+      evaluation.errorCategory;
+
+    row[`${model}Confidence`] =
+      evaluation.confidence ?? "";
+
+    row[`${model}correctFeedback`] =
+      "";
+
+    row[`${model}Runtime`] =
+      result.durationMs;
+  }
+
+  row.Run = run;
+
+  return row;
+}
+
+
+function appendEvaluationRow(row) {
+  const columns = [
+    "taskID",
+    "StudID",
+    "TutID",
+    "maxPoints",
+    "TutPoints",
+    "TutCategory",
+
+    /*   "qwen2.5:3bPoints",
+    "qwen2.5:3bCategory",
+    "qwen2.5:3bConfidence",
+    "qwen2.5:3bcorrectFeedback",
+    "qwen2.5:3bRuntime", */
+
+    "gemma3:4bPoints",
+    "gemma3:4bCategory",
+    "gemma3:4bConfidence",
+    "gemma3:4bcorrectFeedback",
+    "gemma3:4bRuntime",
+
+    /*  "gemma3:12bPoints",
+    "gemma3:12bCategory",
+    "gemma3:12bConfidence",
+    "gemma3:12bcorrectFeedback",
+    "gemma3:12bRuntime",
+
+    "gwdg/qwen3-coder-nextPoints",
+    "gwdg/qwen3-coder-nextCategory",
+    "gwdg/qwen3-coder-nextConfidence",
+    "gwdg/qwen3-coder-nextcorrectFeedback",
+    "gwdg/qwen3-coder-nextRuntime",
+
+    "gwdg/deepseek-v4-flashPoints",
+    "gwdg/deepseek-v4-flashCategory",
+    "gwdg/deepseek-v4-flashConfidence",
+    "gwdg/deepseek-v4-flashcorrectFeedback",
+    "gwdg/deepseek-v4-flashRuntime",
+
+    "meta-llama-3.1-8b-instructPoints",
+    "meta-llama-3.1-8b-instructCategory",
+    "meta-llama-3.1-8b-instructConfidence",
+    "meta-llama-3.1-8b-instructcorrectFeedback",
+    "meta-llama-3.1-8b-instructRuntime", */
+
+    "Run",
+  ];
+
+  let workbook;
+
+  if (fs.existsSync(EVALUATION_FILE)) {
+    workbook =
+      XLSX.readFile(
+        EVALUATION_FILE
+      );
+  } else {
+    workbook =
+      XLSX.utils.book_new();
+  }
+
+  const sheetName =
+    workbook.SheetNames[0] ||
+    "Evaluations";
+
+  let sheet =
+    workbook.Sheets[sheetName];
+
+  if (!sheet) {
+    const headerRow = [
+      columns,
+    ];
+
+    sheet =
+      XLSX.utils.aoa_to_sheet(
+        headerRow
+      );
+
+    workbook.Sheets[sheetName] =
+      sheet;
+
+    if (
+      !workbook.SheetNames.includes(
+        sheetName
+      )
+    ) {
+      workbook.SheetNames.push(
+        sheetName
+      );
+    }
+  }
+
+  const values =
+    columns.map(
+      (column) =>
+        row[column] ?? ""
+    );
+
+  XLSX.utils.sheet_add_aoa(
+    sheet,
+    [values],
+    {
+      origin: -1,
+    }
+  );
+
+  XLSX.writeFile(
+    workbook,
+    EVALUATION_FILE
+  );
+}
+
 
 //################# start server ######################################################
 app.listen(8000, "0.0.0.0", () => {
