@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import QuizIcon from "@mui/icons-material/Quiz";
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
 import {
   Box,
@@ -18,6 +18,8 @@ import {
   FormGroup,
   Checkbox,
   Typography,
+  Divider,
+  Chip,
 } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -26,6 +28,11 @@ import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/mode-sql"; // SQL-Syntax-Highlighting
 import "../../custom_ace_files/mode-pgsql.js";
 import "../../custom_ace_files/theme-goethe.js";
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/theme-tomorrow_night";
+
+import { useTheme } from "@mui/material/styles";
 import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
 import ImportantMsg from "../components/otherComponents/importantMsg.jsx";
 
@@ -36,7 +43,6 @@ import { sendToExecute } from "../api/queryApi.js";
 import { Link } from "react-router-dom";
 import GradientButton from "../components/exerciseSheetComponents/gradientButton.jsx";
 
-
 const Item = styled(Paper)(({ theme }) => ({
   backgroundCoor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -46,7 +52,8 @@ const Item = styled(Paper)(({ theme }) => ({
   overflow: "auto",
 }));
 function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
-  
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const getInitialFormData = (taskNumber) => {
     try {
       const stored = localStorage.getItem(`formdata_${area_id}_${taskNumber}`);
@@ -72,7 +79,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   const [tasksArray, setTasksArray] = useState([]);
 
   const [formData, setFormData] = useState(() =>
-    getInitialFormData(taskNumber)
+    getInitialFormData(taskNumber),
   );
 
   const [queryResult, setQueryResult] = useState("");
@@ -100,7 +107,13 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   const [solutionSQL, setSolutionSQL] = useState("");
 
   useEffect(() => {
-    const { totalDistance, noCalculation, feedbackOutput, zeroCostOutput, errorCount } = sqlDistanceHandling(queryFeedback_new || "");
+    const {
+      totalDistance,
+      noCalculation,
+      feedbackOutput,
+      zeroCostOutput,
+      errorCount,
+    } = sqlDistanceHandling(queryFeedback_new || "");
     setTotalDistance(totalDistance);
     setNoCalculation(noCalculation);
     setFeedbackOutput(feedbackOutput);
@@ -145,37 +158,38 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
         taskNumber,
         area_id,
         maxPoints_SQL,
-        feedback_on
+        feedback_on,
       );
 
-
-      //console.log("SQL query of the student: ", execQuery);
-      //console.log("Correct SQL query: ", response.data.solutionQuery);
       setSolutionSQL(response.data.solutionQuery || "");
-      //console.log("queryFeedback_new: ", response.data.queryFeedback_new);
 
       setHasSolutionQuery(Boolean(response.data.solutionQuery));
       setQueryFeedback_new(response.data.queryFeedback_new || "");
 
-      const { feedbackOutput } = sqlDistanceHandling(response.data.queryFeedback_new || "");
-      const isSQLOutputEqual = JSON.stringify(response.data.userQueryResult) === JSON.stringify(response.data.expectedResult);
-      const currentSQLPoints = isSQLOutputEqual ? maxPoints_SQL : calculatedPoints(maxPoints_SQL, feedbackOutput);
+      const { feedbackOutput } = sqlDistanceHandling(
+        response.data.queryFeedback_new || "",
+      );
+      const isSQLOutputEqual =
+        JSON.stringify(response.data.userQueryResult) ===
+        JSON.stringify(response.data.expectedResult);
+      const currentSQLPoints = isSQLOutputEqual
+        ? maxPoints_SQL
+        : calculatedPoints(maxPoints_SQL, feedbackOutput);
 
-      const newSteps = feedbackOutput.map(item => item.editStep).filter(Boolean);
+      const newSteps = feedbackOutput
+        .map((item) => item.editStep)
+        .filter(Boolean);
       const mergedSteps = [...collectedEditSteps, ...newSteps];
       setCollectedEditSteps(mergedSteps);
-      
+
       const nextPoints = [...pointsHistory, currentSQLPoints];
       setPointsHistory(nextPoints);
-      //sendDataToDb(nextPoints, mergedSteps);
-
 
       if (typeof response.data.userQueryResult === "string") {
         setQueryResult([{ output: response.data.userQueryResult }]);
       } else {
         setQueryResult(response.data.userQueryResult);
       }
-      //setSolutionResult(response.data.expectedResult);
 
       if (typeof response.data.userQueryResult === "string") {
         setFormData((prev) => ({
@@ -198,7 +212,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
         JSON.stringify(response.data.expectedResult)
       ) {
         setFeedback(
-          "Correct! Your query output is equal to the expected output."
+          "Correct! Your query output is equal to the expected output.",
         );
 
         setFeedbackType("success");
@@ -210,7 +224,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       setError("");
     } catch (error) {
       setError(
-        `Error: ${error.response.data.error}. Note: Please try again, if you think that this task is solvable with a query. `
+        `Error: ${error.response.data.error}. Note: Please try again, if you think that this task is solvable with a query. `,
       );
       setQueryResult("");
       setFormData((prev) => ({
@@ -229,7 +243,7 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
   useEffect(() => {
     localStorage.setItem(
       `formdata_${area_id}_${taskNumber}`,
-      JSON.stringify(formData)
+      JSON.stringify(formData),
     );
   }, [formData, taskNumber, area_id]);
 
@@ -248,8 +262,6 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     };
   }, [taskNumber, area_id]);
 
- 
-
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -267,7 +279,6 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     setMaxPoints_SQL(tasksArray[newTaskIndex]?.maxsql_points || 0);
     setQueryResult("");
     setError("");
-    /* setHasStarted(false); */
   };
   const handleNextTask = () => {
     if (taskNumber === tasksArray.length) {
@@ -303,42 +314,50 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
     let feedbackOutput = [];
     let errorCount = 0;
     let zeroCostOutput = [];
-    // console.log("Query Feedback New: ", queryFeedback_new);
 
     if (/^\s*ERROR:\s*/.test(queryFeedback_new)) {
       noCalculation = queryFeedback_new.replace(/^\s*ERROR:\s*/, "").trim();
-
     } else {
-      totalDistance = queryFeedback_new.split("\n")[0].split(":").slice(1).join(":").trim();
+      totalDistance = queryFeedback_new
+        .split("\n")[0]
+        .split(":")
+        .slice(1)
+        .join(":")
+        .trim();
 
-      const outputSplitter = queryFeedback_new.split(">>>").map( a => a.trim() ).filter( Boolean ).slice(1);
+      const outputSplitter = queryFeedback_new
+        .split(">>>")
+        .map((a) => a.trim())
+        .filter(Boolean)
+        .slice(1);
 
-      feedbackOutput = outputSplitter.map( a => {
-        const lines = a.split("\n");
-        const rawEditStep = (lines.shift() || "").trim();
-        const editStep = removeMarkers(rawEditStep);
-        let solution = lines.join("\n").trim();
-        solution = solution.replace(/,{2,}$/gm, m => m.slice(0,1));
+      feedbackOutput = outputSplitter
+        .map((a) => {
+          const lines = a.split("\n");
+          const rawEditStep = (lines.shift() || "").trim();
+          const editStep = removeMarkers(rawEditStep);
+          let solution = lines.join("\n").trim();
+          solution = solution.replace(/,{2,}$/gm, (m) => m.slice(0, 1));
 
-        if (/^(Cost|Kosten)\s*0\s*:/i.test(editStep)) {
-          zeroCostOutput.push({ editStep, solution });
-          return null;
-        }
+          if (/^(Cost|Kosten)\s*0\s*:/i.test(editStep)) {
+            zeroCostOutput.push({ editStep, solution });
+            return null;
+          }
 
-      return { editStep, solution };
-      }).filter(Boolean);
-
+          return { editStep, solution };
+        })
+        .filter(Boolean);
 
       const asteriskStep =
         "Einen Asterisk (*) durch die Ausdrücke ersetzen, die er repräsentiert";
       const excessSelectStep =
         "Überflüssiges Element aus der SELECT-Klausel entfernen";
 
-      const hasExcess = feedbackOutput.some( x =>
-        x.editStep.includes(excessSelectStep)
+      const hasExcess = feedbackOutput.some((x) =>
+        x.editStep.includes(excessSelectStep),
       );
-      const asterixIndex = zeroCostOutput.findIndex( x =>
-        x.editStep.includes(asteriskStep)
+      const asterixIndex = zeroCostOutput.findIndex((x) =>
+        x.editStep.includes(asteriskStep),
       );
 
       if (hasExcess && asterixIndex !== -1) {
@@ -346,30 +365,38 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
         zeroCostOutput.splice(asterixIndex, 1);
       }
 
-
       errorCount = feedbackOutput.length;
     }
 
-    return { totalDistance, noCalculation, feedbackOutput, zeroCostOutput, errorCount };
+    return {
+      totalDistance,
+      noCalculation,
+      feedbackOutput,
+      zeroCostOutput,
+      errorCount,
+    };
   }
 
   function calculatedPoints(maxPoints_SQL, feedbackOutput) {
-    // The scale factor can be adjusted to change the weight of the dedcutions
     const scaleFactor = 1;
     let minusPoints = 0;
-    feedbackOutput.forEach( a => {
+    feedbackOutput.forEach((a) => {
       const match = a.editStep.match(/(?:Cost|Kosten)\s*([\d.,]+):/i);
       if (match) {
         minusPoints += parseFloat(match[1].replace(",", "."));
       }
     });
-    const unscaledPoints = Math.max(0, parseFloat(maxPoints_SQL) - (parseFloat(minusPoints) * scaleFactor));
+    const unscaledPoints = Math.max(
+      0,
+      parseFloat(maxPoints_SQL) - parseFloat(minusPoints) * scaleFactor,
+    );
     return unscaledPoints;
   }
 
   // takes the exersice description, editsteps
   const llmFeedback = async (feedbackOutput) => {
     setShowLLMTip(true);
+    setLlmError("");
     setLlmTip("Lerntipp wird geladen...");
     console.log("LLM Feedback Function");
 
@@ -378,35 +405,41 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       const questionData = [
         task.topic ? "Topic: " + task.topic + ", " : "",
         task.description ? "Description: " + task.description + ", " : "",
-        task.hint ? "Hint: " + task.hint : ""
-      ].filter(Boolean).join(" ");
-      //console.log("questionData: ", questionData);
+        task.hint ? "Hint: " + task.hint : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
 
       // Student Answer Data
       const studentAnswer = formData.query_text;
-      //console.log("studentAnswer: ", studentAnswer);
 
       // Correct Answer Data
       const correctAnswer = solutionSQL;
-      //console.log("correctAnswer: ", correctAnswer);
 
       // Tool Feedback Data
-      const toolFeedback = feedbackOutput.map((e, i) => `${i + 1}. ${e.editStep}: ${e.solution}`).join('\n');
+      const toolFeedback = feedbackOutput
+        .map((e, i) => `${i + 1}. ${e.editStep}: ${e.solution}`)
+        .join("\n");
       console.log("Tool Feedback: ", toolFeedback);
 
       // API Call
-      const response = await fetchLLMFeedback(questionData, studentAnswer, correctAnswer, toolFeedback);
+      const response = await fetchLLMFeedback(
+        questionData,
+        studentAnswer,
+        correctAnswer,
+        toolFeedback,
+        maxPoints_SQL,
+      );
       console.log("Response: ", response);
       setLlmError("");
       setLlmTip(response.learning_tips);
-
     } catch (error) {
       console.log("llmFeedback error");
       console.error("Error:", error);
       setLlmError("Failed to get answer from LLM.");
       setLlmTip("Kein Lerntipp verfügbar.");
     }
-  }
+  };
 
   const quizNav = {
     2: "/selectquiz",
@@ -474,7 +507,11 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                 </Box>
               </Item>
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={12}>
+              <DbAccordion endpoint={endpoint} />
+              <hr></hr>
+            </Grid>
+            <Grid item xs={12} md={12}>
               <Item>
                 {" "}
                 <Box aria-labelledby="Task topic, description and maximum time to solve the task">
@@ -485,401 +522,640 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                   <hr></hr>
                   <Typography>{task.hint}</Typography>
                 </Box>
-                <ImportantMsg
+                {/* <ImportantMsg
                   message={
                     <>
-                      Enthält die Aufgabe ,,mind.'' oder ,,max.'' (z.B. ,,mind. 1000 Autos''),
+                      Enthält die Aufgabe ,,mind.'' oder ,,max.'' (z.B. ,,mind.
+                      1000 Autos''),
                       <br />
-                      dann verwende zum Beispiel '&gt; or =' anstelle von '&gt;='.
+                      dann verwende zum Beispiel '&gt; or =' anstelle von
+                      '&gt;='.
                     </>
                   }
                   type="info"
-                />
+                /> */}
                 <Box p={0} aria-labelledby="Input Elements to solve the task">
-                  
-                    <form>
-                      <Box>
-                        <AceEditor
-                          id="query-input-label"
-                          name="query"
-                          mode={syntaxMode}
-                          onChange={handleEditorChange}
-                          value={
-                            formData.query_text || task.default_query || ""
-                          }
-                          editorProps={{ $blockScrolling: true }}
-                          style={{ width: "100%", height: "400px" }}
-                          setOptions={{ fontSize: "16px" }}
+                  <form>
+                    <Box>
+                      <AceEditor
+                        id="query-input-label"
+                        name="query"
+                        mode={syntaxMode}
+                        theme={isDark ? "tomorrow_night" : "github"}
+                        onChange={handleEditorChange}
+                        value={formData.query_text || task.default_query || ""}
+                        editorProps={{ $blockScrolling: true }}
+                        style={{ width: "100%", height: "400px" }}
+                        showPrintMargin={false}
+                        setOptions={{
+                          fontSize: 16,
+                          showLineNumbers: true,
+                          tabSize: 2,
+                          useWorker: false,
+                          highlightActiveLine: true,
+                          highlightGutterLine: true,
+                          displayIndentGuides: true,
+                          wrap: true,
+                        }}
+                      />
+                      <Button onClick={executeQuery}>
+                        Ausführen
+                        <PlayCircleFilledWhiteIcon></PlayCircleFilledWhiteIcon>
+                      </Button>
+
+                      {queryResult && (
+                        <ImportantMsg
+                          message={<div>Erfolgreich ausgeführt!</div>}
+                          type="success"
                         />
-                        <Button onClick={executeQuery}>
-                          Ausführen
-                          <PlayCircleFilledWhiteIcon></PlayCircleFilledWhiteIcon>
-                        </Button>
-                        {/* {feedback_on && (
-                          <ImportantMsg
-                            message="Note that the feedback functionality is a work in progress. It is possible that a message will appear stating that your result does not match the expected result. Your solution may still be correct. We are working on improving this functionality in the future so that your individual solution is evaluated with regard to the task description."
-                            type="info"
-                          />
-                        )} */}
-                        {queryResult && (
-                          <ImportantMsg
-                            message={
-                              <div>
-                                <CheckIcon></CheckIcon> Erfolgreich ausgeführt!
-                              </div>
-                            }
-                            type="success"
-                          />
-                        )}
-                       {/*  {queryResult && feedback_on && (
-                          <ImportantMsg
-                            message={feedback}
-                            type={feedbackType}
-                          />
-                        )} */}
+                      )}
 
-                        {queryResult && (
-                          <ResultTable
-                            queryResult={queryResult}
-                            resultSize={formData.resultSize}
-                            title={area_name}
-                          />
-                        )}
-                        {error && (
-                          <ImportantMsg
-                            message={
-                              <div>
-                                <ErrorIcon></ErrorIcon> {error}
-                              </div>
-                            }
-                            type="error"
-                          />
-                        )}
-                        <Box
-                          sx={{
-                            padding: "10px",
-                            borderRadius: "5px",
-                            border: "black",
-                          }}
-                        >
-                          {<p>Anzahl Zeilen: {formData.resultSize}</p>}
-                        </Box>
+                      {queryResult && (
+                        <ResultTable
+                          queryResult={queryResult}
+                          resultSize={formData.resultSize}
+                          title={area_name}
+                        />
+                      )}
+                      {error && (
+                        <ImportantMsg
+                          message={<div>{error}</div>}
+                          type="error"
+                        />
+                      )}
+                      <Box
+                        sx={{
+                          padding: "10px",
+                          borderRadius: "5px",
+                          border: "black",
+                        }}
+                      >
+                        {<p>Anzahl Zeilen: {formData.resultSize}</p>}
                       </Box>
+                    </Box>
+                    {/* ===================================================== */}
+                    {/* SIDE-BY-SIDE FEEDBACK: DISTANCE FUNCTION + AI TUTOR    */}
+                    {/* ===================================================== */}
+                    {feedback_on && (queryResult || error) && (
+                      <Box sx={{ mt: 4, mb: 3 }}>
+                        <Typography
+                          variant="h5"
+                          fontWeight={700}
+                          sx={{ mb: 2 }}
+                        >
+                          Feedback zu deiner SQL-Lösung
+                        </Typography>
 
+                        <Grid
+                          container
+                          spacing={3}
+                          alignItems="stretch"
+                          sx={{ width: "100%", m: 0 }}
+                        >
+                          {/* ================================================= */}
+                          {/* LEFT: DISTANCE-BASED FEEDBACK                     */}
+                          {/* ================================================= */}
 
-                      {feedback_on && queryResult && (
-                        <>
-                          <Typography variant="h6" gutterBottom>
-                            SQL Feedback
-                          </Typography>
-                          {maxPoints_SQL && (
-                            <Typography variant="h7" gutterBottom>
-                              {feedback.includes("Your query output is equal to the expected output")
-                                ? `Sie haben ${maxPoints_SQL} von ${maxPoints_SQL} Punkten erreicht.`
-                                : `Sie haben ${calculatedPoints(maxPoints_SQL, feedbackOutput)} von ${maxPoints_SQL} Punkten erreicht.`
-                              }
-                            </Typography>
-                          )}
-                          {feedback.includes("Your query output is equal to the expected output") && (
+                          {queryResult && (
+                            <Grid item xs={12} md={6}>
+                              <Paper
+                                elevation={2}
+                                sx={{
+                                  height: "100%",
+                                  p: { xs: 2, md: 3 },
+                                  borderRadius: 3,
+                                  border: "1px solid",
+                                  borderColor: "divider",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  bgcolor: "background.paper",
+                                }}
+                              >
+                                {/* Header */}
+                                <Box sx={{ mb: 2 }}>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 1,
+                                      mb: 1,
+                                    }}
+                                  >
+                                    <CheckIcon color="primary" />
+                                    <Typography variant="h6" fontWeight={700}>
+                                      Strukturelles Feedback
+                                    </Typography>
+                                  </Box>
+
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    Analyse deiner SQL-Abfrage anhand einer
+                                    Distanzfunktion.
+                                  </Typography>
+                                </Box>
+
+                                <Divider sx={{ mb: 2 }} />
+
+                                {/* Score */}
+                                <Paper
+                                  variant="outlined"
+                                  sx={{
+                                    p: 2,
+                                    mb: 2,
+                                    borderRadius: 2,
+                                    bgcolor: "action.hover",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    gutterBottom
+                                  >
+                                    Erreichte Punktzahl
+                                  </Typography>
+
+                                  <Typography
+                                    variant="h4"
+                                    fontWeight={700}
+                                    color="primary.main"
+                                  >
+                                    {feedback.includes(
+                                      "Your query output is equal to the expected output",
+                                    )
+                                      ? maxPoints_SQL
+                                      : calculatedPoints(
+                                          maxPoints_SQL,
+                                          feedbackOutput,
+                                        )}
+                                    <Typography
+                                      component="span"
+                                      variant="h6"
+                                      color="text.secondary"
+                                    >
+                                      {" "}
+                                      / {maxPoints_SQL}
+                                    </Typography>
+                                  </Typography>
+                                </Paper>
+
+                                {/* Correct solution */}
+                                {feedback.includes(
+                                  "Your query output is equal to the expected output",
+                                ) && (
+                                  <ImportantMsg
+                                    message={
+                                      <>
+                                        Deine Abfrage erzeugt die korrekte
+                                        Ergebnistabelle! Du erhältst die volle
+                                        Punktzahl.
+                                        <br />
+                                        Beachte, dass strukturell
+                                        unterschiedliche Abfragen mit demselben
+                                        Ergebnis beim Vergleich mit der
+                                        erwarteten Lösung dennoch
+                                        Bearbeitungsschritte mit ungewichteten
+                                        Kosten verursachen können.
+                                      </>
+                                    }
+                                    type="success"
+                                  />
+                                )}
+
+                                {/* Explanation */}
                                 <ImportantMsg
                                   message={
                                     <>
-                                      Deine Abfrage erzeugt die korrekte Ergebnistabelle! Du erhältst die volle Punktzahl.
+                                      Du kannst dir unten eine Übersicht der
+                                      Fehler ansehen und auf einen Eintrag
+                                      klicken, um weitere Details anzuzeigen.
                                       <br />
-                                      Beachte, dass strukturell unterschiedliche Abfragen mit demselben Ergebnis beim Vergleich
-                                      mit der erwarteten Lösung dennoch Bearbeitungsschritte mit ungewichteten Kosten verursachen können.
-                                      </>
-                                  }
-                                  type="success"
-                                />
-                              )}
-                          <ImportantMsg
-                                message={
-                                  <>
-                                    Du kannst dir unten eine Übersicht der Fehler ansehen und auf einen Eintrag klicken, um weitere Details anzuzeigen.
-                                    <br />
-                                    Hat ein Fehler die „Kosten: 0“, handelt es sich um eine mathematische oder logische Umformung, die die Bedeutung der SQL-Abfrage nicht verändert.
-                                    Einige Operatortypen, wie z. B. <code>LIKE</code>,  <code>BETWEEN</code>,  <code>IN</code> können derzeit noch nicht verarbeitet werden.
-                                    Daher ist für sie momentan kein detailliertes Feedback verfügbar und es werden in dem Fall noch keine Punkte abgezogen.
+                                      Hat ein Fehler die „Kosten: 0“, handelt es
+                                      sich um eine mathematische oder logische
+                                      Umformung, die die Bedeutung der
+                                      SQL-Abfrage nicht verändert. Einige
+                                      Operatortypen, wie z. B. <code>LIKE</code>
+                                      ,<code> BETWEEN</code>, <code>IN</code>{" "}
+                                      können derzeit noch nicht verarbeitet
+                                      werden. Daher ist für sie momentan kein
+                                      detailliertes Feedback verfügbar und es
+                                      werden in dem Fall noch keine Punkte
+                                      abgezogen.
                                     </>
-                                    }
-                                type="info"
-                                textAlign="justify"
-                          />
+                                  }
+                                  type="info"
+                                  textAlign="justify"
+                                />
 
-                          <Box
-                              sx={ {
-                                padding: "10px",
-                                borderRadius: "5px",
-                                border: "1px solid #cac9c9ff",
-                                minHeight: 150,
-                                whiteSpace: "pre-wrap",
-                              } }
-                            >
-                              {totalDistance
-                                ? "Dies sind die " + errorCount + " vorgeschlagenen Änderungen an der Abfrage:"
-                                : ""}
+                                {/* Distance feedback */}
+                                <Box
+                                  sx={{
+                                    mt: 2,
+                                    p: 2,
+                                    borderRadius: 2,
+                                    border: "1px solid",
+                                    borderColor: "divider",
+                                    flexGrow: 1,
+                                    minHeight: 150,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="subtitle2"
+                                    fontWeight={700}
+                                    sx={{ mb: 1 }}
+                                  >
+                                    {totalDistance
+                                      ? `${errorCount} vorgeschlagene Änderungen an deiner Abfrage`
+                                      : "Analyse der SQL-Abfrage"}
+                                  </Typography>
 
-                              {totalDistance === ""
-                                ? (
-                                    <div
-                                      style={{
-                                        minHeight: 150,
+                                  {totalDistance === "" ? (
+                                    <Box
+                                      sx={{
+                                        minHeight: 120,
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "center",
                                         textAlign: "center",
-                                        fontSize: "15.5px",
+                                        color: "text.secondary",
+                                        px: 2,
                                       }}
                                     >
-                                      {noCalculation}
-                                    </div>
-                                  )
-                                : 
-                                feedbackOutput.map((entry, i) => (
-                                  <details key={i}
-                                    style={ {
-                                      border: "1px solid #bdbdbdff",
-                                      borderRadius: "5px",
-                                      marginTop: "10px",
-                                      overflow: "hidden"
-                                    } }
-                                  >
-                                    <summary
-                                    style={ {
-                                      justifyContent: "flex-start",
-                                      padding: "10px 15px",
-                                      listStyle: "none",
-                                      display: "flex",
-                                      fontWeight: "bold",
-                                      cursor: "pointer",
-                                    } }
-                                    >
-                                      { entry.editStep }
-                                      </summary>
-                                    <div
-                                    style={ {
-                                      justifyContent: "flex-start",
-                                      padding: "10px 45px",
-                                      listStyle: "none",
-                                      display: "flex",
-                                    } }
-                                    >
-                                    { entry.solution }
-                                    </div>
-                                  </details>
-                                  
-                                ))
-                                }
-                          </Box>
-
-                          {totalDistance && zeroCostOutput.length > 0 && (
-                            <Box
-                                sx={ {
-                                  padding: "10px",
-                                  borderRadius: "5px",
-                                  border: "1px solid #cac9c9ff",
-                                  minHeight: 0,
-                                  whiteSpace: "pre-wrap",
-                                  marginTop: "12px",
-                                } }
-                              >
-                                <details>
-                                  <summary
-                                    style={{
-                                      width: "260px",
-                                      margin: "0 auto",
-                                      padding: "10px 15px",
-                                      listStyle: "none",
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      fontWeight: "bold",
-                                      cursor: "pointer",
-                                      border: "1px solid #bdbdbdff",
-                                      borderRadius: "5px",
-                                    }}
-                                  >
-                                    Optionale Hinweise anzeigen
-                                  </summary>
-                                  
-                                  <div style={{ paddingTop: "10px", width: "100%" }}>
-                                    <Typography sx={{ marginBottom: "8px" }}>
-                                      {"Diese " + zeroCostOutput.length + " vorgeschlagene(n) Änderung(en) haben keine Auswirkung auf deine Punktzahl:"}
-                                    </Typography>
-
-                                    {zeroCostOutput.map((entry, i) => (
-                                      <details key={i}
-                                        style={ {
-                                          border: "1px solid #bdbdbdff",
-                                          borderRadius: "5px",
+                                      <Typography variant="body2">
+                                        {noCalculation}
+                                      </Typography>
+                                    </Box>
+                                  ) : (
+                                    feedbackOutput.map((entry, i) => (
+                                      <details
+                                        key={i}
+                                        style={{
+                                          border: "1px solid #bdbdbd",
+                                          borderRadius: "8px",
                                           marginTop: "10px",
-                                          overflow: "hidden"
-                                        } }
+                                          overflow: "hidden",
+                                        }}
                                       >
                                         <summary
-                                        style={ {
-                                          justifyContent: "flex-start",
-                                          padding: "10px 15px",
-                                          listStyle: "none",
-                                          display: "flex",
-                                          fontWeight: "bold",
-                                          cursor: "pointer",
-                                        } }
+                                          style={{
+                                            padding: "12px 15px",
+                                            fontWeight: "bold",
+                                            cursor: "pointer",
+                                          }}
                                         >
-                                          { entry.editStep }
-                                          </summary>
+                                          {entry.editStep}
+                                        </summary>
 
-                                        <div
-                                          style={ {
-                                            justifyContent: "flex-start",
-                                            padding: "10px 45px",
-                                            listStyle: "none",
-                                            display: "flex",
-                                          } }
+                                        <Box
+                                          sx={{
+                                            p: 2,
+                                            bgcolor: "action.hover",
+                                            overflowX: "auto",
+                                          }}
                                         >
-                                        { entry.solution }
-                                        </div>
+                                          <Typography
+                                            variant="body2"
+                                            component="pre"
+                                            sx={{
+                                              whiteSpace: "pre-wrap",
+                                              fontFamily: "monospace",
+                                              m: 0,
+                                            }}
+                                          >
+                                            {entry.solution}
+                                          </Typography>
+                                        </Box>
                                       </details>
-                                    ) )
-                                    }
-                                  </div>
-                              </details>
-                            </Box>
+                                    ))
+                                  )}
+                                </Box>
+
+                                {/* Optional zero-cost feedback */}
+                                {totalDistance && zeroCostOutput.length > 0 && (
+                                  <Box
+                                    sx={{
+                                      mt: 2,
+                                      p: 2,
+                                      borderRadius: 2,
+                                      border: "1px solid",
+                                      borderColor: "divider",
+                                    }}
+                                  >
+                                    <details>
+                                      <summary
+                                        style={{
+                                          padding: "10px",
+                                          textAlign: "center",
+                                          fontWeight: 600,
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        Optionale Hinweise anzeigen
+                                      </summary>
+
+                                      <Box sx={{ pt: 2 }}>
+                                        <Typography
+                                          variant="body2"
+                                          sx={{ mb: 1 }}
+                                        >
+                                          Diese {zeroCostOutput.length}{" "}
+                                          vorgeschlagene(n) Änderung(en) haben
+                                          keine Auswirkung auf deine Punktzahl:
+                                        </Typography>
+
+                                        {zeroCostOutput.map((entry, i) => (
+                                          <details
+                                            key={i}
+                                            style={{
+                                              border: "1px solid #bdbdbd",
+                                              borderRadius: "8px",
+                                              marginTop: "10px",
+                                              overflow: "hidden",
+                                            }}
+                                          >
+                                            <summary
+                                              style={{
+                                                padding: "12px 15px",
+                                                fontWeight: "bold",
+                                                cursor: "pointer",
+                                              }}
+                                            >
+                                              {entry.editStep}
+                                            </summary>
+
+                                            <Box
+                                              sx={{
+                                                p: 2,
+                                                bgcolor: "action.hover",
+                                              }}
+                                            >
+                                              <Typography
+                                                variant="body2"
+                                                component="pre"
+                                                sx={{
+                                                  whiteSpace: "pre-wrap",
+                                                  fontFamily: "monospace",
+                                                  m: 0,
+                                                }}
+                                              >
+                                                {entry.solution}
+                                              </Typography>
+                                            </Box>
+                                          </details>
+                                        ))}
+                                      </Box>
+                                    </details>
+                                  </Box>
+                                )}
+                              </Paper>
+                            </Grid>
                           )}
-                        </>
-                      )}
-                      <hr></hr>
-                      {feedback_on && (queryResult || error ) && (
-                        <>
-                        <Typography variant="h6" gutterBottom>
-                            LLM Lerntipp
-                          </Typography>
-                          <ImportantMsg
+
+                          {/* ================================================= */}
+                          {/* RIGHT: LLM FEEDBACK WITH AI TUTOR                 */}
+                          {/* ================================================= */}
+
+                          <Grid item xs={12} md={6} sx={{ display: "flex" }}>
+                            <Paper
+                              elevation={2}
+                              sx={{
+                                width: "100%",
+                                p: { xs: 2, md: 3 },
+                                borderRadius: 3,
+                                border: "1px solid",
+                                borderColor: "divider",
+                                display: "flex",
+                                flexDirection: "column",
+                                bgcolor: "background.paper",
+                              }}
+                            >
+                              {/* Header */}
+                              <Box sx={{ mb: 2 }}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    mb: 1,
+                                  }}
+                                >
+                                  <AutoAwesomeIcon color="secondary" />
+                                  <Typography variant="h6" fontWeight={700}>
+                                    KI-Tutor Feedback
+                                  </Typography>
+                                </Box>
+
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  Individuelles, KI-generiertes Feedback und
+                                  Lernempfehlungen zu deiner SQL-Lösung.
+                                </Typography>
+                              </Box>
+
+                              <Divider sx={{ mb: 2 }} />
+
+                              {/* Introduction */}
+                              <ImportantMsg
                                 message={
                                   <>
-                                    Klicke auf die Button unten, um einen personalisierten, <b>KI-generierten</b> Lerntipp auf Grundlage der Aufgabenbeschreibung, deiner Lösung und des SQL-Feedbacks zu erhalten.
+                                    Erhalte einen personalisierten,{" "}
+                                    <b>KI-generierten</b> Lerntipp auf Grundlage
+                                    der Aufgabenbeschreibung und deiner Lösung.
                                     <br />
-                                    Bitte beachte, dass sich diese Funktion derzeit noch in der Entwicklung befindet. Daher kann die Generierung der Antwort etwas Zeit in Anspruch nehmen. Außerdem können KI-generierte Antworten Fehler enthalten. 
+                                    KI-generierte Antworten können Fehler
+                                    enthalten.
                                   </>
-                                  }
+                                }
                                 type="info"
+                              />
+
+                              {/* Generate feedback */}
+                              <Box sx={{ mt: 2, mb: 2 }}>
+                                <GradientButton
+                                  id="test_area"
+                                  onClick={() => llmFeedback(feedbackOutput)}
+                                >
+                                  <AutoAwesomeIcon sx={{ mr: 1 }} />
+                                  Lerntipp generieren
+                                </GradientButton>
+                              </Box>
+
+                              {/* AI Tutor speech bubble */}
+                              {showLLMTip && (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    flexGrow: 1,
+                                    mt: 1,
+                                  }}
+                                >
+                                  {/* Speech bubble */}
+                                  <Paper
+                                    elevation={1}
+                                    variant="outlined"
+                                    sx={{
+                                      position: "relative",
+                                      width: "100%",
+                                      p: 2.5,
+                                      borderRadius: 3,
+                                      border: "2px solid",
+                                      borderColor: "divider",
+                                      bgcolor: "background.paper",
+                                      minHeight: 150,
+                                      overflowWrap: "anywhere",
+
+                                      "&::after": {
+                                        content: '""',
+                                        position: "absolute",
+                                        bottom: -11,
+                                        left: "50%",
+                                        width: 20,
+                                        height: 20,
+                                        bgcolor: "background.paper",
+                                        borderRight: "2px solid",
+                                        borderBottom: "2px solid",
+                                        borderColor: "divider",
+                                        transform:
+                                          "translateX(-50%) rotate(45deg)",
+                                      },
+                                    }}
+                                  >
+                                    {/*       {llmTip !== "Lerntipp wird geladen..." && llmError === "" && (
+                                      <Box>
+                                        <Chip
+                                          size="small"
+                                          label={
+                                            llmTip.errorCategory === "CORRECT"
+                                              ? "Super!"
+                                              : "Nicht ganz..."
+                                          }
+                                        />
+
+                                        <Typography>
+                                          Meiner Intelligenz nach würde ich dir{" "}
+                                          {llmTip.points} / {maxPoints_SQL}{" "}
+                                          Punkte für deine Lösung geben!
+                                        </Typography>
+                                      </Box>
+                                    )} */}
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        lineHeight: 1.8,
+                                        whiteSpace: "pre-wrap",
+                                      }}
+                                    >
+                                      {llmTip /* .reasoning || llmTip */}
+                                    </Typography>
+
+                                    {llmError && (
+                                      <Typography
+                                        color="error"
+                                        variant="body2"
+                                        sx={{ mt: 1 }}
+                                      >
+                                        {llmError}
+                                      </Typography>
+                                    )}
+                                  </Paper>
+
+                                  {/* AI Tutor avatar */}
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      alignItems: "center",
+                                      mt: 2,
+                                      zIndex: 1,
+                                    }}
+                                  >
+                                    <Box
+                                      component="img"
+                                      src={
+                                        llmTip !== "Lerntipp wird geladen..." &&
+                                        llmTip !== ""
+                                          ? "/images/avatar03Happy.png"
+                                          : "/images/avatar03Neutral.png"
+                                      }
+                                      alt="KI-Datenbank-Tutor"
+                                      sx={{
+                                        width: { xs: 125, md: 155 },
+                                        height: { xs: 125, md: 155 },
+                                        objectFit: "contain",
+                                      }}
+                                    />
+
+                                    <Typography
+                                      variant="subtitle2"
+                                      fontWeight={700}
+                                      color="text.secondary"
+                                    >
+                                      Dein KI-Datenbank-Tutor
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              )}
+                            </Paper>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    )}
+                    <hr></hr>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name="is-finished-checkbox"
+                            checked={formData.isFinished}
+                            onChange={handleChange}
                           />
-                              
-                       {/*  <button
-                          type="button"
-                          id="test_area"
-                          style={ {
-                            color: "black",
-                            borderRadius: 5,
-                            backgroundColor: "#388E3C",
-                            border: "2px solid #388E3C",
-                            cursor: "pointer",
-                            padding: "5px 15px",
-                            marginLeft: "auto",
-                            marginRight: "20px",
-                          } }
-                          onClick={() => llmFeedback(feedbackOutput)}
-                        >
-                          Lerntipp generieren
-                        </button> */}
-                         <GradientButton id="test_area" onClick={() => llmFeedback(feedbackOutput)}> <AutoAwesomeIcon /> Lerntipp generieren</GradientButton>
-                        <Box sx={{mt: 2}} />
-                        {showLLMTip && (
-                          <Box
-                              sx={ {
-                                padding: "10px",
-                                borderRadius: "5px",
-                                border: "1px solid #cac9c9ff",
-                                minHeight: 150,
-                                whiteSpace: "pre-wrap",
-                              } }
-                            >{llmTip}</Box>
+                        }
+                        label="Ich bin mit dieser Aufgabe fertig. (Fortschritt wird auf der Dashboard-Karte dieser Übung angezeigt.)"
+                      />
+                    </FormGroup>
+                    <br />
+                    <hr></hr>
+                    {taskNumber === tasksArray.length ? (
+                      <div>
+                        {" "}
+                        {taskNumber !== 1 && (
+                          <Button
+                            aria-label="Save current entries and navigate to previous task"
+                            onClick={handlePrevTask}
+                          >
+                            Zurück <NavigateBeforeIcon></NavigateBeforeIcon>
+                          </Button>
+                        )}{" "}
+                      </div>
+                    ) : (
+                      <div>
+                        <hr></hr>
+
+                        {taskNumber !== 1 && (
+                          <Button
+                            aria-label="Save current entries of the task and navigate to previous task"
+                            onClick={handlePrevTask}
+                          >
+                            Zurück <NavigateBeforeIcon></NavigateBeforeIcon>
+                          </Button>
                         )}
 
-                        {/* TODO: Don't show the button if the task is solved correctly */}
-                        {/*No available LLM learning tip.
-                        <button
-                          type="button"
-                          id="test_area"
-                          style={ {
-                            color: "black",
-                            borderRadius: 5,
-                            backgroundColor: "#9c9c9cff",
-                            color: "white",
-                            border: "2px solid #939393ff",
-                            cursor: "pointer",
-                            padding: "5px 15px",
-                            marginLeft: "auto",
-                            marginRight: "20px",
-                          } }
-                          onClick={ () => {
-                            console.log("No available LLM learning tip");
-                          } }
+                        <Button
+                          aria-label="Save current entries of this task and navigate to next task"
+                          onClick={handleNextTask}
                         >
-                          No available LLM learning tip
-                        </button>*/}
-
-                        </>
-                      )}
-
-
-                      <hr></hr>
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              name="is-finished-checkbox"
-                              checked={formData.isFinished}
-                              onChange={handleChange}
-                            />
-                          }
-                          label="Ich bin mit dieser Aufgabe fertig. (Fortschritt wird auf der Dashboard-Karte dieser Übung angezeigt.)"
-                        />
-                      </FormGroup>
-                      <br />
-                      <hr></hr>
-                      {taskNumber === tasksArray.length ? (
-                        <div>
-                          {" "}
-                          {taskNumber !== 1 && (
-                            <Button
-                              aria-label="Save current entries and navigate to previous task"
-                              onClick={handlePrevTask}
-                            >
-                              Zurück <NavigateBeforeIcon></NavigateBeforeIcon>
-                            </Button>
-                          )}{" "}
-                        </div>
-                      ) : (
-                        <div>
-                          <hr></hr>
-
-                          {taskNumber !== 1 && (
-                            <Button
-                              aria-label="Save current entries of the task and navigate to previous task"
-                              onClick={handlePrevTask}
-                            >
-                              Zurück <NavigateBeforeIcon></NavigateBeforeIcon>
-                            </Button>
-                          )}
-
-                          <Button
-                            aria-label="Save current entries of this task and navigate to next task"
-                            onClick={handleNextTask}
-                          >
-                            Nächste Aufgabe{" "}
-                            <NavigateNextIcon></NavigateNextIcon>
-                          </Button>
-                        </div>
-                      )}{" "}
-                    </form>
-               
+                          Nächste Aufgabe <NavigateNextIcon></NavigateNextIcon>
+                        </Button>
+                      </div>
+                    )}{" "}
+                  </form>
                 </Box>{" "}
               </Item>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <DbAccordion endpoint={endpoint} />
-              <hr></hr>
             </Grid>
           </Grid>
         </Box>

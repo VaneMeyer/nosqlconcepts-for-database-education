@@ -43,13 +43,14 @@ export const fetchDbStructure = async (endpoint) => {
 
 
 // LLM API call
-export const fetchLLMFeedback = async (questionData, studentAnswer, correctAnswer, toolFeedback) => {
+export const fetchLLMFeedback = async (questionData, studentAnswer, correctAnswer, toolFeedback, maxPoints_SQL) => {
   try {
     const response = await axios.post(`${API_URL}/LLMfeedback`, {
       questionData,
       studentAnswer,
       correctAnswer,
       toolFeedback,
+      maxPoints_SQL
     });
 
     return response.data;
