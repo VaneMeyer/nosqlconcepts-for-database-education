@@ -766,7 +766,6 @@ app.post("/api/execute-sql", async (req, res) => {
               .json({ error: `Unknown endpoint for schema: ${endpoint}` });
           }
 
-
           if (isFeedbackOn) {
             try {
               console.log("calculating...");
@@ -1012,7 +1011,7 @@ app.delete("/api/delete-user/:username", async (req, res) => {
 app.post("/api/LLMfeedback", async (req, res) => {
   console.log("-_-_-_-_-_-_-_-_ LLM _-_-_-_-_-_-_-_-");
   const startTime = Date.now();
-  const { questionData, studentAnswer, correctAnswer, toolFeedback } = req.body;
+  const { questionData, studentAnswer, correctAnswer, toolFeedback, maxPoints_SQL } = req.body;
 
   try {
     const prompt = ` You are a helpful tutor.
@@ -1021,26 +1020,57 @@ app.post("/api/LLMfeedback", async (req, res) => {
       The exersice questiondata: "${questionData}"
       The correct sample answer: "${correctAnswer}"
       The Student Answer: "${studentAnswer}"
-      The generated SQL Feedback: "${toolFeedback}"
+      
 
       The students have to find the correct query themself, so do provide only a hint in your output without a solution query.
-      Also limit your output to 200 characters.
+      Also limit your output to 1 or 2 sentences.
 
       Format it strictly following exact structure, with no additional text, special characters, Markdown, Brackets or deviations
       and be precise about which table etc is needed in order to understand their mistake and how to improve their answer:
-      "(1) Learning tip: [learning tip text]",
-      and ensure the actual learning tip appears only after "Learning tip:".
+      "(1) Lerntipp: [learning tip text]",
+      and ensure the actual learning tip appears only after "Lerntipp:".
       If more than one learning tip is really necessary, seperate them with "\n" and increase the number in ( ) with 1,
       exactly as the following structure:
-      "(1) Learning tip: [learning tip text]\n(2) Learning tip: [learning tip text]".
+      "(1) Lerntipp: [learning tip text]\n(2) Lerntipp: [learning tip text]".
 
       Ensure the learning tip(s) are for german speakers, clear, educational, and supportive, but do not stretch them unnaturally.
-      `;
+      `; 
+      /* const CATEGORIES = [
+  "CORRECT",
+  "INCORRECT",
+ 
+]; 
+    const prompt = `You are an expert university database tutor.
+       Provide clear, constructive feedback that helps the student understand their mistake and how to improve their answer,
+      based on the following information:
+      The exersice questiondata: "${questionData}"
+      The correct sample answer: "${correctAnswer}"
+      The Student Answer: "${studentAnswer}"
+      Evaluate semantic correctness, not only syntax.
+      Give partial credit where justified considering ${maxPoints_SQL}.
+
+Do not invent requirements.
+Talk directly to the student and use german language e.g. "Deine Lösung ...". 
+Return ONLY valid JSON. No Markdown and no text outside JSON.
+ALLOWED ERROR CATEGORIES:
+${CATEGORIES.join(", ")}
+Format the JSON strictly following exact structure, with no additional text, special characters, Markdown, Brackets or deviations:
+{
+  "points": number,
+  "errorCategory": "allowed category",
+  "reasoning": "short justification in one sentence",
+}
+
+      `; */
     const response = await axios.post("http://ollama:11434/api/generate", {
       model: "gemma3:4b", //gemma4
       prompt,
       stream: false,
-    });
+    },
+    {
+    timeout: 180000, // 3 Minuten
+  }
+  );
 
     // Deconstruct llm response to learning tip(s)
     const result = response.data.response || "No learning tips generated.";
@@ -1069,267 +1099,160 @@ const EVALUATION_FILE = path.join(__dirname, "evaluation.xlsx");
 /*
  * Health Check
  */
-app.get(
-  "/api/health",
-  (_req, res) => {
-    const localModels = (process.env.LLM_MODELS || "")
-      .split(",")
-      .map((x) => x.trim())
-      .filter(Boolean);
+app.get("/api/health", (_req, res) => {
+  const localModels = (process.env.LLM_MODELS || "")
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean);
 
-    const apiModels = [
-      "gwdg/qwen3-coder-next",
-      "gwdg/deepseek-v4-flash",
-      "meta-llama-3.1-8b-instruct",
-    ];
+  const apiModels = [
+    "gwdg/qwen3-coder-next",
+    "gwdg/deepseek-v4-flash",
+    "meta-llama-3.1-8b-instruct",
+  ];
 
-    res.json({
-      ok: true,
-      models: [
-        ...localModels,
-        ...apiModels,
-      ],
-      localModels,
-      apiModels,
-      ollamaUrl:
-        process.env.OLLAMA_URL ||
-        "http://localhost:11434",
-      apiConfigured:
-        Boolean(
-          process.env.LLM_API_URL &&
-          process.env.LLM_USER_ID &&
-          process.env.LLM_API_KEY
-        ),
-    });
-  }
-);
+  res.json({
+    ok: true,
+    models: [...localModels, ...apiModels],
+    localModels,
+    apiModels,
+    ollamaUrl: process.env.OLLAMA_URL || "http://localhost:11434",
+    apiConfigured: Boolean(
+      process.env.LLM_API_URL &&
+      process.env.LLM_USER_ID &&
+      process.env.LLM_API_KEY,
+    ),
+  });
+});
 
 /*
  * Evaluation
  */
-app.post(
-  "/api/evaluate",
-  async (req, res) => {
-    const started = Date.now();
+app.post("/api/evaluate", async (req, res) => {
+  const started = Date.now();
 
-    try {
-      validate(req.body);
+  try {
+    validate(req.body);
 
-      const {
+    const { task, studentID, studentSolution, humanEvaluation } = req.body;
+
+    const { evaluateWithModels } = await import("./services/evaluator.js");
+
+    const results = await evaluateWithModels({
+      task,
+      studentID,
+      studentSolution,
+      humanEvaluation,
+    });
+
+    const successfulResults = results.filter((result) => result.success);
+
+    let run = null;
+    let saved = false;
+
+    if (successfulResults.length > 0) {
+      run = getNextRun(task.taskID, studentID);
+
+      const row = createEvaluationRow({
         task,
         studentID,
-        studentSolution,
         humanEvaluation,
-      } = req.body;
-
-      const { evaluateWithModels } = await import("./services/evaluator.js");
-
-      const results =
-        await evaluateWithModels({
-          task,
-          studentID,
-          studentSolution,
-          humanEvaluation,
-        });
-
-      const successfulResults =
-        results.filter(
-          (result) =>
-            result.success
-        );
-
-      let run = null;
-      let saved = false;
-
-      if (
-        successfulResults.length > 0
-      ) {
-        run = getNextRun(
-          task.taskID,
-          studentID
-        );
-
-        const row =
-          createEvaluationRow({
-            task,
-            studentID,
-            humanEvaluation,
-            results,
-            run,
-          });
-
-        appendEvaluationRow(row);
-
-        saved = true;
-      }
-
-      res.json({
-        ok: true,
-        evaluatedAt:
-          new Date().toISOString(),
-        durationMs:
-          Date.now() - started,
-        run,
-        saved,
         results,
+        run,
       });
-    } catch (error) {
-      console.error(
-        "Evaluation error:",
-        error
-      );
 
-      res.status(400).json({
-        ok: false,
-        error:
-          error?.message ||
-          "Evaluation failed",
-      });
+      appendEvaluationRow(row);
+
+      saved = true;
     }
-  }
-);
 
+    res.json({
+      ok: true,
+      evaluatedAt: new Date().toISOString(),
+      durationMs: Date.now() - started,
+      run,
+      saved,
+      results,
+    });
+  } catch (error) {
+    console.error("Evaluation error:", error);
+
+    res.status(400).json({
+      ok: false,
+      error: error?.message || "Evaluation failed",
+    });
+  }
+});
 
 function validate(body) {
-  const {
-    task,
-    studentID,
-    studentSolution,
-    humanEvaluation,
-  } = body;
+  const { task, studentID, studentSolution, humanEvaluation } = body;
 
-  if (
-    !task?.taskID?.trim()
-  ) {
-    throw Error(
-      "taskID is required"
-    );
+  if (!task?.taskID?.trim()) {
+    throw Error("taskID is required");
   }
 
-  if (
-    !studentID?.trim()
-  ) {
-    throw Error(
-      "studentID is required"
-    );
+  if (!studentID?.trim()) {
+    throw Error("studentID is required");
   }
 
-  if (
-    !task.description?.trim()
-  ) {
-    throw Error(
-      "task.description is required"
-    );
+  if (!task.description?.trim()) {
+    throw Error("task.description is required");
   }
 
-  if (
-    !task.referenceSolution?.trim()
-  ) {
-    throw Error(
-      "task.referenceSolution is required"
-    );
+  if (!task.referenceSolution?.trim()) {
+    throw Error("task.referenceSolution is required");
   }
 
-  if (
-    !Number.isFinite(
-      Number(task.maxPoints)
-    ) ||
-    Number(task.maxPoints) <= 0
-  ) {
-    throw Error(
-      "task.maxPoints must be positive"
-    );
+  if (!Number.isFinite(Number(task.maxPoints)) || Number(task.maxPoints) <= 0) {
+    throw Error("task.maxPoints must be positive");
   }
 
-  if (
-    !studentSolution?.trim()
-  ) {
-    throw Error(
-      "studentSolution is required"
-    );
+  if (!studentSolution?.trim()) {
+    throw Error("studentSolution is required");
   }
 
-  if (
-    !humanEvaluation
-  ) {
-    throw Error(
-      "humanEvaluation is required"
-    );
+  if (!humanEvaluation) {
+    throw Error("humanEvaluation is required");
   }
 
-  if (
-    !humanEvaluation.tutorID?.trim()
-  ) {
-    throw Error(
-      "tutorID is required"
-    );
+  if (!humanEvaluation.tutorID?.trim()) {
+    throw Error("tutorID is required");
   }
 
-  if (
-    !Number.isFinite(
-      Number(
-        humanEvaluation.points
-      )
-    )
-  ) {
-    throw Error(
-      "humanEvaluation.points is required"
-    );
+  if (!Number.isFinite(Number(humanEvaluation.points))) {
+    throw Error("humanEvaluation.points is required");
   }
 }
 
-
-function getNextRun(
-  taskID,
-  studentID
-) {
-  if (
-    !fs.existsSync(
-      EVALUATION_FILE
-    )
-  ) {
+function getNextRun(taskID, studentID) {
+  if (!fs.existsSync(EVALUATION_FILE)) {
     return 1;
   }
 
-  const workbook =
-    XLSX.readFile(
-      EVALUATION_FILE
-    );
+  const workbook = XLSX.readFile(EVALUATION_FILE);
 
-  const sheetName =
-    workbook.SheetNames[0];
+  const sheetName = workbook.SheetNames[0];
 
   if (!sheetName) {
     return 1;
   }
 
-  const sheet =
-    workbook.Sheets[sheetName];
+  const sheet = workbook.Sheets[sheetName];
 
-  const rows =
-    XLSX.utils.sheet_to_json(
-      sheet,
-      {
-        defval: "",
-      }
-    );
+  const rows = XLSX.utils.sheet_to_json(sheet, {
+    defval: "",
+  });
 
   let maxRun = 0;
 
   for (const row of rows) {
     if (
-      String(row.taskID) ===
-        String(taskID) &&
-      String(row.StudID) ===
-        String(studentID)
+      String(row.taskID) === String(taskID) &&
+      String(row.StudID) === String(studentID)
     ) {
-      const currentRun =
-        Number(row.Run);
+      const currentRun = Number(row.Run);
 
-      if (
-        Number.isFinite(currentRun) &&
-        currentRun > maxRun
-      ) {
+      if (Number.isFinite(currentRun) && currentRun > maxRun) {
         maxRun = currentRun;
       }
     }
@@ -1337,7 +1260,6 @@ function getNextRun(
 
   return maxRun + 1;
 }
-
 
 function createEvaluationRow({
   task,
@@ -1352,8 +1274,7 @@ function createEvaluationRow({
     TutID: humanEvaluation.tutorID,
     maxPoints: Number(task.maxPoints),
     TutPoints: Number(humanEvaluation.points),
-    TutCategory:
-      humanEvaluation.category || "",
+    TutCategory: humanEvaluation.category || "",
   };
 
   for (const result of results) {
@@ -1364,35 +1285,27 @@ function createEvaluationRow({
       row[`${model}Category`] = "";
       row[`${model}Confidence`] = "";
       row[`${model}correctFeedback`] = "";
-      row[`${model}Runtime`] =
-        result.durationMs;
+      row[`${model}Runtime`] = result.durationMs;
       continue;
     }
 
-    const evaluation =
-      result.evaluation;
+    const evaluation = result.evaluation;
 
-    row[`${model}Points`] =
-      evaluation.points;
+    row[`${model}Points`] = evaluation.points;
 
-    row[`${model}Category`] =
-      evaluation.errorCategory;
+    row[`${model}Category`] = evaluation.errorCategory;
 
-    row[`${model}Confidence`] =
-      evaluation.confidence ?? "";
+    row[`${model}Confidence`] = evaluation.confidence ?? "";
 
-    row[`${model}correctFeedback`] =
-      "";
+    row[`${model}correctFeedback`] = "";
 
-    row[`${model}Runtime`] =
-      result.durationMs;
+    row[`${model}Runtime`] = result.durationMs;
   }
 
   row.Run = run;
 
   return row;
 }
-
 
 function appendEvaluationRow(row) {
   const columns = [
@@ -1445,68 +1358,40 @@ function appendEvaluationRow(row) {
   let workbook;
 
   if (fs.existsSync(EVALUATION_FILE)) {
-    workbook =
-      XLSX.readFile(
-        EVALUATION_FILE
-      );
+    workbook = XLSX.readFile(EVALUATION_FILE);
   } else {
-    workbook =
-      XLSX.utils.book_new();
+    workbook = XLSX.utils.book_new();
   }
 
-  const sheetName =
-    workbook.SheetNames[0] ||
-    "Evaluations";
+  const sheetName = workbook.SheetNames[0] || "Evaluations";
 
-  let sheet =
-    workbook.Sheets[sheetName];
+  let sheet = workbook.Sheets[sheetName];
 
   if (!sheet) {
-    const headerRow = [
-      columns,
-    ];
+    const headerRow = [columns];
 
-    sheet =
-      XLSX.utils.aoa_to_sheet(
-        headerRow
-      );
+    sheet = XLSX.utils.aoa_to_sheet(headerRow);
 
-    workbook.Sheets[sheetName] =
-      sheet;
+    workbook.Sheets[sheetName] = sheet;
 
-    if (
-      !workbook.SheetNames.includes(
-        sheetName
-      )
-    ) {
-      workbook.SheetNames.push(
-        sheetName
-      );
+    if (!workbook.SheetNames.includes(sheetName)) {
+      workbook.SheetNames.push(sheetName);
     }
   }
 
-  const values =
-    columns.map(
-      (column) =>
-        row[column] ?? ""
-    );
+  const values = columns.map((column) => row[column] ?? "");
 
-  XLSX.utils.sheet_add_aoa(
-    sheet,
-    [values],
-    {
-      origin: -1,
-    }
-  );
+  XLSX.utils.sheet_add_aoa(sheet, [values], {
+    origin: -1,
+  });
 
-  XLSX.writeFile(
-    workbook,
-    EVALUATION_FILE
-  );
+  XLSX.writeFile(workbook, EVALUATION_FILE);
 }
 
-
 //################# start server ######################################################
-app.listen(8000, "0.0.0.0", () => {
+const server = app.listen(8000, "0.0.0.0", () => {
   console.log("Server running on port 8000");
 });
+server.timeout = 180000;
+server.requestTimeout = 180000;
+server.headersTimeout = 185000;

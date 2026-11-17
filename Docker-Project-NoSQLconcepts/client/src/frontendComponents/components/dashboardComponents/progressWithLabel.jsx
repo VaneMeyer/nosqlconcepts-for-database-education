@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { fetchTasksData } from "../../api/mainApi";
+import LinearProgress from "@mui/material/LinearProgress";
 const ProgressWithLabel = ({ area_id }) => {
   const [tasks, setTasks] = useState([]);
   const [progressValue, setProgressValue] = useState(0);
@@ -44,7 +45,57 @@ const ProgressWithLabel = ({ area_id }) => {
 
   
   return (
-    <Box sx={{ position: "relative", display: "inline-flex" }}>
+
+<Box sx={{ width: "100%" }}>
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      mb: 0.8,
+    }}
+  >
+    <Typography
+      variant="caption"
+      sx={{
+        color: "text.secondary",
+        fontWeight: 600,
+        fontSize: 12,
+      }}
+    >
+      Fortschritt
+    </Typography>
+
+    <Typography
+      variant="caption"
+      sx={{
+        color: "primary.main",
+        fontWeight: 700,
+        fontSize: 12,
+      }}
+    >
+      {`${Math.round(progressValue)}%`}
+    </Typography>
+  </Box>
+
+  <LinearProgress
+    variant="determinate"
+    value={progressValue}
+    sx={{
+      height: 7,
+      borderRadius: 10,
+      backgroundColor: "action.disabledBackground",
+          "& .MuiLinearProgress-bar": {
+            borderRadius: 10,
+            background:
+              "linear-gradient(90deg, #6385DF, #4969C8)",
+            transition: "transform 0.4s ease",
+      },
+    }}
+  />
+</Box>
+
+   /*  <Box sx={{ position: "relative", display: "inline-flex" }}>
       <CircularProgress
         variant="determinate"
         value={progressValue}
@@ -68,7 +119,7 @@ const ProgressWithLabel = ({ area_id }) => {
           {`${Math.round(progressValue)}%`}
         </Typography>
       </Box>
-    </Box>
+    </Box> */
   );
 };
 
