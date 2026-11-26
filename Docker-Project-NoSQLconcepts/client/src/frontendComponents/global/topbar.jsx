@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import BarChartIcon from '@mui/icons-material/BarChart';
+import SchoolIcon from '@mui/icons-material/School';
 import LogOut from "../Auth/logout";
 import { checkAuth } from "../api/loginApi";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -63,6 +65,18 @@ function TopBar() {
       visible: true,
     },
     {
+      label: "AI Tutor",
+      to: "/ai-tutor",
+      icon: <SchoolIcon />,
+      visible: isAdmin,
+    },
+    {
+      label: "Statistics",
+      to: "/statistics",
+      icon: <BarChartIcon />,
+      visible: isAdmin,
+    },
+    {
       label: "Manage Users",
       to: "/manage-users",
       icon: <GroupAddIcon />,
@@ -84,8 +98,24 @@ function TopBar() {
   return (
     <AppBar
       position="static"
-      color="default" 
-      
+      //color="default"
+      elevation={3}
+      sx={{
+        backgroundColor: theme.palette.custom.appBar,
+        color: theme.palette.custom.appBarText,
+
+        "& .MuiTab-root": {
+          color: theme.palette.custom.appBarText,
+        },
+
+        "& .MuiTab-root.Mui-selected": {
+          color: theme.palette.custom.appBarIndicator,
+        },
+
+        "& .MuiTabs-indicator": {
+          backgroundColor: theme.palette.custom.appBarIndicator,
+        },
+      }}
     >
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -99,6 +129,7 @@ function TopBar() {
               aria-label="menu"
               aria-controls="nav-menu"
               aria-haspopup="true"
+              sx={{color: theme.palette.primary.contrastText}}
             >
               <MenuIcon />
             </IconButton>
@@ -128,7 +159,11 @@ function TopBar() {
 
                   <MenuItem onClick={handleMenuClose}>
                     <ListItemIcon>
-                      <Link to="/sign-in" replace style={{ textDecoration: "none" }}>
+                      <Link
+                        to="/sign-in"
+                        replace
+                        style={{ textDecoration: "none" }}
+                      >
                         <Button aria-label="login">Anmelden</Button>
                       </Link>
                     </ListItemIcon>
@@ -156,17 +191,17 @@ function TopBar() {
               justifyContent: "flex-end",
               width: "100%",
               overflow: "hidden",
-              
             }}
           >
             <Tabs
               value={value}
               onChange={(e, newVal) => setValue(newVal)}
               aria-label="main navigation tabs"
-              textColor="primary"
+              //textColor="primary"
               indicatorColor="primary"
               variant="scrollable"
               scrollButtons="auto"
+              sx={{color: theme.palette.custom.appBarText }}
             >
               {tabs
                 .filter((tab) => tab.visible)
@@ -195,7 +230,11 @@ function TopBar() {
                     alignItems: "center",
                   }}
                 >
-                  <Link to="/sign-in" replace style={{ textDecoration: "none" }}>
+                  <Link
+                    to="/sign-in"
+                    replace
+                    style={{ textDecoration: "none" }}
+                  >
                     <Button aria-label="login">Anmelden</Button>
                   </Link>
                 </Box>

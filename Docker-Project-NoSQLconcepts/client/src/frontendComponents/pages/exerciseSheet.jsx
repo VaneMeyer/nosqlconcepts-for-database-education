@@ -961,10 +961,6 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
                               <ImportantMsg
                                 message={
                                   <>
-                                    Erhalte einen personalisierten,{" "}
-                                    <b>KI-generierten</b> Lerntipp auf Grundlage
-                                    der Aufgabenbeschreibung und deiner Lösung.
-                                    <br />
                                     KI-generierte Antworten können Fehler
                                     enthalten.
                                   </>
