@@ -201,9 +201,11 @@ export default function SignIn() {
           >
             Sign In
           </Button>
+          <Typography variant="p">
+            Für die Nutzung innerhalb des PDB Kurses ist keine Anmeldung erforderlich. Bitte fahren Sie ohne Anmeldung fort. 
+          </Typography>
           <Button
             onClick={handleStudentSubmit}
-            disabled={!isChecked}
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
