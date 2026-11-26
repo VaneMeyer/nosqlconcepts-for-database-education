@@ -1,4 +1,4 @@
-# NoSQLconcepts for database education
+# NoSQLconcepts for database education - Work in Progress
 Note, that this instance of the Tool is used for the german "Database Programming" Course at Goethe University Frankfurt. 
 You can also check out our english tool used in the "DBMS" practical course at https://github.com/VaneMeyer/nosqlconcepts 
 
