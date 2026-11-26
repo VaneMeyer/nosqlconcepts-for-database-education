@@ -20,7 +20,7 @@ const GreetingHeader = () => {
       }}
     >
       <Typography
-        variant="h5"
+        variant="h6"
         fontWeight={600}
         sx={{
           letterSpacing: 0.3,

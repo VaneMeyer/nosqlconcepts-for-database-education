@@ -88,7 +88,8 @@ const ProgressWithLabel = ({ area_id }) => {
           "& .MuiLinearProgress-bar": {
             borderRadius: 10,
             background:
-              "linear-gradient(90deg, #6385DF, #4969C8)",
+              //"linear-gradient(90deg, #6385DF, #4969C8)",
+              "linear-gradient(90deg, #10B981, #059669)",
             transition: "transform 0.4s ease",
       },
     }}

@@ -1,16 +1,6 @@
+import { createContext, useMemo, useState, useContext, useEffect } from "react";
 
-import {
-  createContext,
-  useMemo,
-  useState,
-  useContext,
-  useEffect,
-} from "react";
-
-import {
-  ThemeProvider,
-  createTheme,
-} from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import { alpha } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -53,8 +43,8 @@ export function CustomThemeProvider({ children }) {
     const primaryLight = isDark ? "#94AEF5" : "#6385DF";
     const primaryDark = isDark ? "#4969C8" : "#3854A5";
 
-    const background = isDark ? "#0F172A" : "#F8FAFC";
-    const paper = isDark ? "#1E293B" : "#FFFFFF";
+    const background = isDark ? "#0F172A" : "#ffffff";//"#0F172A" : "#F8FAFC";
+    const paper = isDark ? "#1E293B" : "#ffffff";//"#1E293B" : "#FFFFFF";
 
     const textPrimary = isDark ? "#F1F5F9" : "#1E293B";
     const textSecondary = isDark ? "#94A3B8" : "#64748B";
@@ -106,7 +96,11 @@ export function CustomThemeProvider({ children }) {
           dark: "#1D4ED8",
           contrastText: "#FFFFFF",
         },
-
+        custom: {
+          appBar: mode === "light" ? "#263746" : paper,//"#F1F5F9" : paper,//"#E8EFF2" :"#263746"
+          appBarText: mode === "light" ? "#FFFFFF" : "#FFFFFF",//"#263746" : "#FFFFFF",
+          appBarIndicator: mode === "light" ? "#34D399" : "#34D399",
+        },
         background: {
           default: background,
           paper: paper,
@@ -121,17 +115,11 @@ export function CustomThemeProvider({ children }) {
         divider,
 
         action: {
-          hover: isDark
-            ? "rgba(148,163,184,0.08)"
-            : "rgba(73,105,200,0.05)",
+          hover: isDark ? "rgba(148,163,184,0.08)" : "rgba(73,105,200,0.05)",
 
-          selected: isDark
-            ? "rgba(99,133,223,0.16)"
-            : "rgba(73,105,200,0.09)",
+          selected: isDark ? "rgba(99,133,223,0.16)" : "rgba(73,105,200,0.09)",
 
-          disabledBackground: isDark
-            ? "#334155"
-            : "#F1F5F9",
+          disabledBackground: isDark ? "#334155" : "#F1F5F9",
         },
       },
 
@@ -354,9 +342,7 @@ export function CustomThemeProvider({ children }) {
   // --------------------------------------------------
 
   return (
-    <ColorModeContext.Provider
-      value={{ mode, toggleColorMode }}
-    >
+    <ColorModeContext.Provider value={{ mode, toggleColorMode }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}

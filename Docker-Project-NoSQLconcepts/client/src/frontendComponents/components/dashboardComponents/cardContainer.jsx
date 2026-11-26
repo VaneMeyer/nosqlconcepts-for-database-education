@@ -422,8 +422,8 @@ export default function CardContainer() {
                             fontWeight: 600,
                           }}
                         >
-                          Bereich öffnen
-                          <Box
+                          {/* Bereich öffnen */}
+                         {/*  <Box
                             component="span"
                             sx={{
                               ml: 0.7,
@@ -432,7 +432,7 @@ export default function CardContainer() {
                             }}
                           >
                             →
-                          </Box>
+                          </Box> */}
                         </Typography>
                       ) : (
                         <Box
