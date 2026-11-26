@@ -25,8 +25,8 @@ Start the app using the following command within the project directory: `docker 
 # Tool Screenshots
 
 ## Admin Dashboard
- <img width="668" height="373" alt="adminDashboard" src="https://github.com/user-attachments/assets/25d9f341-7ab5-4eaa-a96d-931d21eed518" />
- 
+<img width="1896" height="779" alt="adminDashboard_newTheme" src="https://github.com/user-attachments/assets/734de8e3-2e6e-4216-b95a-a6901c810439" />
+
 ## Example Task
 <img width="1146" height="580" alt="exampleTask" src="https://github.com/user-attachments/assets/a0124955-7300-4e46-9e0f-19d68ceb9aaa" />
 
