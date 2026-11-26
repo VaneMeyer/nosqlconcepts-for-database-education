@@ -64,6 +64,15 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
             isExecutable: "No",
             resultSize: 0,
             isFinished: false,
+            totalDistance: "",
+            noCalculation: "",
+            feedbackOutput: [],
+            zeroCostOutput: [],
+            errorCount: 0,
+            currentSQLPoints: null,
+            maxPoints_SQL: 0,
+            pointsHistory: [],
+            executionHistory: [],
           };
     } catch {
       return {
@@ -166,19 +175,61 @@ function ExerciseSheetC({ area_id, area_name, endpoint, feedback_on }) {
       setHasSolutionQuery(Boolean(response.data.solutionQuery));
       setQueryFeedback_new(response.data.queryFeedback_new || "");
 
-      const { feedbackOutput } = sqlDistanceHandling(
+      // Feedback der Distanzfunktion einmalig auswerten.
+      const distanceData = sqlDistanceHandling(
         response.data.queryFeedback_new || "",
       );
+      const { feedbackOutput } = distanceData;
+
       const isSQLOutputEqual =
         JSON.stringify(response.data.userQueryResult) ===
         JSON.stringify(response.data.expectedResult);
+
       const currentSQLPoints = isSQLOutputEqual
-        ? maxPoints_SQL
+        ? Number(maxPoints_SQL)
         : calculatedPoints(maxPoints_SQL, feedbackOutput);
 
       const newSteps = feedbackOutput
         .map((item) => item.editStep)
         .filter(Boolean);
+
+      // Alle für die Statistiken relevanten Daten dauerhaft speichern.
+      // Jeder Klick auf "Ausführen" erzeugt einen eigenen Verlaufseintrag.
+      setFormData((prev) => {
+        const previousHistory = Array.isArray(prev.executionHistory)
+          ? prev.executionHistory
+          : [];
+
+        const previousPoints = Array.isArray(prev.pointsHistory)
+          ? prev.pointsHistory
+          : [];
+
+        const executionEntry = {
+          timestamp: new Date().toISOString(),
+          query: execQuery,
+          totalDistance: distanceData.totalDistance,
+          noCalculation: distanceData.noCalculation,
+          feedbackOutput: distanceData.feedbackOutput,
+          zeroCostOutput: distanceData.zeroCostOutput,
+          errorCount: distanceData.errorCount,
+          points: currentSQLPoints,
+          maxPoints: Number(maxPoints_SQL),
+          isCorrect: isSQLOutputEqual,
+        };
+
+        return {
+          ...prev,
+          totalDistance: distanceData.totalDistance,
+          noCalculation: distanceData.noCalculation,
+          feedbackOutput: distanceData.feedbackOutput,
+          zeroCostOutput: distanceData.zeroCostOutput,
+          errorCount: distanceData.errorCount,
+          currentSQLPoints,
+          maxPoints_SQL: Number(maxPoints_SQL),
+          pointsHistory: [...previousPoints, currentSQLPoints],
+          executionHistory: [...previousHistory, executionEntry],
+        };
+      });
       const mergedSteps = [...collectedEditSteps, ...newSteps];
       setCollectedEditSteps(mergedSteps);
 

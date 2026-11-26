@@ -1,4 +1,4 @@
-
+//only used in the DBMS course, for the PDB course StatisticsC_updated.jsx is used
 //student project SS2024 
 
 /*This file contains the frontend of the statistics dashboard extension 
