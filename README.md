@@ -8,6 +8,7 @@ You can also check out our english tool used in the "DBMS" practical course at h
 
 - Docker
 - Git
+- Ollama
 
 # Clone repository
 
