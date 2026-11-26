@@ -1,4 +1,3 @@
-
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
 
@@ -212,9 +211,14 @@ export const themeSettings = (mode) => {
         light: colors.grey[100],
       },
 
+      custom: {
+        appBar: mode === "light" ? "#E8EFF2" : "#263746",
+        appBarText: mode === "light" ? "#263746" : "#FFFFFF",
+      },
+
       background: {
-        default: isDark ? "#0F172A" : "#F8FAFC",
-        paper: isDark ? "#1E293B" : "#FFFFFF",
+        default: isDark ? "#0F172A" : "#184e87", //"#F8FAFC"
+        paper: isDark ? "#1E293B" : "#FFFFFF", //"#FFFFFF"
       },
 
       text: {
@@ -237,12 +241,7 @@ export const themeSettings = (mode) => {
     },
 
     typography: {
-      fontFamily: [
-        "Inter",
-        "Roboto",
-        "Arial",
-        "sans-serif",
-      ].join(","),
+      fontFamily: ["Inter", "Roboto", "Arial", "sans-serif"].join(","),
 
       fontSize: 13,
 
@@ -307,9 +306,7 @@ export const themeSettings = (mode) => {
       "0px 4px 16px rgba(15,23,42,0.07)",
       "0px 6px 20px rgba(15,23,42,0.08)",
       "0px 8px 24px rgba(15,23,42,0.09)",
-      ...Array(18).fill(
-        "0px 8px 24px rgba(15,23,42,0.09)"
-      ),
+      ...Array(18).fill("0px 8px 24px rgba(15,23,42,0.09)"),
     ],
 
     // --------------------------------------------------
@@ -417,9 +414,7 @@ export const themeSettings = (mode) => {
       MuiTableCell: {
         styleOverrides: {
           root: {
-            borderBottom: `1px solid ${
-              isDark ? "#334155" : "#E5EAF0"
-            }`,
+            borderBottom: `1px solid ${isDark ? "#334155" : "#E5EAF0"}`,
           },
 
           head: {
@@ -434,9 +429,7 @@ export const themeSettings = (mode) => {
         styleOverrides: {
           root: {
             "&:hover": {
-              backgroundColor: isDark
-                ? "rgba(148,163,184,0.05)"
-                : "#F8FAFC",
+              backgroundColor: isDark ? "rgba(148,163,184,0.05)" : "#F8FAFC",
             },
           },
         },
@@ -504,17 +497,12 @@ export const useMode = () => {
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () =>
-        setMode((prev) =>
-          prev === "light" ? "dark" : "light"
-        ),
+        setMode((prev) => (prev === "light" ? "dark" : "light")),
     }),
-    []
+    [],
   );
 
-  const theme = useMemo(
-    () => createTheme(themeSettings(mode)),
-    [mode]
-  );
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
   return [theme, colorMode];
 };

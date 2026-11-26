@@ -311,7 +311,7 @@ export default function CardContainer() {
                             letterSpacing: "-0.3px",
                           }}
                         >
-                          {assignment.area_name}
+                          {assignment.area_id} : {assignment.area_name}
                         </Typography>
 
                         <Typography

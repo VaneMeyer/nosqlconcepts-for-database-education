@@ -26,7 +26,7 @@ import NewInformationC from "./pages/information.jsx";
 import QuizTaskSheet from "./pages/quizSheet.jsx";
 import { BBCquizQuestions, joinquiz2Questions, joinquizQuestions, nestedselectquizQuestions, selectquizQuestions, selfjoinquizQuestions, sumandcountquizQuestions, usingnullquizQuestions } from "./data/quizData";
 import AITutor from "./pages/aiTutor.jsx";
-import StatisticsC from "./pages/statisticsC.jsx";
+import StatisticsC from "./pages/StatisticsC_updated.jsx";
 
 const AuthContext = createContext();
 
