@@ -18,8 +18,304 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { BarChart } from "@mui/x-charts/BarChart";
 
 const STORAGE_PREFIX = "formdata_";
+
+function normalizeEditStep(editStep) {
+  return String(editStep ?? "")
+    .replace(/^\s*Kosten\s*\d+\s*:\s*/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function mapEditStepToCategory(editStep) {
+  const step = normalizeEditStep(editStep).toLocaleLowerCase("de-DE");
+
+  // Horizontal Edits: Änderungen innerhalb einer bestehenden SQL-Klausel.
+  if (/argumente .*kommutativen binären ausdruck.*vertauschen/.test(step)) {
+    if (/select-element/.test(step)) return "SELECT";
+    if (/join-bedingung.*from-element/.test(step)) return "JOIN-Condition";
+    if (/where-klausel/.test(step)) return "WHERE";
+    if (/group-by/.test(step)) return "GROUP BY";
+    if (/having-klausel/.test(step)) return "HAVING";
+    if (/order-by/.test(step)) return "ORDER BY";
+  }
+  if (
+    /verschachtelung .*assoziativen binären ausdruck.*vertauschen/.test(step)
+  ) {
+    if (/select-element/.test(step)) return "SELECT";
+    if (/join-bedingung.*from-element/.test(step)) return "JOIN-Condition";
+    if (/where-klausel/.test(step)) return "WHERE";
+    if (/group-by/.test(step)) return "GROUP BY";
+    if (/having-klausel/.test(step)) return "HAVING";
+    if (/order-by/.test(step)) return "ORDER BY";
+  }
+  if (
+    /ungleichung .*umkehren|seiten eines vergleichs .*vertauschen/.test(step)
+  ) {
+    if (/select-element/.test(step)) return "SELECT";
+    if (/join-bedingung.*from-element/.test(step)) return "JOIN-Condition";
+    if (/where-klausel/.test(step)) return "WHERE";
+    if (/group-by/.test(step)) return "GROUP BY";
+    if (/having-klausel/.test(step)) return "HAVING";
+    if (/order-by/.test(step)) return "ORDER BY";
+  }
+  if (/elemente in der select-klausel vertauschen/.test(step)) return "SELECT";
+  if (/elemente in der from-klausel vertauschen/.test(step)) return "FROM";
+  if (/elemente in der group-by-klausel vertauschen/.test(step))
+    return "GROUP BY";
+  if (/position der elemente in der order-by-klausel ändern/.test(step))
+    return "ORDER BY";
+
+  // Allgemeine horizontale Änderungen – Klausel und betroffenes Element.
+  if (/falschen tabellennamen für einen asterisk/.test(step))
+    return "Table Asterisk";
+  if (/falsche spalte .*spaltenreferenz.*select-element/.test(step))
+    return "Column SELECT";
+  if (/falsche tabelle .*spaltenreferenz.*select-element/.test(step))
+    return "Table SELECT";
+  if (/falschen literalwert .*select-element/.test(step))
+    return "Literal value in SELECT";
+  if (/falsche aggregationsfunktion .*select-element/.test(step))
+    return "Agg SELECT";
+  if (/falschen operator .*select-element/.test(step)) return "Operator SELECT";
+  if (/falschen expliziten alias eines select-elements/.test(step))
+    return "Alias SELECT";
+  if (/falschen join-typ eines from-elements/.test(step)) return "JOIN Type";
+  if (/falsche spalte .*spaltenreferenz.*join-bedingung/.test(step))
+    return "Column JOIN-Condition";
+  if (/falsche tabelle .*spaltenreferenz.*join-bedingung/.test(step))
+    return "Table JOIN-Condition";
+  if (/falschen literalwert .*join-bedingung/.test(step))
+    return "Literal Value JOIN";
+  if (/falschen operator .*join-bedingung/.test(step)) return "Operator JOIN";
+  if (/falschen expliziten alias eines from-elements/.test(step))
+    return "Alias FROM";
+  if (/falsche spalte .*spaltenreferenz.*where-klausel/.test(step))
+    return "Column WHERE";
+  if (/falsche tabelle .*spaltenreferenz.*where-klausel/.test(step))
+    return "Table WHERE";
+  if (/falschen literalwert .*where-klausel/.test(step))
+    return "Literal Value WHERE";
+  if (/falschen operator .*where-klausel/.test(step)) return "Operator WHERE";
+  if (/falsche spalte .*spaltenreferenz.*group-by/.test(step))
+    return "Column GROUP BY";
+  if (/falsche tabelle .*spaltenreferenz.*group-by/.test(step))
+    return "Table GROUP BY";
+  if (/falschen literalwert .*group-by/.test(step))
+    return "Literal Value GROUP BY";
+  if (/falschen operator .*group-by/.test(step)) return "Operator GROUP BY";
+  if (/falsch referenzierte spalte .*having-klausel/.test(step))
+    return "Column HAVING";
+  if (/falsch referenzierte tabelle .*having-klausel/.test(step))
+    return "Table HAVING";
+  if (/falschen literalwert .*having-klausel/.test(step))
+    return "Literal Value HAVING";
+  if (/falsche aggregationsfunktion .*having-klausel/.test(step))
+    return "Agg HAVING";
+  if (/falschen operator .*having-klausel/.test(step)) return "Operator HAVING";
+  if (/falsch referenzierte spalte .*order-by/.test(step))
+    return "Column ORDER BY";
+  if (/falsch referenzierte tabelle .*order-by/.test(step))
+    return "Table ORDER BY";
+  if (/falschen literalwert .*order-by/.test(step))
+    return "Literal Value ORDER BY";
+  if (/falsche aggregationsfunktion .*order-by/.test(step))
+    return "Agg ORDER BY";
+  if (/falschen operator .*order-by/.test(step)) return "Operator ORDER BY";
+
+  // Shortcut Edits.
+  if (/tautologiegesetz/.test(step)) return "Tautology law";
+  if (/doppelte verneinung/.test(step)) return "Double negation law";
+  if (/distributivgesetz/.test(step)) return "Distributive law";
+  if (/de-morgan-regel/.test(step)) return "De Morgan's law";
+  if (/absorptionsgesetz/.test(step)) return "Absorption law";
+  if (/join-bedingung eines inner join.*where-klausel verschieben/.test(step))
+    return "JOIN-Condition to WHERE";
+  if (
+    /ausdruck aus der where-klausel .*join-bedingung eines inner join.*verschieben/.test(
+      step,
+    )
+  )
+    return "WHERE to INNER JOIN-Condition";
+  if (/asterisk \(\*\) durch die ausdrücke ersetzen/.test(step))
+    return "Asterisk -> Expressions";
+  if (/mehrere ausdrücke durch einen asterisk/.test(step))
+    return "Expressions -> Asterisk";
+
+  // Atomic Edits: die Beschreibung benennt das eingefügte/entfernte Element.
+  // Die Klausel wird als zweite Dimension der Kategorie verwendet.
+  const clause = /select|select-element/.test(step)
+    ? "SELECT"
+    : /from|join-bedingung/.test(step)
+      ? "FROM/JOIN"
+      : /where/.test(step)
+        ? "WHERE"
+        : /group-by/.test(step)
+          ? "GROUP BY"
+          : /having/.test(step)
+            ? "HAVING"
+            : /order-by/.test(step)
+              ? "ORDER BY"
+              : null;
+  if (/asterisk/.test(step)) return `Asterisk\n${clause || "SQL"}`;
+  if (/spaltenreferenz|spalte/.test(step)) return `Column\n${clause || "SQL"}`;
+  if (/tabellenname|tabelle/.test(step)) return `Table\n${clause || "SQL"}`;
+  if (/literal/.test(step)) return `Literal\n${clause || "SQL"}`;
+  if (/verneinung|\bnot\b/.test(step)) return `'NOT'\n${clause || "SQL"}`;
+  if (/aggregationsfunktion/.test(step)) return `Agg\n${clause || "SQL"}`;
+  if (/distinct/.test(step)) return `DISTINCT\n${clause || "SQL"}`;
+  if (/binärer ausdruck|operator/.test(step))
+    return `Binary/Operator\n${clause || "SQL"}`;
+  if (/alias/.test(step)) return `Alias\n${clause || "SQL"}`;
+  if (/element .*klausel/.test(step)) return `Element\n${clause || "SQL"}`;
+  if (/aufsteigend|absteigend|sortierrichtung/.test(step))
+    return "Sort order\nORDER BY";
+
+  return "Other";
+}
+
+function getEditStepChartData(exerciseData) {
+  // Alle Ausführungsversuche berücksichtigen. feedbackOutput enthält die
+  // regulären (Excess/Missing) Edits, zeroCostOutput die kostenfreien
+  // Horizontal-/Shortcut-Edits. Ältere Einträge ohne Verlauf bleiben lesbar.
+  const editSteps = exerciseData
+    .flatMap((task) => {
+      const history = Array.isArray(task.executionHistory)
+        ? task.executionHistory
+        : [];
+      const entries =
+        history.length > 0
+          ? history.flatMap((attempt) => [
+              ...(Array.isArray(attempt?.feedbackOutput)
+                ? attempt.feedbackOutput
+                : []),
+              ...(Array.isArray(attempt?.zeroCostOutput)
+                ? attempt.zeroCostOutput
+                : []),
+            ])
+          : [
+              ...(Array.isArray(task.feedbackOutput)
+                ? task.feedbackOutput
+                : []),
+              ...(Array.isArray(task.zeroCostOutput)
+                ? task.zeroCostOutput
+                : []),
+            ];
+      return entries;
+    })
+    .map((entry) => normalizeEditStep(entry?.editStep ?? entry?.step ?? entry));
+
+  const validSteps = editSteps.filter(Boolean);
+  const isExcess = (step) =>
+    /\bexcess\b|überflüssig|zu viel|unnötig|entfernen|löschen/i.test(step);
+  const isMissing = (step) =>
+    /\bmissing\b|fehlend|fehlt|hinzufügen|einfügen|ergänzen/i.test(step);
+  const excess = validSteps.filter(isExcess);
+  const missing = validSteps.filter(isMissing);
+
+  const horizontalDefinitions = [
+    {
+      label: "Swap\narguments",
+      test: (s) => /argumente .*vertauschen/i.test(s),
+    },
+    {
+      label: "Swap\nnesting",
+      test: (s) => /verschachtelung .*vertauschen/i.test(s),
+    },
+    {
+      label: "Mirror",
+      test: (s) =>
+        /ungleichung .*umkehren|seiten eines vergleichs .*vertauschen/i.test(s),
+    },
+    { label: "Swap\nelements", test: (s) => /elemente .*vertauschen/i.test(s) },
+    {
+      label: "Change\npositions",
+      test: (s) => /position der elemente .*ändern/i.test(s),
+    },
+    {
+      label: "Change\n(incorrect)",
+      test: (s) =>
+        /falsche|falschen|falsch referenzierte|falsch referenziert/i.test(s),
+    },
+  ];
+  const shortcutDefinitions = [
+    { label: "Tautology\nlaw", test: (s) => /tautologiegesetz/i.test(s) },
+    { label: "Double\nneg.\nlaw", test: (s) => /doppelte verneinung/i.test(s) },
+    { label: "Distr.\nlaw", test: (s) => /distributivgesetz/i.test(s) },
+    { label: "De\nMorgan", test: (s) => /de-morgan-regel/i.test(s) },
+    { label: "Absorp.\nlaw", test: (s) => /absorptionsgesetz/i.test(s) },
+    { label: "Move", test: (s) => /verschieben/i.test(s) },
+    {
+      label: "Replace",
+      test: (s) => /asterisk .*ersetzen|ausdrücke .*asterisk/i.test(s),
+    },
+  ];
+
+  const countCategories = (steps) => {
+    const counts = {};
+    steps.forEach((step) => {
+      const category = mapEditStepToCategory(step);
+      counts[category] = (counts[category] || 0) + 1;
+    });
+    return counts;
+  };
+  const horizontalGroups = horizontalDefinitions.map(({ test }) =>
+    countCategories(validSteps.filter(test)),
+  );
+  const shortcutGroups = shortcutDefinitions.map(({ test }) =>
+    countCategories(validSteps.filter(test)),
+  );
+  const getSeries = (groups, labels) => {
+    const variants = [
+      ...new Set(groups.flatMap((group) => Object.keys(group))),
+    ];
+    if (variants.length === 0)
+      return [{ label: "Keine Treffer", data: labels.map(() => 0) }];
+    return variants.map((variant) => ({
+      label: variant,
+      data: groups.map((group) => group[variant] || 0),
+    }));
+  };
+
+  const excessCountsByCategory = countCategories(excess);
+  const missingCountsByCategory = countCategories(missing);
+  const excessCategories = Object.keys(excessCountsByCategory);
+  const missingCategories = Object.keys(missingCountsByCategory);
+  const horizontalTypes = horizontalDefinitions.map((item) => item.label);
+  const shortcutTypes = shortcutDefinitions.map((item) => item.label);
+
+  return {
+    excessCategories: excessCategories.length
+      ? excessCategories
+      : ["Keine Treffer"],
+    excessCounts: excessCategories.length
+      ? Object.values(excessCountsByCategory)
+      : [0],
+    missingCategories: missingCategories.length
+      ? missingCategories
+      : ["Keine Treffer"],
+    missingCounts: missingCategories.length
+      ? Object.values(missingCountsByCategory)
+      : [0],
+    horizontalTypes,
+    horizontalSeries: getSeries(horizontalGroups, horizontalTypes),
+    shortcutTypes,
+    shortcutSeries: getSeries(shortcutGroups, shortcutTypes),
+    excessTotal: excess.length,
+    missingTotal: missing.length,
+    horizontalTotal: horizontalGroups.reduce(
+      (sum, group) => sum + Object.values(group).reduce((a, b) => a + b, 0),
+      0,
+    ),
+    shortcutTotal: shortcutGroups.reduce(
+      (sum, group) => sum + Object.values(group).reduce((a, b) => a + b, 0),
+      0,
+    ),
+    totalEditSteps: validSteps.length,
+  };
+}
 
 /**
  * ExerciseSheetC speichert Einträge unter:
@@ -57,13 +353,15 @@ function readExerciseData() {
       const storedValue = window.localStorage.getItem(key);
       const formData = storedValue ? JSON.parse(storedValue) : null;
 
-      if (!formData || typeof formData !== "object" || Array.isArray(formData)) {
+      if (
+        !formData ||
+        typeof formData !== "object" ||
+        Array.isArray(formData)
+      ) {
         continue;
       }
 
-      const queryText = String(
-        formData.query_text ?? formData.query ?? ""
-      );
+      const queryText = String(formData.query_text ?? formData.query ?? "");
 
       const resultSize = Number(formData.resultSize);
       const executionHistory = Array.isArray(formData.executionHistory)
@@ -83,8 +381,7 @@ function readExerciseData() {
         taskNumber: Number(taskNumber),
         queryText,
         isExecutable:
-          formData.isExecutable === "Yes" ||
-          formData.isExecutable === true,
+          formData.isExecutable === "Yes" || formData.isExecutable === true,
         isFinished: formData.isFinished === true,
         resultSize: Number.isFinite(resultSize) ? resultSize : 0,
         totalDistance: formData.totalDistance ?? "",
@@ -108,7 +405,10 @@ function readExerciseData() {
       });
     } catch (error) {
       // Ungültige oder unvollständige localStorage-Einträge überspringen.
-      console.warn(`Statistics: Eintrag ${key} konnte nicht gelesen werden.`, error);
+      console.warn(
+        `Statistics: Eintrag ${key} konnte nicht gelesen werden.`,
+        error,
+      );
     }
   }
 
@@ -116,7 +416,7 @@ function readExerciseData() {
     const areaComparison = String(a.areaId).localeCompare(
       String(b.areaId),
       undefined,
-      { numeric: true }
+      { numeric: true },
     );
 
     return areaComparison || a.taskNumber - b.taskNumber;
@@ -189,24 +489,24 @@ function StatisticsC() {
   const statistics = useMemo(() => {
     const totalTasks = exerciseData.length;
     const completedTasks = exerciseData.filter(
-      (item) => item.isFinished
+      (item) => item.isFinished,
     ).length;
     const executedTasks = exerciseData.filter(
-      (item) => item.isExecutable
+      (item) => item.isExecutable,
     ).length;
     const tasksWithQuery = exerciseData.filter(
-      (item) => item.queryText.trim().length > 0
+      (item) => item.queryText.trim().length > 0,
     ).length;
     const totalResultRows = exerciseData.reduce(
       (sum, item) => sum + item.resultSize,
-      0
+      0,
     );
     const totalExecutions = exerciseData.reduce(
       (sum, item) => sum + item.executionHistory.length,
-      0
+      0,
     );
-    const scoredTasks = exerciseData.filter(
-      (item) => Number.isFinite(item.currentSQLPoints)
+    const scoredTasks = exerciseData.filter((item) =>
+      Number.isFinite(item.currentSQLPoints),
     );
     const averagePoints =
       scoredTasks.length > 0
@@ -215,15 +515,15 @@ function StatisticsC() {
         : null;
     const totalPoints =
       scoredTasks.length > 0
-        ? scoredTasks.reduce((sum, item) => sum + item.currentSQLPoints, 0) 
+        ? scoredTasks.reduce((sum, item) => sum + item.currentSQLPoints, 0)
         : null;
     const totalMaxPoints =
       scoredTasks.length > 0
-        ? scoredTasks.reduce((sum, item) => sum + item.maxPoints_SQL, 0) 
+        ? scoredTasks.reduce((sum, item) => sum + item.maxPoints_SQL, 0)
         : null;
     const totalErrors = exerciseData.reduce(
       (sum, item) => sum + item.errorCount,
-      0
+      0,
     );
 
     return {
@@ -238,10 +538,14 @@ function StatisticsC() {
       totalMaxPoints,
       totalErrors,
       scoredTasks: scoredTasks.length,
-      completionRate:
-        totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0,
+      completionRate: totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0,
     };
   }, [exerciseData]);
+
+  const editStepStatistics = useMemo(
+    () => getEditStepChartData(exerciseData),
+    [exerciseData],
+  );
 
   const formatTime = (date) => {
     if (!date) return "Noch nicht aktualisiert";
@@ -325,16 +629,7 @@ function StatisticsC() {
           subtitle="Gespeicherte Ausführungsversuche"
         />
         <SummaryCard
-          title="Durchschnittliche Punkte"
-          value={
-            statistics.averagePoints === null
-              ? "–"
-              : statistics.averagePoints.toFixed(2)
-          }
-          subtitle={`${statistics.scoredTasks} Aufgaben mit Punktestand`}
-        />
-        <SummaryCard
-          title="Punkte Gesamt"
+          title="Bisher erreichte Punktzahl"
           value={
             statistics.totalPoints === null
               ? "–"
@@ -389,7 +684,129 @@ function StatisticsC() {
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" fontWeight={700} gutterBottom>
+          Edit-Step-Statistiken
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Auswertung aller gespeicherten SQL-Ausführungsversuche dieses
+          Browserprofils. Ein Edit-Step wird pro Versuch gezählt.
+        </Typography>
+        {editStepStatistics.totalEditSteps === 0 ? (
+          <Alert severity="info">
+            Noch keine Edit-Steps vorhanden. Führe eine SQL-Aufgabe aus, damit
+            die Edit-Steps im Ausführungsverlauf gespeichert und hier
+            ausgewertet werden.
+          </Alert>
+        ) : (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(2, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
+            <Paper
+              variant="outlined"
+              sx={{ p: 2, borderRadius: 3, minWidth: 0 }}
+            >
+              <Typography fontWeight={700} gutterBottom>
+                Excess-Edit-Steps ({editStepStatistics.excessTotal})
+              </Typography>
+              <BarChart
+                xAxis={[
+                  {
+                    scaleType: "band",
+                    data: editStepStatistics.excessCategories,
+                  },
+                ]}
+                yAxis={[{ scaleType: "linear", label: "Häufigkeit" }]}
+                series={[
+                  { data: editStepStatistics.excessCounts, label: "Excess" },
+                ]}
+                height={300}
+                margin={{ bottom: 70, left: 55, right: 20, top: 25 }}
+              />
+            </Paper>
+
+            <Paper
+              variant="outlined"
+              sx={{ p: 2, borderRadius: 3, minWidth: 0 }}
+            >
+              <Typography fontWeight={700} gutterBottom>
+                Missing-Edit-Steps ({editStepStatistics.missingTotal})
+              </Typography>
+              <BarChart
+                xAxis={[
+                  {
+                    scaleType: "band",
+                    data: editStepStatistics.missingCategories,
+                  },
+                ]}
+                yAxis={[{ scaleType: "linear", label: "Häufigkeit" }]}
+                series={[
+                  { data: editStepStatistics.missingCounts, label: "Missing" },
+                ]}
+                height={300}
+                margin={{ bottom: 70, left: 55, right: 20, top: 25 }}
+              />
+            </Paper>
+
+            <Paper
+              variant="outlined"
+              sx={{ p: 2, borderRadius: 3, minWidth: 0 }}
+            >
+              <Typography fontWeight={700} gutterBottom>
+                Horizontal-Edit-Steps ({editStepStatistics.horizontalTotal})
+              </Typography>
+              <BarChart
+                xAxis={[
+                  {
+                    scaleType: "band",
+                    data: editStepStatistics.horizontalTypes,
+                  },
+                ]}
+                yAxis={[{ scaleType: "linear", label: "Häufigkeit" }]}
+                series={editStepStatistics.horizontalSeries}
+                stacking="normal"
+                height={320}
+                margin={{ bottom: 75, left: 55, right: 20, top: 25 }}
+              />
+            </Paper>
+
+            <Paper
+              variant="outlined"
+              sx={{ p: 2, borderRadius: 3, minWidth: 0 }}
+            >
+              <Typography fontWeight={700} gutterBottom>
+                Shortcut-Edit-Steps ({editStepStatistics.shortcutTotal})
+              </Typography>
+              <BarChart
+                xAxis={[
+                  { scaleType: "band", data: editStepStatistics.shortcutTypes },
+                ]}
+                yAxis={[{ scaleType: "linear", label: "Häufigkeit" }]}
+                series={editStepStatistics.shortcutSeries}
+                stacking="normal"
+                height={320}
+                margin={{ bottom: 75, left: 55, right: 20, top: 25 }}
+              />
+            </Paper>
+          </Box>
+        )}
+      </Box>
+
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" fontWeight={700} gutterBottom>
           Aufgabenübersicht
+        </Typography>
+        <Typography variant="p">
+          Die Kombination aus Distanz = "–" und Punkte = "5/5" bedeutet, dass
+          die SQL Query dieser Aufgabe noch nicht von der genutzten
+          SQL-Distanz-Funktion verarbeitet werden kann. Die Distanz meint die
+          Distanz der erreichten Punktzahl zur maximal möglichen Punktzahl einer
+          Aufgabe.
         </Typography>
         <Divider sx={{ mb: 2 }} />
 
@@ -444,7 +861,9 @@ function StatisticsC() {
                     <TableCell>{item.areaId}</TableCell>
                     <TableCell>{item.taskNumber}</TableCell>
                     <TableCell>
-                      <Box sx={{ display: "flex", gap: 0.75, flexWrap: "wrap" }}>
+                      <Box
+                        sx={{ display: "flex", gap: 0.75, flexWrap: "wrap" }}
+                      >
                         <Chip
                           size="small"
                           label={item.isFinished ? "Abgeschlossen" : "Offen"}
@@ -453,7 +872,11 @@ function StatisticsC() {
                         />
                         <Chip
                           size="small"
-                          label={item.isExecutable ? "Ausgeführt" : "Nicht ausgeführt"}
+                          label={
+                            item.isExecutable
+                              ? "Ausgeführt"
+                              : "Nicht ausgeführt"
+                          }
                           color={item.isExecutable ? "info" : "default"}
                           variant="outlined"
                         />
@@ -469,7 +892,9 @@ function StatisticsC() {
                         : `${item.currentSQLPoints} / ${item.maxPoints_SQL}`}
                     </TableCell>
                     <TableCell align="right">{item.errorCount}</TableCell>
-                    <TableCell align="right">{item.executionHistory.length}</TableCell>
+                    <TableCell align="right">
+                      {item.executionHistory.length}
+                    </TableCell>
                     <TableCell sx={{ maxWidth: 320 }}>
                       <Typography
                         variant="body2"
@@ -496,6 +921,10 @@ function StatisticsC() {
             <Typography variant="h6" fontWeight={700} gutterBottom>
               Verlauf der SQL-Ausführungen
             </Typography>
+            <Typography variant="p">
+              Die Bewertung basiert auf einem Output-Vergleich von Musterlösung
+              und ausgeführter SQL Query.
+            </Typography>
             {exerciseData
               .filter((item) => item.executionHistory.length > 0)
               .map((item) => (
@@ -515,7 +944,7 @@ function StatisticsC() {
                           <TableCell align="right">Distanz</TableCell>
                           <TableCell align="right">Punkte</TableCell>
                           <TableCell align="right">Fehler</TableCell>
-                          <TableCell>Status</TableCell>
+                          <TableCell>Bewertung</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -523,7 +952,9 @@ function StatisticsC() {
                           <TableRow key={`${item.key}-attempt-${index}`}>
                             <TableCell>
                               {attempt.timestamp
-                                ? new Date(attempt.timestamp).toLocaleString("de-DE")
+                                ? new Date(attempt.timestamp).toLocaleString(
+                                    "de-DE",
+                                  )
                                 : `Versuch ${index + 1}`}
                             </TableCell>
                             <TableCell align="right">
